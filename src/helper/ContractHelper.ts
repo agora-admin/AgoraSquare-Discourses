@@ -17,8 +17,8 @@ const getContractAddressByChainId = (chainId: number) => {
         // case 4:
         //     return '0x74FaD6886e8D7713053FC36C761EF11c40AD84cf'
         case 137:
-            return '0x4E714B92b0631180227a12f365E8a35D6b36f12C'
+            return '0x823443514C68d06811A395CA917a2B43bA9DcC64'
         default:
-            return '0x4E714B92b0631180227a12f365E8a35D6b36f12C'
+            return '0x823443514C68d06811A395CA917a2B43bA9DcC64'
     }
 }
