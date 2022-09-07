@@ -8,11 +8,11 @@ export default function createApolloClient() {
         uri: process.env.NEXT_PUBLIC_SERVER_URL,
         // uri: "http://localhost/",
         credentials: 'include',
-        // headers: {
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Credentials': 'true',
-        //     'Authorization': 'Bearer ' + Cookies.get('jwt')
-        // }
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': 'true',
+            'Authorization': 'Bearer ' + Cookies.get('jwt')
+        }
     });
 
     const authLink = setContext((_, { headers }) => {
