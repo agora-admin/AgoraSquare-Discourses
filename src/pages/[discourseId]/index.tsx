@@ -45,7 +45,7 @@ import VenueCard from "../../components/cards/VenueCard";
 async function getDiscourseContract() {
     return await new (window as any).web3.eth.Contract(
         DiscourseHub,
-        Addresses.discourse_daimond
+        Addresses.discourse_diamond
     )
 }
 
