@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+  .bg-gradient {
+    @apply bg-gradient-to-r from-[#84B9D1] to-[#D2B4FC];
+  }
+
+  .bg-gradient-g {
+    @apply bg-gradient-to-r from-[#FBED96] to-[#ABECD6];
+  }
+
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-[#84B9D1] to-[#D2B4FC];
+  }
+
+  .text-gradient-g {
+    @apply text-transparent bg-clip-text bg-gradient-g ;
+  }
+
+  .t-all {
+    @apply transition-all ease-in-out duration-300;
+  }
+  .t-all-100 {
+    @apply transition-all ease-in-out duration-100;
+  }
+
+  .button-s {
+    @apply  px-4 py-2 text-white rounded-lg bg-[#212427] t-all border  active:border-[#84B9D1] border-transparent hover:ring-2 ring-[#84B9D1]/30;
+  }
+  .button-s-d {
+    @apply  px-4 py-2 opacity-50 text-white/30 rounded-lg bg-[#212427]/60 t-all hover:ring-0  border-none outline-none;
+  }
+  .button-o {
+    @apply  px-2 py-1 text-white rounded-lg border-[#212427] t-all border hover:ring-2 ring-[#84B9D1]/30;
+  }
+  .button-so {
+    @apply  px-4 py-2 text-white rounded-lg bg-[#212427] border-[#2F3336] t-all border hover:ring-2 ring-[#84B9D1]/30;
+  }
+  .button-t {
+    @apply  px-4 py-1 outline-none border-none rounded-lg t-all border ;
+  }
+  .button-i {
+    @apply  p-1 rounded-lg hover:bg-[#c6c6c6]/10 t-all ;
+  }
+  .button-i-d {
+    @apply  p-1 rounded-lg t-all ;
+  }
+  .button-i-f {
+    @apply  p-1 rounded-lg border border-[#212427] hover:bg-[#c6c6c6]/10;
+  }
+  .button-i-f-e {
+    @apply  p-1 rounded-lg bg-[#c6c6c6] hover:bg-opacity-50 ;
+  }
+
+  .btn-hvr {
+    @apply  t-all  active:border border-[#84B9D1] hover:ring-2 ring-[#84B9D1]/30;
+  }
+
+  .bg-card {
+    @apply bg-[#141515]/50 backdrop-blur-2xl border border-[#212427] ;
+  }
+
+
+  .input-s {
+    @apply bg-[#141515]/50 px-4 py-2 rounded-lg border border-[#212427] text-white font-Lexend text-[14px] font-medium outline-none hover:ring-2 focus:border-[#84b9d1]/60 active:border-[#84b9d1] ring-[#84B9D1]/30 t-all;
+  }
+
+  .input-s-d {
+    @apply bg-[#141515]/50 px-4 py-2 rounded-lg border opacity-70 border-[#212427] text-white text-sm font-medium outline-none ring-[#84B9D1]/30 t-all;
+  }
+
+  .divd {
+    @apply w-[2px] bg-[#212427] h-[80%];
+  }
+
+}
+
+* {
+  font-family: 'Montserrat', sans-serif;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  /* font-family: 'Lexend', sans-serif; */
+  outline-color: #212427;
+  border-color: #212427;
+}
