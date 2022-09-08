@@ -203,7 +203,7 @@ const CreateDiscoursePage = () => {
                         {/* Discription */}
                         <label className="text-[14px] text-white/60 font-Lexend" htmlFor="description">Description for the discussion</label>
                         <div className="flex relative w-full">
-                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={256} className="max-w-full w-full input-s" id="description" placeholder="maybe global warming or is god real" />
+                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={256} className="max-w-full w-full input-s" id="description" placeholder="What is goal for the discussion?" />
                             <p className="text-[10px] absolute bottom-2 right-2 text-[#c6c6c6]">{description.length} <span className="text-[#8e8e8e]"> / 256</span> </p>
                         </div>
 
