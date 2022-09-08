@@ -52,7 +52,7 @@ const ChainBar = () => {
             {
                 supportedChainIds.map(chainId => (
                     // <IChainTag chainId={chainId} key={chainId} />
-                    <button key={chainId} onClick={() => handleSwitch(chainId)} className={`outline-none t-all p-1 rounded-lg border ${activeChain?.id === chainId ? ' border-[#212427] cursor-default' : 'border-transparent contrast-0 grayscale hover:bg-[#c6c6c6]/10 '}`}>
+                    <button key={chainId} onClick={() => handleSwitch(parseInt(chainId))} className={`outline-none t-all p-1 rounded-lg border ${activeChain?.id === chainId ? ' border-[#212427] cursor-default' : 'border-transparent contrast-0 grayscale hover:bg-[#c6c6c6]/10 '}`}>
                         <ChainIcon chainId={chainId} />
                     </button>
                 ))
