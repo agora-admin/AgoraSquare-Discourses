@@ -5,6 +5,8 @@ export const supportedChainIds = [
 export const getChainName = (chainId: number) => {
     switch (chainId) {
         case 80001:
+            return 'Polygon Mumbai'
+        case 137:
             return 'Polygon'
         default:
             return 'Unknown'
