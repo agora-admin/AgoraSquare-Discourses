@@ -1,10 +1,10 @@
 export const supportedChainIds = [
-    137 // Polygon Mainnet
+    80001 // Polygon Mainnet
 ]
 
 export const getChainName = (chainId: number) => {
     switch (chainId) {
-        case 137:
+        case 80001:
             return 'Polygon'
         default:
             return 'Unknown'
@@ -13,7 +13,7 @@ export const getChainName = (chainId: number) => {
 
 export const getCurrencyName = (chainId: number) => {
     switch (chainId) {
-        case 137:
+        case 80001:
             return 'MATIC'
         default:
             return 'ETH'
@@ -22,7 +22,7 @@ export const getCurrencyName = (chainId: number) => {
 
 export const rpcUrl = (chainId: number) => {
     switch (chainId) {
-        case 137:
+        case 80001:
             return { http: 'https://polygon-mainnet.g.alchemy.com/v2/Gqd71GlllOjZhCCq1FjqzKofdLig5Tww'}
         default:
             return null;

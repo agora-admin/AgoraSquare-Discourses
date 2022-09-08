@@ -126,12 +126,11 @@ export const ChainIcon = ({ chainId }: { chainId: number }) => {
         return (
             <Polygon16 />
         );
+    }else if (chainId === 80001) {
+        return (
+            <Polygon16 />
+        );
     }
-    // if (chainId === 80001) {
-    //     return (
-    //         <Polygon16 />
-    //     );
-    // }
 
     // if (chainId === 4) {
     //     return (
