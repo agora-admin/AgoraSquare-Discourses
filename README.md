@@ -1,2 +1,2 @@
-# Discourses
+# discourses
  Discourses Next App
