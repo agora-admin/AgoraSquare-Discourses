@@ -1,5 +1,5 @@
 export const supportedChainIds = [
-    parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string) // Polygon Mainnet
+    137 // Polygon Mainnet
 ]
 
 export const getChainName = (chainId: number) => {
