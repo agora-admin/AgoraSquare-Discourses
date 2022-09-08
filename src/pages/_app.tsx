@@ -47,7 +47,7 @@ import { rpcUrl } from '../Constants'
 // }
 
 const { provider, chains } = configureChains(
-  [ chain.polygon ],
+  [ chain.polygonMumbai,chain.polygon ],
   [
     alchemyProvider({ alchemyId: 'ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj' }),
     infuraProvider({ infuraId: 'a4d6ff8d0a7c4b93a9a4ac41adc048c8' }),

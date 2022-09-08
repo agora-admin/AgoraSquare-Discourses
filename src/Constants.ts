@@ -1,5 +1,5 @@
 export const supportedChainIds = [
-    parseInt(process.env.CHAIN_ID as string) // Polygon Mainnet
+    parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string) // Polygon Mainnet
 ]
 
 export const getChainName = (chainId: number) => {
@@ -22,8 +22,10 @@ export const getCurrencyName = (chainId: number) => {
 
 export const rpcUrl = (chainId: number) => {
     switch (chainId) {
-        case 80001:
+        case 137:
             return { http: 'https://polygon-mainnet.g.alchemy.com/v2/Gqd71GlllOjZhCCq1FjqzKofdLig5Tww'}
+        case 80001:
+            return { http: "https://polygon-mumbai.g.alchemy.com/v2/ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj" }
         default:
             return null;
 

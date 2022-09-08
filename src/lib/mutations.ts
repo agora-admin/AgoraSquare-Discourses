@@ -44,12 +44,6 @@ export const PARTICIPATE = gql`
                 timestamp
                 txnHash
             }
-            participants {
-                address
-                email
-                twitter_handle
-                timestamp
-            }
         }
     }
 `
@@ -88,12 +82,6 @@ export const FUND_UPDATE = gql`
                 amount
                 timestamp
             }
-            participants {
-                address
-                email
-                twitter_handle
-                timestamp
-            }
         }
     }
 `
@@ -124,12 +112,6 @@ export const CREATE_DISCOURSE = gql`
                 amount
                 timestamp
                 txnHash
-            }
-            participants {
-                address
-                email
-                twitter_handle
-                timestamp
             }
         }
     }

@@ -32,14 +32,11 @@ const Home: NextPage = () => {
 			chainId: supportedChainIds[0]
 		}
 	});
+	
 	const [refetch] = useLazyQuery(GET_DISCOURSES);
 	const { activeChain }  = useNetwork();
-	
 
 	useEffect(() => {
-		console.log("In useEffect in index.tsx:");
-		console.log({dData});
-		
 		refetch();
 	}, [])
 
@@ -90,8 +87,6 @@ const Home: NextPage = () => {
 					</nav>} */}
 					{/* list */}
 					<div className='relative w-full grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 grid-flow-row items-center px-4 sm:px-10 md2:px-0 gap-2'>
-						{console.log("In div in index.tsx:")}
-						{console.log({dData})}
 						{
 							dData && dData.getDiscoursesByChainID.length > 0 &&
 							[].concat(dData.getDiscoursesByChainID).sort(

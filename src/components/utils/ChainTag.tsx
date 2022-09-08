@@ -85,14 +85,13 @@ export const IChainTag = ({ chainId }: { chainId: number }) => {
     //     );
     // }
 
-    // if (chainId === 80001) {
-    //     return (
-    //         <div className="relative h-max flex justify-center p-[4px] items-center border border-[#212427] bg-[#141515] rounded-lg transition-all">
-    //             <Polygon16 />
-    //         </div>
-    //     );
-    // }
-    if (chainId === 137) {
+    if (chainId === 80001) {
+        return (
+            <div className="relative h-max flex justify-center p-[4px] items-center border border-[#212427] bg-[#141515] rounded-lg transition-all">
+                <Polygon16 />
+            </div>
+        );
+    }else if (chainId === 137) {
         return (
             <div className="relative h-max flex justify-center p-[4px] items-center border border-[#212427] bg-[#141515] rounded-lg transition-all">
                 <Polygon16 />

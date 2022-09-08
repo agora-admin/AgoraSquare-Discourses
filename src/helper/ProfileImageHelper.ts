@@ -1,5 +1,5 @@
 export const fetchImage = async (twitterHandle: string) => {
-    const r =  await fetch(`https://discourses.agorasquare.xyz/api/twitter-user`,{
+    const r =  await fetch(`${process.env.NEXT_PUBLIC_CLIENT_URL}/api/twitter-user`,{
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

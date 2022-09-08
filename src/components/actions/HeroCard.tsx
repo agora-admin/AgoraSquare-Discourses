@@ -1,5 +1,5 @@
-import { Add, Box2 } from "iconsax-react";
-import ChainTag, { ChainIcon } from "../utils/ChainTag";
+import { Add } from "iconsax-react";
+import { ChainIcon } from "../utils/ChainTag";
 import { ArrowNE } from "../utils/SvgHub";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -16,7 +16,6 @@ const HeroCard = () => {
     const { loggedIn, addToast } = useContext(AppContext);
     const [openConnectWallet, setOpenConnectWallet] = useState(false);
     const { activeChain } = useNetwork();
-
 
     const handleCreate = () => {
         if (loggedIn) {
@@ -65,12 +64,12 @@ const HeroCard = () => {
                 <div className="w-[1px] h-full bg-[#303030] absolute left-0" />
                 <p className="text-[10px] font-Lexend text-[#c6c6c6]">You&apos;re currently on </p>
                 <div className="py-2 px-4 bg-white/10 border-[2px] border-white/10 w-max rounded-full my-2 flex items-center gap-2">
-                    <ChainIcon chainId={137} />
-                    {<p className="text-[10px] text-[#7B3FE4] font-bold">Polygon Mainnet</p>}
+                    {activeChain?.id && <ChainIcon chainId={activeChain?.id} />}
+                    {<p className="text-[10px] text-[#7B3FE4] font-bold">{activeChain?.id === 80001 ? "Polygon Testnet" : "Polygon Mainnet"}</p>}
                 </div>
-                <Link href="https://testnet.discourses.agorasquare.io" passHref>
+                <Link href={activeChain?.id === 80001 ? "https://discourses.agorasquare.xyz" : "https://testnet.discourses.agorasquare.xyz"} passHref>
                     <button className="button-t flex items-center gap-2 w-max p-0 mt-4">
-                        <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore testnet</p>
+                        <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore {activeChain?.id === 80001 ? "mainnet" : "testnet"}</p>
                         <ArrowNE color="#1FA2FF" />
                     </button>
                 </Link>
