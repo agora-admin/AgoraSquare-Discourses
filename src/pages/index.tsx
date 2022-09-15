@@ -71,7 +71,7 @@ const Home: NextPage = () => {
 				<BDecoration />
 				<div className='w-full min-h-screen flex flex-col py-10 px-4 sm:px-0 gap-4 z-10'>
 					{/* TopSection */}
-					<TopBar />
+					<TopBar showLogo={true} />
 					{/* Body */}
 					{ !showAll &&
 						<HeroCard />

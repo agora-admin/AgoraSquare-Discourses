@@ -5,7 +5,7 @@ import WalletOptionsPopUp from "../dialogs/WalletOptions";
 import AppContext from "../utils/AppContext";
 import LogoutPop from "../dialogs/LogoutPop";
 
-const TopBar = () => {
+const TopBar = ({showLogo}:{showLogo: boolean}) => {
 
 	const route = useRouter();
 	const [clientLoaded, setClientLoaded] = useState(false);
@@ -29,7 +29,7 @@ const TopBar = () => {
 			}} className={`text-[#616162]  ${route.pathname === '/' ? 'opacity-0 cursor-default' : '' }  text-xs sm:text-sm text-left font-semibold w-[20%]`}>
 				&larr; {route.pathname === '/' ? 'AGORA' : 'Back'}
 			</button>
-			{ !route.asPath.includes('create') && <Branding />}
+			{ showLogo && <Branding />}
 			{loggedIn && 
 			<LogoutPop />
 			}

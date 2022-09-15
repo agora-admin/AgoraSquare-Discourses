@@ -140,7 +140,14 @@ const DiscoursePage = () => {
                 <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10'>
                     {/* TopSection */}
 
-                    <TopBar />
+                    <TopBar showLogo={true} />
+
+                    {
+                        loading &&
+                        <div className='flex-1 flex justify-center items-center'>
+                            <LoadingSpinner strokeColor='#ffffff' />
+                        </div>
+                    }
 
                     {/* Body */}
                     <div className="flex flex-col md:flex-row md:justify-between mt-10 mx-10 lg:mx-0">
@@ -201,14 +208,8 @@ const DiscoursePage = () => {
                             </div>}
 
                         {/* Right section */}
-                        <div className="flex flex-col gap-4 flex-[0.3] mt-10 max-w-xs md:mt-0">
+                        <div className="flex flex-col gap-4 flex-[.3] mt-10 w-full md:mt-0">
                             {/* Card Speakers */}
-                            {
-                                loading &&
-                                <div className='w-full py-4 flex items-center justify-center'>
-                                    <LoadingSpinner strokeColor='#ffffff' />
-                                </div>
-                            }
                             {!loading && data && !error &&
                                 <>
                                     
