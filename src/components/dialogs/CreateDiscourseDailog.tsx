@@ -123,6 +123,11 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
 
     const writeDiscourse = (txnD: TransactionReceipt) => {
         getCount().then((tData) => {
+            console.log({tData});
+            const temp = BigNumber.from(tData.data);
+            console.log({temp});
+            console.log("To Number: ",temp.toNumber());
+            
             let count = BigNumber.from(tData.data).toNumber();
             createDiscourse({
                 variables: {

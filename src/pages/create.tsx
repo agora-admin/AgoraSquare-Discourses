@@ -85,8 +85,7 @@ const CreateDiscoursePage = () => {
             setFormError("Please add at least 3 sub-topics")
         } else if (fundingPeriod < 60) {
             setFormError("Please add a funding period.")
-        }
-        else{
+        }else{
             setFormError("Please fill all the details")
         }
     }
