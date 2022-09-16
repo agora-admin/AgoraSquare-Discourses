@@ -17,6 +17,8 @@ export const getCurrencyName = (chainId: number) => {
     switch (chainId) {
         case 80001:
             return 'MATIC'
+        case 137:
+            return 'MATIC'
         default:
             return 'ETH'
     }
