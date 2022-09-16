@@ -24,7 +24,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
-    const [ amount, setAmount ] = useState('0.01');
+    const [ amount, setAmount ] = useState('1');
     const { activeChain } = useNetwork();
     
     const [ updateFund, { data: fData } ] = useMutation(FUND_UPDATE);

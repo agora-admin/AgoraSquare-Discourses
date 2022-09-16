@@ -52,7 +52,7 @@ let mockD: CreateObj = {
     initTS: "",
     endTS: "",
     topics: [],
-    initialFunding: "0.01",
+    initialFunding: "1",
     fundingPeriod: 0
 }
 
@@ -156,7 +156,7 @@ const CreateDiscoursePage = () => {
             initTS: "",
             endTS: "",
             topics: topics,
-            initialFunding: "0.01",
+            initialFunding: "1",
             fundingPeriod: fundingPeriod
         }
         return data;
@@ -176,7 +176,7 @@ const CreateDiscoursePage = () => {
                 <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10 '>
                     {/* TopSection */}
 
-                    <TopBar />
+                    <TopBar showLogo={false} />
 
                     <div className="flex flex-col w-full self-center md:justify-between px-6 sm:px-10 mx-10 lg:mx-0 gap-4">
                         <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between py-10">
