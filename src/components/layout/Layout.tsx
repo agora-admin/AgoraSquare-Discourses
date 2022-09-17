@@ -63,7 +63,7 @@ const Layout = ({ children }: { children: any }) => {
                         </div>
                         <div className="flex flex-col ">
                             <p className="text-[#fc8181] font-Lexend text-sm">Wrong Chain</p>
-                            <p className="text-[#c6c6c6] font-Lexend text-[10px] max-w-[25ch] w-full gap-2 items-center">This app is only available on <b>Polygon</b></p>
+                            <p className="text-[#c6c6c6] font-Lexend text-[10px] max-w-[25ch] w-full gap-2 items-center">This app is only available on <b>{activeChain?.name === 'Polygon' ? 'Polygon Mumbai' : 'Polygon'}</b></p>
                             <span onClick={() => handleSwitchChain()} className="cursor-pointer font-regular text-blue-400 text-[10px] mt-1 font-medium">Click to change</span>
                         </div>
                     </div>

@@ -19,13 +19,15 @@ import { supportedChainIds } from '../Constants'
 import { ToastTypes } from '../lib/Types'
 import { uuid } from 'uuidv4'
 import HeroCard from '../components/actions/HeroCard'
+import AreYouSpeakerDialog from '../components/dialogs/AreYouSpeakerDialog'
 
 const Home: NextPage = () => {
 	const route = useRouter();
-	const { loggedIn, addToast } = useContext(AppContext);
+	const { loggedIn, addToast, t_connected } = useContext(AppContext);
 
 	const [openConnectWallet, setOpenConnectWallet] = useState(false);
 	const [ showAll, setShowAll ] = useState(false);
+	const [isTwitterDialogOpen, setIsTwitterDialogOpen] = useState(true)
 
 	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
 		variables: {
@@ -70,12 +72,12 @@ const Home: NextPage = () => {
 				{/* <div className='w-32 h-32 bg-gradient rounded-full blur-3xl fixed top-24 right-[25vw] z-0' /> */}
 				<BDecoration />
 				<div className='w-full min-h-screen flex flex-col py-10 px-4 sm:px-0 gap-4 z-10'>
+					{loggedIn && !t_connected && <AreYouSpeakerDialog isOpen={isTwitterDialogOpen} setIsOpen={setIsTwitterDialogOpen} />}
 					{/* TopSection */}
 					<TopBar showLogo={true} />
+
 					{/* Body */}
-					{ !showAll &&
-						<HeroCard />
-					}
+					<HeroCard />
 					{/* explore */}
 					{/* {dData && dData.getDiscoursesByChainID.length != 0 && <nav className='flex items-center justify-between py-4 px-2'>
 						<div className='flex flex-col gap-1'>

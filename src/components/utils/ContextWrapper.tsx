@@ -158,6 +158,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     const t_id = data?.getUserData?.twitter?.twitter_id + "";
     const t_img = data?.getUserData?.twitter?.image_url + "";
     const t_handle = data?.getUserData?.twitter?.twitter_handle + "";
+    const t_name = data?.getUserData?.twitter?.twitter_name + "";
 
     const handleAddToast = (notification: Toast) => {
         if (!toastAvailable(notification)) {
@@ -184,19 +185,20 @@ const ContextWrapper: FC<Props> = ({ children }) => {
         setLoggedIn,
         walletAddress,
         setWalletAddress,
-        username: username,
-        t_connected: t_connected,
-        t_id: t_id,
-        t_img: t_img,
-        t_handle: t_handle,
-        showBetaMsg: showBetaMsg,
+        username,
+        t_connected,
+        t_id,
+        t_img,
+        t_handle,
+        t_name,
+        showBetaMsg,
         setShowBetaMsg: handleShowBetaMsg,
-        wrongChain: wrongChain,
+        wrongChain,
         setWrongChain: handleWrongChain,
         refresh: refetch,
-        propId: propId,
+        propId,
         dId: "",
-        timeStamp: timeStamp,
+        timeStamp,
         setMPropId: setPropId,
         setMTimeStamp: setTimeStamp,
         addToast: handleAddToast

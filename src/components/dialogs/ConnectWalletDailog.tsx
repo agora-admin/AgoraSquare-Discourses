@@ -43,9 +43,6 @@ const ConnectWalletDailog = ({ open, setOpen }: { open: boolean, setOpen: Dispat
                             </div>
                         </Dialog.Description>
                     </>
-                    
-
-
                 </div>
             </div>
         </Dialog>

@@ -16,7 +16,7 @@ import { Twitter_x10, Twitter_x16 } from "../utils/SvgHub";
 const LogoutPop = () => {
 
     const { disconnectAsync } = useDisconnect();
-    const { t_connected, walletAddress, t_handle, addToast } = useContext(AppContext);
+    const { t_connected, walletAddress, t_handle, t_img, addToast } = useContext(AppContext);
     const { refresh } = useContext(AppContext);
     const { activeChain, switchNetworkAsync } = useNetwork();
     const [switching, setSwitching] = useState(false);
@@ -89,7 +89,7 @@ const LogoutPop = () => {
                             <div className={`absolute flex bottom-0 right-0 inset-y-0 h-max my-auto  ${open ? '-translate-x-[25%]' : '-translate-x-[70%]'} group-hover:-translate-x-[25%] rounded-xl t-all`}>
                                 <IChainTag chainId={activeChain?.id!} />
                             </div>
-                            <img className="w-6 h-6 z-10 object-cover rounded-lg object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />
+                            <img className="w-6 h-6 z-10 object-cover rounded-lg object-center" src={t_connected ? t_img :`https://avatar.tobi.sh/${walletAddress}`} alt="Profile image" />
                         </div>
                         <div className="flex flex-col justify-center items-start">
                             <p className='text-white text-[10px] font-Lexend sm:text-xs'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>
@@ -105,7 +105,7 @@ const LogoutPop = () => {
                             leaveFrom="transform scale-100 opacity-100"
                             leaveTo="transform scale-95 opacity-0"
                         > */}
-                    <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 right-0 mt-1 bg-card bg-[#141515] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
+                    <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 -right-2 mt-2 bg-card bg-[#141515] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
                             {/* <div className="flex px-4 py-2  items-center justify-between gap-1">
                                 
@@ -122,15 +122,17 @@ const LogoutPop = () => {
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
                                 </button>}
 
-                            {activeChain?.id === supportedChainIds[0] &&
+                            {
+                            activeChain?.id === supportedChainIds[0] &&
                                 <div className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 `}>
                                     {!switching && <ChainIcon chainId={activeChain?.id!} />}
                                     <p className="text-[10px] text-[#7B3FE4] font-bold">{activeChain?.name}</p>
-                                </div>}
+                                </div>
+                            }
                             {/* <div className="flex px-4 py-2 "> */}
                             {
                                 !t_connected &&
-                                <Link href="/link" >
+                                <Link href="/link">
                                     <a className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                         <Twitter_x16 />
                                         <p className="text-xs font-Lexend font-normal text-[#1DA1F2]">Link Twitter</p>
@@ -138,10 +140,13 @@ const LogoutPop = () => {
                                 </Link>
                             }
                             {
-                                t_connected && <div className="w-full flex items-center mt-[2px] gap-2 button-t py-2">
-                                    <Twitter_x16 />
-                                    <p className="text-xs font-Lexend font-normal text-[#1DA1F2]">@{t_handle}</p>
-                                </div>
+                                t_connected && 
+                                <Link href={`/user/${walletAddress}`} passHref>
+                                    <div className="cursor-pointer w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]">
+                                        <Twitter_x16 />
+                                        <p className="text-xs font-Lexend font-normal text-[#1DA1F2]">@{t_handle}</p>
+                                    </div>
+                                </Link>
                             }
                             {/* </div> */}
                             <button onClick={() => handleLogout()} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>

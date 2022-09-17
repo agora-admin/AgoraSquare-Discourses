@@ -11,6 +11,7 @@ export interface ContextType {
     t_id: string;
     t_img: string;
     t_handle: string;
+    t_name: string;
     // --------------ui state
     showBetaMsg: boolean;
     setShowBetaMsg: Dispatch<boolean>;
@@ -40,6 +41,7 @@ const AppContext = createContext<ContextType>({
     t_id: "",
     t_img: "",
     t_handle: "",
+    t_name: "",
     showBetaMsg: true,
     setShowBetaMsg: () => {},
     wrongChain: false,
