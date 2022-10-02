@@ -1,28 +1,19 @@
 import Layout from "../components/layout/Layout";
-import Branding from "../components/utils/Branding";
 import Head from 'next/head'
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Add, Link, PercentageSquare, Timer, Timer1 } from "iconsax-react";
-import { Listbox } from '@headlessui/react'
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import TopBar from "../components/topbar/TopBar";
-import FundDiscourseDialog from "../components/dialogs/FundDiscourseDialog";
-import { ArrowNE, CloseIcon, Polygon16 } from "../components/utils/SvgHub";
 import CreateDiscourseDialog from "../components/dialogs/CreateDiscourseDailog";
 import { CreateObj, Speaker, ToastTypes } from "../lib/Types";
 import AppContext from "../components/utils/AppContext";
 import { uuid } from "uuidv4";
-import ChainTag, { ChainIcon } from "../components/utils/ChainTag";
-import { useNetwork } from "wagmi";
 import BDecoration from "../components/utils/BDecoration";
-import ConnectWalletDailog from "../components/dialogs/ConnectWalletDailog";
 import CreateCard from "../components/create/CreateCard";
 import SpeakerInput from "../components/create/SpeakerInput";
 import TopicsInput from "../components/create/TopicsInput";
 import FundingInput from "../components/create/FundingInput";
 import CharityInput from "../components/create/CharityInput";
 import TitleInput from "../components/create/TitleInput";
-
 
 let mockD: CreateObj = {
     speakers: [
@@ -57,15 +48,11 @@ let mockD: CreateObj = {
 }
 
 const CreateDiscoursePage = () => {
-
     const route = useRouter();
-    const [topicCount, setTopicCount] = useState(3)
     const [openFundDialog, setOpenFundDialog] = useState(false);
     const [formError, setFormError] = useState("");
     const [newDiscourse, setNewDiscourse] = useState<CreateObj>(mockD);
     const { addToast, loggedIn } = useContext(AppContext);
-    const [notified, setNotified] = useState(false);
-    const { activeChain } = useNetwork();
 
     useEffect(() => {
         if (!loggedIn) {

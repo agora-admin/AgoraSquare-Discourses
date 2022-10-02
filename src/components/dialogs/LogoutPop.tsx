@@ -96,26 +96,9 @@ const LogoutPop = () => {
                             <p className='text-[#c6c6c6] text-[8px] font-Lexend sm:text-[10px]'>{getBalance()}</p>
                         </div>
                     </Popover.Button>
-                    {/* <Transition
-                            show={open}
-                            enter="transition duration-100 ease-out"
-                            enterFrom="transform scale-95 opacity-0"
-                            enterTo="transform scale-100 opacity-100"
-                            leave="transition duration-75 ease-out"
-                            leaveFrom="transform scale-100 opacity-100"
-                            leaveTo="transform scale-95 opacity-0"
-                        > */}
+                
                     <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 -right-2 mt-2 bg-card bg-[#141515] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
-                            {/* <div className="flex px-4 py-2  items-center justify-between gap-1">
-                                
-                                <button onClick={() => handleSwitchNetwork()} className="button-i flex items-center gap-[4px] px-2">
-                                    {!switching && <Repeat size={10} color="#c6c6c6" />}
-                                    <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
-                                </button>
-                                <ChainBar />
-                            </div> */}
-
                             {activeChain?.id !== supportedChainIds[0] &&
                                 <button onClick={() => handleSwitch(supportedChainIds[0])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                     {!switching && <Repeat size={16} color="#c6c6c6" />}
@@ -129,7 +112,6 @@ const LogoutPop = () => {
                                     <p className="text-[10px] text-[#7B3FE4] font-bold">{activeChain?.name}</p>
                                 </div>
                             }
-                            {/* <div className="flex px-4 py-2 "> */}
                             {
                                 !t_connected &&
                                 <Link href="/link">
@@ -148,14 +130,12 @@ const LogoutPop = () => {
                                     </div>
                                 </Link>
                             }
-                            {/* </div> */}
                             <button onClick={() => handleLogout()} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                 <Logout size='16' color='#fc8181' />
                                 <p className="text-xs font-Lexend font-normal text-[#fc8181]">Log out</p>
                             </button>
                         </div>
                     </Popover.Panel>
-                    {/* </Transition> */}
                 </>
             )}
         </Popover>

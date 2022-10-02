@@ -7,6 +7,8 @@ export interface ContextType {
     walletAddress: string;
     setWalletAddress: Dispatch<string>;
     username: string;
+    name: string;
+    bio: string;
     t_connected: boolean;
     t_id: string;
     t_img: string;
@@ -37,6 +39,8 @@ const AppContext = createContext<ContextType>({
     walletAddress: "",
     setWalletAddress: () => {},
     username: "",
+    name: "",
+    bio: "",
     t_connected: false,
     t_id: "",
     t_img: "",

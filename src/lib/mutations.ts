@@ -243,3 +243,19 @@ export const STOP_STREAM = gql`
         stopRec(id: $id)
     }
 `
+
+export const UPDATE_BIO = gql`
+    mutation UpdateBio($bio: String!){
+        updateUserBio(bio: $bio){
+            bio
+        }
+    }
+`
+
+export const UPDATE_NAME = gql`
+    mutation UpdateName($name: String!){
+        updateUserName(name: $name){
+            name
+        }
+    }
+`

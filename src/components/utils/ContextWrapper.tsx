@@ -16,7 +16,6 @@ interface Props {
 }
 
 const ContextWrapper: FC<Props> = ({ children }) => {
-
     const [loading, setLoading] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
     const [walletAddress, setWalletAddress] = useState("");
@@ -27,21 +26,6 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const { activeConnector, status, data: aData } = useConnect();
-    const { disconnectAsync } = useDisconnect();
-
-    const route = useRouter();
-    
-    // useEffect(() => {
-    //     if (route.asPath.includes('/create')) {
-    //         handleAddToast({
-    //             title: "Choose Chain",
-    //             body: "Discourses only supports 'Polygon' chain. Please use propper chain to create a discourse",
-    //             type: ToastTypes.info,
-    //             id: uuid(),
-    //             duration: 20000
-    //         })
-    //     }
-    // }, [route.asPath])
 
     useEffect(() => {
         console.log('status:', status);
@@ -72,11 +56,8 @@ const ContextWrapper: FC<Props> = ({ children }) => {
         if (status === "connected") {
             refetch();
         }
-        // console.log('s',status);
 
     }, [activeConnector, status])
-
-    // console.log('s', status);
 
     useEffect(() => {
         if (window && window !== undefined) {
@@ -153,7 +134,11 @@ const ContextWrapper: FC<Props> = ({ children }) => {
         }
     }, [data])
 
+    const name = data?.getUserData?.name + "";
+    console.log('From ContextWrapper: ',{name});
+    
     const username = data?.getUserData?.username + "";
+    const bio = data?.getUserData?.bio + "";
     const t_connected = data?.getUserData?.twitterConnected;
     const t_id = data?.getUserData?.twitter?.twitter_id + "";
     const t_img = data?.getUserData?.twitter?.image_url + "";
@@ -186,6 +171,8 @@ const ContextWrapper: FC<Props> = ({ children }) => {
         walletAddress,
         setWalletAddress,
         username,
+        name,
+        bio,
         t_connected,
         t_id,
         t_img,

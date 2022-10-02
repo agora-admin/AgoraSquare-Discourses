@@ -33,7 +33,6 @@ const WalletOptionsPopUp = () => {
 		fetchPolicy: 'no-cache',
 		onCompleted: (data) => {
             refresh();
-            // route.reload();
 		},
 		onError: (error) => {
 			console.log(error);
@@ -72,7 +71,6 @@ const WalletOptionsPopUp = () => {
 			}
 		} catch (error) {
 			console.log(error);
-			// setConnectingWallet(false);
 		}
 	}
 

@@ -4,7 +4,7 @@ import { useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
-import { ChainIcon, IChainTag } from "../utils/ChainTag";
+import { ChainIcon } from "../utils/ChainTag";
 
 const ChainBar = () => {
 
