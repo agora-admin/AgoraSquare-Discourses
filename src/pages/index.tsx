@@ -28,6 +28,12 @@ const Home: NextPage = () => {
 	useEffect(() => {
 		refetch();
 	}, [])
+
+	useEffect(() => {
+		if(dData && dData.getDiscoursesByChainID){
+			dData.getDiscoursesByChainID.sort((a:any,b:any) => +b.initTS - +a.initTS)
+		}
+	},[dData])
 	
 	return (
 		<div className="w-full h-screen overflow-x-clip">
@@ -48,14 +54,20 @@ const Home: NextPage = () => {
 					
 					{/* list */}
 					<div className='relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center px-4 sm:px-10 md2:px-0 gap-4'>
-						{
+						{/* {
 							dData && dData.getDiscoursesByChainID.length > 0 &&
 							[].concat(dData.getDiscoursesByChainID).sort(
 								(a: any, b: any) => +b.initTS - +a.initTS
 							).map((data: any) => (
 								<DiscourseLongList key={data.id} data={data} />
 							))
+						} */}
+
+						{
+							dData && dData.getDiscoursesByChainID.length > 0 
+							&& <DiscourseLongList data={dData.getDiscoursesByChainID[0]} />
 						}
+
 						{
 							dData && dData.getDiscoursesByChainID.length == 0 &&
 							<div className='absolute inset-0 top-10 w-full py-4 flex items-center justify-center mt-10'>
