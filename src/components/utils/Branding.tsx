@@ -25,7 +25,7 @@ const Branding = () => {
                 </defs>
             </svg>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col hidden xs:block">
                 <h3 className="font-bold font-montserrat text-white text-[18px]">Discourses</h3>
                 <p className="font-medium text-white text-[10px]">by <span className="text-gradient tracking-wider font-bold">AGORA SQUARE</span></p>
             </div>

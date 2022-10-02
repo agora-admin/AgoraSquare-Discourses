@@ -6,7 +6,8 @@ module.exports = {
     
     extend: {
       screens: {
-        'md2' : '900px'
+        'md2' : '900px',
+        'xs' : '400px'
       },
       fontFamily: {
         'montserrat': ['Montserrat', 'sans-serif'],

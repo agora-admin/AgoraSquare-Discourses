@@ -15,17 +15,12 @@ import AppContext from "../components/utils/AppContext";
 import BDecoration from "../components/utils/BDecoration";
 
 const InvitePage = () => {
-
-    const { loggedIn, walletAddress } = useContext(AppContext);
-
     const route = useRouter();
-    const [loading, setLoading] = useState(true);
+    const { loggedIn, walletAddress } = useContext(AppContext);
     const [handle, setHandle] = useState('');
     const [duplicateHandle, setDuplicateHandle] = useState(false);
     const [alreadyLinked, setAlreadyLinked] = useState(false);
     const [accountLinked, setAccountLinked] = useState(false);
-    const [ firstS, setFirstS ] = useState(false);
-    const [openConnectWallet, setOpenConnectWallet] = useState(false);
     const [checkTwitterLink, { data: tData, loading: tLoading, error: tError }] = useLazyQuery(CHECK_HANDLE, {
         fetchPolicy: 'network-only'
     })
@@ -35,14 +30,6 @@ const InvitePage = () => {
     const [getUserData, { data: uData }] = useLazyQuery(GET_USERDATA);
 
     const { data: session } = useSession();
-
-    // useEffect(() => {
-    //     // initial signout if there is any login
-    //     if (session) {
-    //         signOut();
-    //     }
-    // },[])
-    
 
     useEffect(() => {
         if (loggedIn) {
@@ -76,7 +63,6 @@ const InvitePage = () => {
                 if (!accountLinked && tData.checkTwitterLink.address !== walletAddress) {
                     setDuplicateHandle(true);
                 }
-                setLoading(false);
             } else {
                 linkTwitter({
                     variables: {
@@ -87,7 +73,6 @@ const InvitePage = () => {
                     onCompleted: () => {
                         setAccountLinked(true);
                         getUserData();
-                        setLoading(false);
                         route.push("/");
                     }
                 })

@@ -1,15 +1,12 @@
-import { ethers } from "ethers";
 import { Link1, Warning2 } from "iconsax-react";
 import { useContext, useEffect } from "react";
 import { Chain, useConnect, useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import AppContext from "../utils/AppContext";
-import Branding from "../utils/Branding";
-import { WrongChainIcon } from "../utils/SvgHub";
-const Layout = ({ children }: { children: any }) => {
 
+const Layout = ({ children }: { children: any }) => {
     const { loggedIn, wrongChain, setWrongChain, setShowBetaMsg, showBetaMsg } = useContext(AppContext);
-    const { activeConnector, status, connect, pendingConnector } = useConnect();
+    const { activeConnector, status } = useConnect();
     const { activeChain, switchNetworkAsync } = useNetwork();
 
     const handleClose = () => {
@@ -28,10 +25,6 @@ const Layout = ({ children }: { children: any }) => {
         }
         
     }, [activeChain, activeConnector, status])
-
-    // console.log('ac', activeChain);
-    
-
 
     const isChainOk = (chain: Chain) => {
         if (supportedChainIds.includes(chain.id)){
@@ -79,7 +72,6 @@ const Layout = ({ children }: { children: any }) => {
                         </div>
                     </div>
                 }
-
             </div>
         </div>
     );

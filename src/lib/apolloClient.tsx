@@ -6,7 +6,6 @@ import { setContext } from "@apollo/client/link/context";
 export default function createApolloClient() {
     const httpLink = new HttpLink({
         uri: process.env.NEXT_PUBLIC_SERVER_URL,
-        // uri: "http://localhost/",
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',

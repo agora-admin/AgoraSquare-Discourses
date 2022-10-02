@@ -26,6 +26,7 @@ export const GET_DISCOURSES = gql`
             initTS
             endTS
             irl
+            yt_link
             funds {
                 address
                 amount
@@ -69,6 +70,7 @@ export const GET_DISCOURSES_BY_CHAIN = gql`
             initTS
             endTS
             irl
+            yt_link
             funds {
                 address
                 amount
@@ -114,6 +116,7 @@ export const GET_DISCOURSE_BY_ID = gql`
             endTS
             topics
             irl
+            yt_link
             funds {
                 address
                 amount
@@ -177,7 +180,9 @@ export const GET_NONCE = gql`
 export const GET_USERDATA = gql`
     query GetUserData {
         getUserData {
+            name
             username
+            bio
             walletAddress
             twitterConnected
             twitter {

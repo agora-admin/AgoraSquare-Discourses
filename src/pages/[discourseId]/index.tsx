@@ -1,70 +1,39 @@
 import Head from "next/head";
-import DiscourseLongList from "../../components/cards/DiscourseLongList";
 import Layout from "../../components/layout/Layout";
-import Branding from "../../components/utils/Branding";
 import { useRouter } from "next/router";
-import { BoxSearch, Clock, Maximize4, MoneyRecive, PathTool, Profile2User, Wallet1, Warning2 } from "iconsax-react";
+import { Clock, Maximize4, MoneyRecive, PathTool, Profile2User, Wallet1 } from "iconsax-react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
-import { PARTICIPATE, TEST } from "../../lib/mutations";
-import { useMutation, useQuery } from "@apollo/client";
-import { keccak256, shortAddress, validateEmail } from "../../helper/StringHelper";
-import { formatDate, getAgo, getAgoT, getTime, isPast } from "../../helper/TimeHelper";
-import { getFund, getFundTotal, hasFunded } from "../../helper/FundHelper";
+import { useQuery } from "@apollo/client";
+import { shortAddress } from "../../helper/StringHelper";
+import { formatDate, getAgo, getAgoT, getTime } from "../../helper/TimeHelper";
+import { getFund, getFundTotal } from "../../helper/FundHelper";
 import { useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import ConnectWalletDailog from "../../components/dialogs/ConnectWalletDailog";
 import TopBar from "../../components/topbar/TopBar";
-import { ParticipatedIcon, ParticipateIcon, RightArrowGradient, SpeakerConfirmationIcon, TwitterIcon } from "../../components/utils/SvgHub";
-import DiscourseHub from '../../web3/abi/DiscourseHub.json';
-import Addresses from '../../web3/addresses.json';
-import Web3 from "web3";
+import { SpeakerConfirmationIcon, TwitterIcon } from "../../components/utils/SvgHub";
 import FundDiscourseDialog from "../../components/dialogs/FundDiscourseDialog";
 import FundsDialog from "../../components/dialogs/FundsDialog";
 import Link from "next/link";
 import SpeakerConfirmationCard from "../../components/actions/SpeakerConfirmationCard";
-import ParticipateCard from "../../components/actions/ParticipateCard";
-import ParticipatedCard from "../../components/cards/ParticipatedCard";
-import { canClaimC, discouresEnded, discourseConfirmed, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
+import { canClaimC, discourseConfirmed, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
 import SlotCard from "../../components/actions/SlotCard";
 import JoinMeetCard from "../../components/actions/meet/JoinMeetCard";
 import FundClaimCardT from "../../components/actions/FundClaimCardT";
 import FundClaimCardC from "../../components/actions/FundClaimCardC";
-import { chain, useNetwork } from "wagmi";
+import { useNetwork } from "wagmi";
 import BDecoration from "../../components/utils/BDecoration";
-import Cookies from 'js-cookie';
 import AppContext from "../../components/utils/AppContext";
 import ChainExplorer from "../../components/utils/ChainExplorer";
 import { ToastTypes } from "../../lib/Types";
 import { uuid } from "uuidv4";
 import { getChainName, getCurrencyName } from "../../Constants";
 import RecordingsCard from "../../components/actions/RecordingsCard";
-import useTwitterProfile from "../../hooks/useTwitterProfile";
 import EventTag from "../../components/utils/EventTag";
 import VenueCard from "../../components/cards/VenueCard";
-
-async function getDiscourseContract() {
-    return await new (window as any).web3.eth.Contract(
-        DiscourseHub,
-        Addresses.discourse_diamond
-    )
-}
-
-
-// export const getServerSideProps = async ({query} : { query : any}) => {
-//     const discourseId = query.discourseId;
-//     const { loading: Dloading, error, data } = useQuery(GET_DISCOURSE_BY_ID, {
-//         variables: {
-//             id: discourseId
-//         },
-//         nextFetchPolicy: 'network-only'
-//     })
-//     return {
-//         props: { query }
-//     }
-// }
+import YoutubeTag from "../../components/utils/YoutubeTag";
 
 const DiscoursePage = () => {
-
     const route = useRouter();
     const [loading, setLoading] = useState(true);
     const [openConnectWallet, setOpenConnectWallet] = useState(false);
@@ -131,7 +100,6 @@ const DiscoursePage = () => {
                 <link rel="icon" href="/discourse_logo_fav.svg" />
                 {data && <meta property="og:title" content={data.getDiscourseById.title} />}
                 {data && <meta property="og:description" content={data.getDiscourseById.description} />}
-                {/* TODO: <meta property="og:url" content="https://www.imdb.com/title/tt0117500/" /> */}
             </Head>
 
             <Layout >
@@ -161,7 +129,8 @@ const DiscoursePage = () => {
                                 <div className="flex gap-2 items-center">
                                     <EventTag irl={data.getDiscourseById.irl} />
                                     <ChainExplorer data={data.getDiscourseById} />
-                                    {/* <div className="h-1/2 rounded-xl w-[2px] bg-[#212427]" /> */}
+                                    {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
+                                    
                                     <PathTool size="16" color="#6a6a6a" />
                                     <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>
                                         {/* <div className='bg-gradient-g w-4 h-4 rounded-xl' /> */}
@@ -247,9 +216,6 @@ const DiscoursePage = () => {
                                                     <SpeakerConfirmationIcon />
                                                     <p className="text-[#212221] font-Lexend font-semibold text-sm">You&apos;ve confirmed</p>
                                                 </div>
-                                                {/* { !isParticipant(data.getDiscourseById) && <p className="text-[#212221] font-medium text-[10px] mt-2">
-                                            Please participate by providing email below to get access to meet.
-                                        </p>} */}
                                             </div>
                                         }
                                     </>}
@@ -268,20 +234,6 @@ const DiscoursePage = () => {
                                             </p>
                                         </div>
                                     }
-                                    {/* {
-                                        
-                                        <div className="bg-card rounded-xl p-4 flex flex-col">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-gradient font-Lexend font-bold text-sm">Test</p>
-                                            </div>
-                                            <button onClick={() => handleHi()} className="button-s text-xs">Mighty Button</button>
-                                        </div>
-                                    } */}
-
-                                    {/* Participation card
-                                    {user.isLoggedIn && 
-                                        <ParticipateCard data={data?.getDiscourseById} />
-                                    } */}
 
                                     <div className="flex flex-col gap-2 bg-card rounded-xl p-4">
                                         <div className="flex items-center gap-2">
@@ -314,12 +266,12 @@ const DiscoursePage = () => {
                                             <FundDiscourseDialog open={openFund} setOpen={setOpenFund} discourse={data?.getDiscourseById} />
                                         }
 
-                                        {loggedIn && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max px-6 text-sm font-medium mt-4'>
+                                        {loggedIn && t_connected && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max px-6 text-sm font-medium mt-4'>
                                             Fund
                                         </button>}
                                         {
-                                            !loggedIn && !fundingDone(data.getDiscourseById) &&
-                                            <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">You need to connect wallet to fund or participate.</p>
+                                            !loggedIn || !t_connected && !fundingDone(data.getDiscourseById) &&
+                                            <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">You need to connect wallet and twitter to fund or participate.</p>
                                         }
                                     </div>
 

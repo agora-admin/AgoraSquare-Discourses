@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState, useContext, useEffect } from "react";
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
+import EditProfile from "../../components/user/EditProfile";
 import Tabs from "../../components/user/Tabs";
 import AppContext from "../../components/utils/AppContext";
 import BDecoration from "../../components/utils/BDecoration";
@@ -17,7 +18,11 @@ const UserPage = () => {
     const route = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const { loggedIn, t_handle, t_name,t_connected, walletAddress } = useContext(AppContext);
+    const { loggedIn, t_handle,t_img,t_name,t_connected, walletAddress,bio,name } = useContext(AppContext);
+
+    const getProfileImageUrl = (url: string) => {
+        return url.replace('normal','400x400')
+    }
 
     useEffect(() => {
         if(!loggedIn || !t_connected){
@@ -51,21 +56,21 @@ const UserPage = () => {
                                 </div>
                             ) : (
                                 // Main Body
-                                <div className="flex flex-col items-center gap-4">
+                                <div className="flex flex-col items-center gap-4 relative">
+                                    <EditProfile />
+
                                     {/* Profile Pic Section */}
-                                    <div className="w-[80px] h-[80px]">
-                                        <img
-                                            src="/user_photo.png"
-                                            alt="Person profile pic"
-                                            className="w-full h-full ios_curve"
-                                        />
-                                    </div>
+                                    <img
+                                        src={getProfileImageUrl(t_img)}
+                                        alt="Person profile pic"
+                                        className="w-[80px] h-[80px] ios_curve"
+                                    />
 
                                     {/* About Section*/}
                                     <div className="flex flex-col items-center gap-4">
                                         <div className="flex flex-col gap-1">
                                             <h1 className="text-gradient text-2xl text-center font-semibold font-Lexend">
-                                                {t_name}
+                                                {name ? name : t_name}
                                             </h1>
                                             <div className="flex items-center">
                                                 <a
@@ -100,11 +105,9 @@ const UserPage = () => {
                                         </div>
 
                                         {/* Bio Section */}
-                                        <p className="text-[#BABABA] font-Lexend text-sm text-center max-w-lg">
-                                            Bio comes here - It is a long established fact that a
-                                            reader will be distracted by the readable content of a
-                                            page when looking at its layout.
-                                        </p>
+                                        {bio && <p className="text-[#BABABA] font-Lexend text-sm text-center max-w-lg">
+                                            {bio}
+                                        </p>}
                                     </div>
 
                                     <div className="mt-4 flex">
