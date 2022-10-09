@@ -1,7 +1,7 @@
 import { Wallet1, Clock, Sound, MessageRemove, Calendar1, Verify, Warning2 } from "iconsax-react";
 import { useRouter } from "next/router";
 import { getCurrencyName } from "../../Constants";
-import { getMeetDateTS, getStateTS } from "../../helper/DataHelper";
+import { DiscourseState, getMeetDateTS, getStateTS } from "../../helper/DataHelper";
 import { getFundTotal } from "../../helper/FundHelper";
 import { getTime, formatDate, getTimeFromDate } from "../../helper/TimeHelper";
 import { SChainTag } from "../utils/ChainTag";
@@ -38,7 +38,7 @@ const DiscourseLongList = ({ data }: { data: any }) => {
                         <h4 title={data.speakers[1]?.name} className='text-[#c6c6c6] text-[10px] tracking-wide font-medium max-w-[16ch] line-clamp-1'>{data.speakers[1]?.name}</h4>
                     </div>
                 </div>
-                {/* <div className="w-full h-1"></div> */}
+                
                 {/* title */}
                 {data.title && <h3 className='mt-3 text-white font-Lexend text-xs font-medium line-clamp-2'>{data.title}</h3>}
             </div>
@@ -46,12 +46,12 @@ const DiscourseLongList = ({ data }: { data: any }) => {
             {/* divider */}
             <div className='w-full mx-1 h-[1px] mt-1 bg-[#303030] flex rounded-xl' />
 
-            <div className="flex w-full justify-between items-center">
+            <div className="flex w-full">
                 <div className='flex items-center gap-4 flex-1 justify-between min-h-[36px]'>
                     <StateView state={getStateTS(data)} data={data} />
                 </div>
                 <div className="flex items-center justify-end gap-2 flex-1">
-                    <SChainTag chainId={data.chainId} />
+                    <SChainTag />
                     <p className='text-[#68D391] font-bold text-[12px]'>{getFundTotal(data.funds)} {getCurrencyName(data.chainId)}</p>
                 </div>
             </div>
@@ -59,8 +59,8 @@ const DiscourseLongList = ({ data }: { data: any }) => {
     );
 }
 
-const StateView = ({ state, data }: { state: number, data: any }) => {
-    if (state === 0) {
+const StateView = ({ state, data }: { state: DiscourseState, data: any }) => {
+    if (state === DiscourseState.FUNDING) {
         return (
             <div className='flex flex-col gap-1'>
                 <div className='flex items-end gap-1'>
@@ -75,9 +75,8 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         )
     }
 
-    if (state === 1) {
+    if (state === DiscourseState.SCHEDULING) {
         return (
-
             <div className='flex flex-col gap-1'>
                 <div className='flex items-center gap-2'>
                     <Clock size="16" color="#6c6c6c" variant='Bold' />
@@ -87,7 +86,7 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         )
     }
 
-    if (state === 2) {
+    if (state === DiscourseState.SCHEDULED) {
         return (
             <div className='flex flex-col gap-1'>
                 <div className='flex items-end gap-2'>
@@ -102,7 +101,7 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         )
     }
 
-    if (state === 3) {
+    if (state === DiscourseState.FINISHED) {
         return (
             <div className='flex flex-col gap-1'>
                 <div className='flex items-end gap-2'>
@@ -113,7 +112,7 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         )
     }
 
-    if (state === 4) {
+    if (state === DiscourseState.TERMINATED) {
         return (
             <div className='flex flex-col gap-1'>
                 <div className='flex items-end gap-2'>
@@ -124,7 +123,7 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         )
     }
 
-    if (state === 5) {
+    if (state === DiscourseState.DISPUTED) {
         return (
             <div className='flex flex-col gap-1'>
                 <div className='flex items-end gap-2'>
@@ -139,7 +138,7 @@ const StateView = ({ state, data }: { state: number, data: any }) => {
         <div className='flex flex-col gap-1'>
             <div className='flex items-end gap-2'>
                 <Sound size="16" color="#12D8FA" variant='Bold' />
-                <p className='uppercase font-Lexend text-[9.5px] text-[#12D8FA] tracking-wider font-medium'>ongoing</p>
+                <p className='uppercase font-Lexend text-[9.5px] text-[#12D8FA] tracking-wider font-medium'>On Going</p>
             </div>
         </div>
     );

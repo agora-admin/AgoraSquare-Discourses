@@ -16,7 +16,7 @@ import FundDiscourseDialog from "../../components/dialogs/FundDiscourseDialog";
 import FundsDialog from "../../components/dialogs/FundsDialog";
 import Link from "next/link";
 import SpeakerConfirmationCard from "../../components/actions/SpeakerConfirmationCard";
-import { canClaimC, discourseConfirmed, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
+import { canClaimC, discourseConfirmed, DiscourseState, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
 import SlotCard from "../../components/actions/SlotCard";
 import JoinMeetCard from "../../components/actions/meet/JoinMeetCard";
 import FundClaimCardT from "../../components/actions/FundClaimCardT";
@@ -90,7 +90,7 @@ const DiscoursePage = () => {
         return false;
     }
 
-    const { activeChain, chains, switchNetworkAsync } = useNetwork();
+    const { activeChain } = useNetwork();
 
     return (
         <div className="w-full h-screen overflow-x-clip">
@@ -118,34 +118,35 @@ const DiscoursePage = () => {
                     }
 
                     {/* Body */}
-                    <div className="flex flex-col md:flex-row md:justify-between mt-10 mx-10 lg:mx-0">
+                    <div className="flex flex-col md2:flex-row md2:justify-between mt-5 sm:mt-10 px-4 sm:px-10 lg:px-0">
                         {/* left section */}
                         {error && <div className='w-full py-4 flex items-center justify-center mt-10'>
-                            <img className='w-48' src="/404_dis.png" alt="" />
+                            <img className='w-48' src="/404_dis.png" alt="404 not found" />
                         </div>}
                         {!loading && data && !error &&
-                            <div className="flex flex-col gap-2 w-full md:flex-[0.6]">
-                                <h3 className="text-white font-semibold text-2xl">{data.getDiscourseById.title}</h3>
-                                <div className="flex gap-2 items-center">
-                                    <EventTag irl={data.getDiscourseById.irl} />
-                                    <ChainExplorer data={data.getDiscourseById} />
-                                    {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
-                                    
-                                    <PathTool size="16" color="#6a6a6a" />
-                                    <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>
-                                        {/* <div className='bg-gradient-g w-4 h-4 rounded-xl' /> */}
-                                        <p className='text-white/60 text-xs'>{shortAddress(data.getDiscourseById.prop_starter)}</p>
+                            <div className="flex flex-col gap-2 w-full md2:flex-[0.7]">
+                                <h3 className="text-white font-semibold text-sm sm:text-xl">{data.getDiscourseById.title}</h3>
+                                <div className="flex flex-col sm:flex-row gap-3 md2:gap-2">
+                                    <div className="flex flex-col xs:flex-row gap-2">
+                                        <EventTag irl={data.getDiscourseById.irl} />
+                                        <ChainExplorer data={data.getDiscourseById} />
+                                        {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
                                     </div>
-                                    <p className="text-white/40 text-[10px] ">{getAgo(data?.getDiscourseById?.initTS)}</p>
-
+                                    <div className="flex gap-2 items-center">
+                                        <PathTool size="16" color="#6a6a6a" />
+                                        <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>
+                                            <p className='text-white/60 text-xs'>{shortAddress(data.getDiscourseById.prop_starter)}</p>
+                                        </div>
+                                        <p className="text-white/40 text-[10px] ">{getAgo(data?.getDiscourseById?.initTS)}</p>
+                                    </div>
                                 </div>
-                                <p className=" mt-4 w-full text-white/60 text-sm leading-5 tracking-wide">{data.getDiscourseById.description}</p>
-                                <div className="bg-card flex flex-col gap-2 p-6 rounded-xl w-full md:max-w-[80%] mt-2">
+                                <p className=" mt-4 w-full text-white/60 text-xs xs:text-sm leading-5 tracking-wide">{data.getDiscourseById.description}</p>
+                                <div className="bg-card flex flex-col gap-2 p-6 rounded-xl w-full md2:max-w-[80%] mt-2">
                                     <h4 className="text-sm text-white/40">Topics :</h4>
                                     <ul className="list-inside">
                                         {
                                             data.getDiscourseById.topics.map((item: string, index: number) => (
-                                                <li className="text-white/40 text-sm list-disc" key={index}>{item}</li>
+                                                <li className="text-white/40 text-xs xs:text-sm list-disc mb-2 leading-5" key={index}>{item}</li>
                                             ))
                                         }
                                     </ul>
@@ -153,8 +154,8 @@ const DiscoursePage = () => {
 
                                 <div className="flex items-center gap-4 mt-8">
                                     <div className="flex flex-col">
-                                        <p className=" w-full text-white/60 text-sm leading-5 tracking-wide">Total Stake:</p>
-                                        <h3 className="text-white/80 text-lg font-bold tracking-wider">{getFundTotal(data.getDiscourseById.funds)} {getCurrencyName(data.getDiscourseById.chainId)}</h3>
+                                        <p className=" w-full text-white/60 text-xs xs:text-sm leading-5 tracking-wide">Total Stake:</p>
+                                        <h3 className="text-white/80 text-base sm:text-lg font-bold tracking-wider">{getFundTotal(data.getDiscourseById.funds)} {getCurrencyName(data.getDiscourseById.chainId)}</h3>
                                     </div>
                                     {!fundingDone(data.getDiscourseById) && <div className="h-[80%] w-[2px] bg-[#212427]" />}
                                     {!fundingDone(data.getDiscourseById) && <div className='flex flex-col gap-1'>
@@ -170,14 +171,14 @@ const DiscoursePage = () => {
                                 </div>
 
                                 {/* Condition to check the funding period */}
-                                { !data.getDiscourseById.irl && data.getSlotById && fundingDone(data.getDiscourseById) && discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === 1 &&
+                                { !data.getDiscourseById.irl && data.getSlotById && fundingDone(data.getDiscourseById) && discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === DiscourseState.SCHEDULING &&
                                     <SlotCard id={data.getDiscourseById.id} propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} endTS={+data.getDiscourseById.endTS} data={data.getSlotById} />
                                 }
 
                             </div>}
 
                         {/* Right section */}
-                        <div className="flex flex-col gap-4 flex-[.3] mt-10 w-full md:mt-0">
+                        <div className="flex flex-col gap-4 flex-[.3] mt-5 sm:mt-10 w-full md2:mt-0">
                             {/* Card Speakers */}
                             {!loading && data && !error &&
                                 <>
@@ -188,12 +189,12 @@ const DiscoursePage = () => {
                                     }
 
                                     {
-                                        getStateTS(data.getDiscourseById) === 3 && canClaimC(data.getDiscourseById, walletAddress) && !hasWithdrawn(data.getDiscourseById, walletAddress) &&
+                                        getStateTS(data.getDiscourseById) === DiscourseState.FINISHED && canClaimC(data.getDiscourseById, walletAddress) && !hasWithdrawn(data.getDiscourseById, walletAddress) &&
                                         <FundClaimCardC data={data.getDiscourseById} />
                                     }
 
                                     {
-                                        getStateTS(data.getDiscourseById) === 3 &&
+                                        getStateTS(data.getDiscourseById) === DiscourseState.FINISHED &&
                                         <RecordingsCard data={data.getDiscourseById} />
                                     }
 
@@ -220,7 +221,7 @@ const DiscoursePage = () => {
                                         }
                                     </>}
                                     {
-                                        loggedIn && !t_connected && getStateTS(data.getDiscourseById) === 0 &&
+                                        loggedIn && !t_connected && getStateTS(data.getDiscourseById) !== DiscourseState.TERMINATED &&
                                         <div className="bg-card rounded-xl p-4 flex flex-col">
                                             <div className="flex items-center gap-2">
                                                 <TwitterIcon />
@@ -245,15 +246,15 @@ const DiscoursePage = () => {
                                             {/* avatar */}
                                             <div className='flex items-center w-16 h-8 relative'>
                                                 <div className='flex items-center w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[0]?.image_url} alt="" />
+                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[0]?.image_url} alt="profile image" />
                                                 </div>
                                                 <div className='flex items-center absolute left-[35%] w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[1]?.image_url} alt="" />
+                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[1]?.image_url} alt="profile image" />
                                                 </div>
                                             </div>
                                             <div className='flex flex-col'>
-                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[0]?.username}`} className='hover:text-white/60 text-white/30 text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[0]?.name}</a>
-                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[1]?.username}`} className='hover:text-white/60 text-white/30 text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[1]?.name}</a>
+                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[0]?.username}`} className='text-[#c6c6c6] text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[0]?.name}</a>
+                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[1]?.username}`} className='text-[#c6c6c6] text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[1]?.name}</a>
                                             </div>
                                         </div>
 
@@ -266,7 +267,7 @@ const DiscoursePage = () => {
                                             <FundDiscourseDialog open={openFund} setOpen={setOpenFund} discourse={data?.getDiscourseById} />
                                         }
 
-                                        {loggedIn && t_connected && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max px-6 text-sm font-medium mt-4'>
+                                        {loggedIn && t_connected && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max text-xs font-medium mt-4'>
                                             Fund
                                         </button>}
                                         {
@@ -299,7 +300,6 @@ const DiscoursePage = () => {
 
                                         {/* list */}
                                         <div className="flex flex-col gap-1">
-
                                             {
                                                 [].concat(data.getDiscourseById.funds)
                                                     .sort((a: any, b: any) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
@@ -313,7 +313,7 @@ const DiscoursePage = () => {
                                                                 <p className='text-white/60 text-xs'>{shortAddress(item.address)}</p>
                                                             </div>
                                                             <div className="flex items-center justify-between">
-                                                                <p className="text-gradient text-sm font-bold">{getFund(item.amount)} {getCurrencyName(data.getDiscourseById.chainId)}</p>
+                                                                <p className="text-gradient text-xs xs:text-sm font-bold">{getFund(item.amount)} {getCurrencyName(data.getDiscourseById.chainId)}</p>
                                                                 <p className="text-white/40 text-[10px] ">{getAgoT(item.timestamp)}</p>
                                                             </div>
                                                         </div>

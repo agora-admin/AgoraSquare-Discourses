@@ -21,25 +21,25 @@ const VenueCard: FC<Props> = ({ chainId, propId }) => {
             </div>
             {data && !loading && !error && <>
                 <div className="flex flex-col">
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{formatDate(new Date(data.getEvent?.eventTimestamp))} , {getDayFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{getTimeFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
+                    <p className="text-xs text-[#c6c6c6]">{formatDate(new Date(data.getEvent?.eventTimestamp))} , {getDayFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
+                    <p className="text-xs text-[#c6c6c6]">{getTimeFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{data.getEvent?.venue.name}</p>
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{data.getEvent?.venue.address}</p>
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{data.getEvent?.venue.city}, {data.getEvent?.venue.state}, {data.getEvent?.venue.country}</p>
-                    <p className="text-xs font-Lexend text-[#c6c6c6]">{data.getEvent?.venue.zip}</p>
+                    <p className="text-xs text-[#c6c6c6]">{data.getEvent?.venue.name}</p>
+                    <p className="text-xs text-[#c6c6c6]">{data.getEvent?.venue.address}</p>
+                    <p className="text-xs text-[#c6c6c6]">{data.getEvent?.venue.city}, {data.getEvent?.venue.state}, {data.getEvent?.venue.country}</p>
+                    <p className="text-xs text-[#c6c6c6]">{data.getEvent?.venue.zip}</p>
                 </div>
             </>}
             { loading && <>
                 <div className="flex flex-col">
-                    <p className="text-xs font-Lexend text-[#797979]">Loading...</p>
+                    <p className="text-xs text-[#797979]">Loading...</p>
                 </div>
             </>}
             { error && <>
                 <div className="flex flex-col">
-                    <p className="text-xs font-Lexend text-[#797979]">Yet to be finalized</p>
+                    <p className="text-xs text-[#797979]">Yet to be finalized</p>
                 </div>
             </>}
         </div>
