@@ -2,21 +2,16 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import DiscourseLongList from '../components/cards/DiscourseLongList'
 import Layout from '../components/layout/Layout'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { GET_DISCOURSES, GET_DISCOURSES_BY_CHAIN } from '../lib/queries'
 import LoadingSpinner from '../components/utils/LoadingSpinner'
 import TopBar from '../components/topbar/TopBar'
 import BDecoration from '../components/utils/BDecoration'
-import AppContext from '../components/utils/AppContext'
 import { supportedChainIds } from '../Constants'
 import HeroCard from '../components/actions/HeroCard'
-import AreYouSpeakerDialog from '../components/dialogs/AreYouSpeakerDialog'
 
 const Home: NextPage = () => {
-	const { loggedIn, t_connected } = useContext(AppContext);
-	const [isTwitterDialogOpen, setIsTwitterDialogOpen] = useState(true)
-
 	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
 		variables: {
 			chainId: supportedChainIds[0]
@@ -44,8 +39,7 @@ const Home: NextPage = () => {
 			</Head>
 			<Layout >
 				<BDecoration />
-				<div className='w-full min-h-screen flex flex-col py-10 px-4 sm:px-0 gap-4 z-10'>
-					{loggedIn && !t_connected && <AreYouSpeakerDialog isOpen={isTwitterDialogOpen} setIsOpen={setIsTwitterDialogOpen} />}
+				<div className='w-full min-h-screen flex flex-col py-10 sm:px-0 gap-4 z-10'>
 					{/* TopSection */}
 					<TopBar showLogo={true} />
 

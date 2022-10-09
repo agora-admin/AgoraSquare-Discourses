@@ -26,7 +26,8 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
     const speakerAddressSet = (speakers: any) => {
         if (speakers.length >= 2) {
             const speaker = speakers.find((s: any) => s.username === t_handle);
-            if (speaker.address === walletAddress) {
+            
+            if (speaker && (speaker.address === walletAddress)) {
                 return true;
             }
         }

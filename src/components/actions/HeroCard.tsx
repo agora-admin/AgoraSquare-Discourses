@@ -36,18 +36,18 @@ const HeroCard = () => {
     }
 
     return (
-        <div className="w-full flex items-center justify-between px-2 sm:px-10 py-6">
+        <div className="w-full flex items-center justify-between px-2 sm:px-10 pt-6 pb-0 xs:py-6">
             <div className="flex flex-col w-max ">
                 <h4 className="text-white font-Lexend">Introducing</h4>
                 <h2 className="text-gradient font-bold text-4xl">Discourses</h2>
-                <p className="text-[#c6c6c6] font-Lexend text-[10px] max-w-[50ch] mt-2">
+                <p className="text-[#c6c6c6] font-Lexend text-xs max-w-[50ch] mt-2">
                     Crowdfund discourse from thought leaders to dialogue on the platfrom through discourse pools!
                 </p>
                 {
                     !loggedIn && <ConnectWalletDailog open={openConnectWallet} setOpen={setOpenConnectWallet} />
                 }
-                <div className="flex items-center gap-2 mt-4">
-                    <button onClick={() => handleCreate()} className="button-o flex items-center gap-2 p-3 hover:bg-[#c6c6c6]/10">
+                <div className="flex flex-col xs:flex-row xs:items-center gap-2 mt-4">
+                    <button onClick={() => handleCreate()} className="button-o flex items-center max-w-max xs:w-full gap-2 p-3 hover:bg-[#c6c6c6]/10">
                         <Add size={16} color="#fff" />
                         <p className="text-xs text-white font-Lexend ">Create New Disourse</p>
                     </button>

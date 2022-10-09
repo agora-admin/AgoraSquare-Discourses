@@ -55,31 +55,35 @@ export const getMeetDateTS = (data : any) => {
 // 5 - disputed
 // 6 - ongoing
 
+export enum DiscourseState{
+    FUNDING,SCHEDULING,SCHEDULED,FINISHED,TERMINATED,DISPUTED,ONGOING
+}
+
 export const getStateTS = (data: any) => {
     if (!fundingDone(data)) {
-        return 0;
+        return DiscourseState.FUNDING;
     } else {
         if (data.status.terminated) {
-            return 4
+            return DiscourseState.TERMINATED;
         } else if (data.status.disputed) {
-            return 5
+            return DiscourseState.DISPUTED
         } else if (data.status.completed) {
-            return 3
+            return DiscourseState.FINISHED
         } else if (discourseConfirmed(data)) {
             if(data.discourse.room_id) {
                 if (isPast(getMeetDateTS(data))) {
-                    return 6
+                    return DiscourseState.ONGOING
                 } else {
-                    return 2
+                    return DiscourseState.SCHEDULED
                 }
             } else {
                 if (data.discourse.meet_date) {
-                    return 2
+                    return DiscourseState.SCHEDULED
                 }
-                return 1
+                return DiscourseState.SCHEDULING
             }
         } else { // speaker didn't confirm self terminate
-            return 4
+            return DiscourseState.TERMINATED
         }
     }
 }
