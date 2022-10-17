@@ -11,9 +11,7 @@ import AppContext from "../utils/AppContext";
 import { MetamaskIcon, NullWalletIcon, WalletConnectIcon } from "../utils/SvgHub";
 
 const WalletOptionsPopUp = () => {
-
     const route = useRouter();
-
 	const { refresh, loggedIn } = useContext(AppContext);
     const { connectors, connectAsync, isConnecting, isConnected, data: wData } = useConnect();
     const { data: smData, signMessageAsync } = useSignMessage();
