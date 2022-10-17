@@ -36,7 +36,7 @@ const HeroCard = () => {
     }
 
     return (
-        <div className="w-full flex items-center justify-between px-2 sm:px-10 pt-6 pb-0 xs:py-6">
+        <div className="w-full flex items-center justify-between px-4 sm:px-10 pt-6 pb-0 xs:py-6">
             <div className="flex flex-col w-max ">
                 <h4 className="text-white font-Lexend">Introducing</h4>
                 <h2 className="text-gradient font-bold text-4xl">Discourses</h2>
@@ -51,9 +51,9 @@ const HeroCard = () => {
                         <Add size={16} color="#fff" />
                         <p className="text-xs text-white font-Lexend ">Create New Disourse</p>
                     </button>
-                    <Link href="https://testnet.discourses.agorasquare.io" passHref >
+                    <Link href="https://discourses.agorasquare.xyz" passHref >
                         <a target="_blank" className="button-t flex sm:hidden items-center gap-2 w-max p-2 ">
-                            <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore testnet</p>
+                            <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore mainnet</p>
                             <ArrowNE color="#1FA2FF" />
                         </a>
                     </Link>

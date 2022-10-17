@@ -10,7 +10,7 @@ const Tabs = () => {
     const [currentTab,setCurrentTab] = useState(0)
 
     return (
-        <div className="w-full flex flex-col gap-8 items-center">
+        <div className="w-full flex flex-col gap-4 sm:gap-6 items-center">
             <div className="flex gap-4 items-center">
                 <span onClick={() => setCurrentTab(0)} className={ClassString+(currentTab === 0 && SelectedClassString)+(currentTab !== 0 && NonSelectedClassString)}>NFTs</span>
                 <span onClick={() => setCurrentTab(1)} className={ClassString+(currentTab === 1 && SelectedClassString)+(currentTab !== 1 && NonSelectedClassString)}>Recent Activities</span>

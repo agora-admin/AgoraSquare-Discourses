@@ -56,22 +56,29 @@ const UserPage = () => {
                                 </div>
                             ) : (
                                 // Main Body
-                                <div className="flex flex-col items-center gap-4 relative">
-                                    <EditProfile />
+                                <div className="flex flex-col items-center gap-2 sm:gap-4 relative">
+                                    <div className="absolute right-10 hidden md:block">
+                                        <EditProfile />
+                                    </div>
 
                                     {/* Profile Pic Section */}
                                     <img
                                         src={getProfileImageUrl(t_img)}
                                         alt="Person profile pic"
-                                        className="w-[80px] h-[80px] ios_curve"
+                                        className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] ios_curve"
                                     />
 
                                     {/* About Section*/}
-                                    <div className="flex flex-col items-center gap-4">
+                                    <div className="flex flex-col items-center gap-2 sm:gap-4">
                                         <div className="flex flex-col gap-1">
-                                            <h1 className="text-gradient text-2xl text-center font-semibold font-Lexend">
-                                                {name ? name : t_name}
-                                            </h1>
+                                            <div className="flex gap-2 items-center justify-center">
+                                                <h1 className="text-gradient text-lg sm:text-2xl text-center font-semibold font-Lexend">
+                                                    {name ? name : t_name}
+                                                </h1>
+                                                <div className="block md:hidden">
+                                                    <EditProfile />
+                                                </div>
+                                            </div>
                                             <div className="flex items-center">
                                                 <a
                                                     href={`https://www.twitter.com/${t_handle}`}
@@ -110,11 +117,11 @@ const UserPage = () => {
                                         </p>}
                                     </div>
 
-                                    <div className="mt-4 flex">
+                                    <div className="mt-2 sm:mt-4 flex">
                                         <Stats />
                                     </div>
 
-                                    <div className="mt-4 flex w-full">
+                                    <div className="mt-8 flex w-full">
                                         <Tabs />
                                     </div>
                                 </div>
@@ -133,7 +140,7 @@ const Stats = () => {
     return (
         <div className="flex gap-2 bg-[#0B0B0B] border-2 border-white/5 rounded-lg p-4 items-center">
             <div className="flex flex-col items-center">
-                <h3 className="text-white font-Lexend text-[18px]">23</h3>
+                <h3 className="text-white font-Lexend text-base sm:text-[18px]">23</h3>
                 <small className="text-[#BABABA] font-Lexend text-[11px]">
                     Discourse Funded
                 </small>
@@ -143,7 +150,7 @@ const Stats = () => {
             <div className="w-[2px] mx-2 h-[90%] bg-[#444444] flex rounded-xl" />
 
             <div className="flex flex-col items-center">
-                <h3 className="text-white font-Lexend text-[18px]">26</h3>
+                <h3 className="text-white font-Lexend text-base sm:text-[18px]">26</h3>
                 <small className="text-[#BABABA] font-Lexend text-[11px]">
                     Discourse Invitation
                 </small>

@@ -2,7 +2,7 @@ import {uuid} from 'uuidv4';
 
 const NFTS = () => {
     return (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {Array(4).fill(0).map(() => (
                 <NFT key={uuid()} />
             ))}

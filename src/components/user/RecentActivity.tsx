@@ -56,18 +56,18 @@ const Activity: FC<ActivityProps> = ({type,msg,chainId,date}) => {
             {getIcon(type)}
 
             <div className="flex-1 flex flex-col gap-2">
-                <h3 className="text-white font-Lexend text-sm font-light">{msg}</h3>
+                <h3 className="text-white font-Lexend text-xs sm:text-sm font-light">{msg}</h3>
                 {
                     type !== ActivityType.Received && 
                         <div className="flex items-center gap-4">
                             <div className="bg-[#7B3FE433]/20 rounded-3xl px-2 py-1 flex gap-1 items-center ">
                                 <Polygon color="#7B3FE4" size={15} />
-                                <span className="text-[#7B3FE4] text-[10px] font-bold">{getChainName(chainId as number)}</span>
+                                <span className="text-[#7B3FE4] text-[8px] sm:text-[10px] font-bold">{getChainName(chainId as number)}</span>
                             </div>
 
                             <div className="flex items-center gap-1">
                                 <Clock size="15" color="#6A6A6A" variant="Bold"/>
-                                <span className="text-[#6A6A6A] text-[10px] font-bold">{date?.toDateString()}</span>
+                                <span className="text-[#6A6A6A] text-[8px] sm:text-[10px] font-bold">{date?.toDateString()}</span>
                             </div>
                         </div>
                 }
