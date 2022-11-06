@@ -4,7 +4,7 @@ import { ApolloProvider } from '@apollo/client'
 import { useApollo } from '../lib/apollo'
 import { SessionProvider } from 'next-auth/react'
 import { HMSRoomProvider } from '@100mslive/react-sdk';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { Chain, chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -15,8 +15,33 @@ import SEOHome from '../components/utils/SEOHome'
 import ContextWrapper from '../components/utils/ContextWrapper'
 import { rpcUrl } from '../Constants'
 
+const godwokenChain: Chain = {
+  id: 71401,
+  name: 'Godwoken Testnet',
+  network: 'godwoken',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'pCKB',
+    symbol: 'PCKB'
+  },
+  rpcUrls: {
+    default: 'https://godwoken-testnet-v1.ckbapp.dev'
+  },
+  blockExplorers: {
+    etherscan: {
+      name: 'gwScan',
+      url: 'https://v1.betanet.gwscan.com/',
+    },
+    default: {
+      name: 'gwScan',
+      url: 'https://v1.betanet.gwscan.com/'
+    }
+  },
+  testnet: true
+}
+
 const { provider, chains } = configureChains(
-  [ chain.polygonMumbai,chain.polygon ],
+  [ chain.polygonMumbai,chain.polygon,godwokenChain ],
   [
     alchemyProvider({ alchemyId: 'ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj' }),
     infuraProvider({ infuraId: 'a4d6ff8d0a7c4b93a9a4ac41adc048c8' }),

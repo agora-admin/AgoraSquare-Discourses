@@ -5,8 +5,6 @@ import { GET_DISCOURSE_BY_ID, GET_TOKEN_BY_ID } from "../../../lib/queries";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { discouresEnded } from "../../../helper/DataHelper";
-import DiscourseHub from '../../../web3/abi/DiscourseHub.json';
-import Addresses from '../../../web3/addresses.json';
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { ENTER_DISCOURSE, RAISE_DISPUTE } from "../../../lib/mutations";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";

@@ -1,5 +1,6 @@
 export const supportedChainIds = [
-    80001 // Polygon Testnet
+    80001, // Polygon Testnet
+    71401 // Godwoken Testnet
 ]
 
 export const getChainName = (chainId: number) => {
@@ -8,6 +9,8 @@ export const getChainName = (chainId: number) => {
             return 'Polygon Mumbai'
         case 137:
             return 'Polygon'
+        case 71401:
+            return 'Godwoken Testnet'
         default:
             return 'Unknown'
     }
@@ -19,6 +22,8 @@ export const getCurrencyName = (chainId: number) => {
             return 'MATIC'
         case 80001:
             return 'MATIC'
+        case 71401:
+            return 'PCKB'
         default:
             return 'ETH'
     }
@@ -30,6 +35,8 @@ export const rpcUrl = (chainId: number) => {
             return { http: 'https://polygon-mainnet.g.alchemy.com/v2/Gqd71GlllOjZhCCq1FjqzKofdLig5Tww'}
         case 80001:
             return { http: "https://polygon-mumbai.g.alchemy.com/v2/ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj" }
+        case 71401:
+            return { http: "https://godwoken-testnet-v1.ckbapp.dev" }
         default:
             return null;
 

@@ -1,30 +1,16 @@
 [
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "_addr",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "_addr", "type": "address" }
         ],
         "name": "isAdmin",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "_addr",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "_addr", "type": "address" }
         ],
         "name": "removeAdmin",
         "outputs": [],
@@ -33,13 +19,45 @@
     },
     {
         "inputs": [
+            { "internalType": "address", "name": "_addr", "type": "address" }
+        ],
+        "name": "setAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "propId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
                 "internalType": "address",
-                "name": "_addr",
+                "name": "tokenContract",
                 "type": "address"
             }
         ],
-        "name": "setAdmin",
+        "name": "NFTCreated",
+        "type": "event"
+    },
+    {
+        "inputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+        "name": "checkUpkeep",
+        "outputs": [
+            { "internalType": "bool", "name": "upkeepNeeded", "type": "bool" },
+            { "internalType": "bytes", "name": "", "type": "bytes" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+        "name": "performUpkeep",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -110,16 +128,8 @@
                 "name": "_diamondCut",
                 "type": "tuple[]"
             },
-            {
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
-            }
+            { "internalType": "address", "name": "_init", "type": "address" },
+            { "internalType": "bytes", "name": "_calldata", "type": "bytes" }
         ],
         "name": "diamondCut",
         "outputs": [],
@@ -160,11 +170,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "_facet",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "_facet", "type": "address" }
         ],
         "name": "facetFunctionSelectors",
         "outputs": [
@@ -211,13 +217,7 @@
             }
         ],
         "name": "supportsInterface",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
@@ -261,11 +261,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "propId", "type": "uint256" }
         ],
         "name": "clearDispute",
         "outputs": [],
@@ -274,11 +270,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "propId", "type": "uint256" }
         ],
         "name": "enterDiscourse",
         "outputs": [],
@@ -287,30 +279,16 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "isDisputed",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "raiseDispute",
         "outputs": [],
@@ -319,11 +297,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "propId", "type": "uint256" }
         ],
         "name": "rejectDispute",
         "outputs": [],
@@ -407,11 +381,25 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_newCap", "type": "uint256" }
+        ],
+        "name": "changeFundingCap",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "_newVal", "type": "uint256" }
+        ],
+        "name": "changeMinimumInitialFunds",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "propId", "type": "uint256" }
         ],
         "name": "finishDiscourse",
         "outputs": [],
@@ -420,183 +408,107 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getApprovedSpeakerAddresses",
         "outputs": [
-            {
-                "internalType": "address[2]",
-                "name": "",
-                "type": "address[2]"
-            }
+            { "internalType": "address[2]", "name": "", "type": "address[2]" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_speaker",
-                "type": "address"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "address", "name": "_speaker", "type": "address" }
         ],
         "name": "getCharityAddress",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getDiscourseDeadline",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getSpeakerConfirmations",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "string",
-                "name": "_name",
-                "type": "string"
-            }
+            { "internalType": "string", "name": "_name", "type": "string" }
         ],
         "name": "getSpeakerIndex",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "isFundsUnlocked",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "string",
-                "name": "_handle",
-                "type": "string"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "string", "name": "_handle", "type": "string" }
         ],
         "name": "isSpeakerAddressSet",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_speaker",
-                "type": "address"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "address", "name": "_speaker", "type": "address" }
         ],
         "name": "isSpeakerConfirmed",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
             {
                 "internalType": "uint256",
-                "name": "_propId",
+                "name": "timestamp",
                 "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_charity",
-                "type": "address"
             }
+        ],
+        "name": "scheduleDiscourse",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "address", "name": "_charity", "type": "address" }
         ],
         "name": "setCharityAddress",
         "outputs": [],
@@ -605,21 +517,9 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "string",
-                "name": "_handle",
-                "type": "string"
-            },
-            {
-                "internalType": "address",
-                "name": "_speaker",
-                "type": "address"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "string", "name": "_handle", "type": "string" },
+            { "internalType": "address", "name": "_speaker", "type": "address" }
         ],
         "name": "setSpeakerAddress",
         "outputs": [],
@@ -628,11 +528,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "speakerConfirmation",
         "outputs": [],
@@ -641,11 +537,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "terminateProposal",
         "outputs": [],
@@ -767,202 +659,96 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getAddressA",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getAddressB",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getDescription",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
+        "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getEndTS",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "propId", "type": "uint256" }
         ],
         "name": "getProposal",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "bytes32", "name": "", "type": "bytes32" },
+            { "internalType": "bytes32", "name": "", "type": "bytes32" },
+            { "internalType": "address", "name": "", "type": "address" },
+            { "internalType": "string", "name": "", "type": "string" },
+            { "internalType": "uint256", "name": "", "type": "uint256" },
+            { "internalType": "uint256", "name": "", "type": "uint256" },
+            { "internalType": "uint8", "name": "", "type": "uint8" },
+            { "internalType": "uint256", "name": "", "type": "uint256" },
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getProposalFundsRaised",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getProposalStarter",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getStartTS",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
@@ -971,92 +757,52 @@
         "inputs": [],
         "name": "getTotalProposals",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getTwitterA",
         "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            }
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getTwitterB",
         "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            }
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "address", "name": "_user", "type": "address" },
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getUserPledge",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getcharityPercent",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
@@ -1138,35 +884,19 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint8",
-                "name": "percent",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "total",
-                "type": "uint256"
-            }
+            { "internalType": "uint8", "name": "percent", "type": "uint8" },
+            { "internalType": "uint256", "name": "total", "type": "uint256" }
         ],
         "name": "_calculateAmount",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "pure",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "charityWithdraw",
         "outputs": [],
@@ -1175,87 +905,51 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getCharityWithdrawAmount",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getProposerWithdrawAmount",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getSpeakerWithdrawAmount",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getTotalProposalValue",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "pledgeFunds",
         "outputs": [],
@@ -1264,11 +958,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "proposerWithdraw",
         "outputs": [],
@@ -1277,11 +967,7 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "speakerWithdraw",
         "outputs": [],
@@ -1290,35 +976,12 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "withdrawPledge",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "propId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "tokenContract",
-                "type": "address"
-            }
-        ],
-        "name": "NFTCreated",
-        "type": "event"
     },
     {
         "anonymous": false,
@@ -1347,163 +1010,88 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "string",
-                "name": "_contractName",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_uri",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
-        ],
-        "name": "deployNFTContract",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "address", "name": "user", "type": "address" }
         ],
         "name": "getHasClaimedNFT",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getNFTAdmin",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getNFTTokenAddress",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getTotalNFTClaimedCount",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "getTotalNFTSupply",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "mintPledgerNFT",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "payable",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_propId",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" }
         ],
         "name": "mintSpeakerNFT",
         "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
+            { "internalType": "uint256", "name": "", "type": "uint256" }
         ],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+            { "internalType": "string", "name": "_uri", "type": "string" }
+        ],
+        "name": "setUri",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -1529,11 +1117,7 @@
         "inputs": [],
         "name": "owner",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "owner_",
-                "type": "address"
-            }
+            { "internalType": "address", "name": "owner_", "type": "address" }
         ],
         "stateMutability": "view",
         "type": "function"
@@ -1550,71 +1134,5 @@
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
-    },
-    [
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "components": [
-                        {
-                            "internalType": "address",
-                            "name": "facetAddress",
-                            "type": "address"
-                        },
-                        {
-                            "internalType": "enum IDiamondCut.FacetCutAction",
-                            "name": "action",
-                            "type": "uint8"
-                        },
-                        {
-                            "internalType": "bytes4[]",
-                            "name": "functionSelectors",
-                            "type": "bytes4[]"
-                        }
-                    ],
-                    "indexed": false,
-                    "internalType": "struct IDiamondCut.FacetCut[]",
-                    "name": "_diamondCut",
-                    "type": "tuple[]"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_init",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "bytes",
-                    "name": "_calldata",
-                    "type": "bytes"
-                }
-            ],
-            "name": "DiamondCut",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "previousOwner",
-                    "type": "address"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "newOwner",
-                    "type": "address"
-                }
-            ],
-            "name": "OwnershipTransferred",
-            "type": "event"
-        }
-    ],
-    [],
-    [],
-    []
+    }
 ]
