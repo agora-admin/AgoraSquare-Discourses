@@ -57,10 +57,6 @@ const UserPage = () => {
                             ) : (
                                 // Main Body
                                 <div className="flex flex-col items-center gap-2 sm:gap-4 relative">
-                                    <div className="absolute right-10 hidden md:block">
-                                        <EditProfile />
-                                    </div>
-
                                     {/* Profile Pic Section */}
                                     <img
                                         src={getProfileImageUrl(t_img)}
@@ -75,9 +71,7 @@ const UserPage = () => {
                                                 <h1 className="text-gradient text-lg sm:text-2xl text-center font-semibold font-Lexend">
                                                     {name ? name : t_name}
                                                 </h1>
-                                                <div className="block md:hidden">
-                                                    <EditProfile />
-                                                </div>
+                                                <EditProfile />
                                             </div>
                                             <div className="flex items-center">
                                                 <a
