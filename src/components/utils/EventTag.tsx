@@ -9,7 +9,7 @@ const EventTag: FC<Props> = ({irl = false}) => {
 
     if (irl) {
         return (
-            <div className="flex items-center bg-[#FF8A65]/20 rounded-lg px-2 py-1 transition-all">
+            <div className="flex items-center max-w-fit xs:max-w-none bg-[#FF8A65]/20 rounded-lg px-2 py-1 transition-all">
                     <Coffee size={16} color="#FF8A65" />
                     <p className="text-[10px] font-medium text-[#FF8A65] font-Lexend ml-2 mr-1">IRL</p>
             </div>

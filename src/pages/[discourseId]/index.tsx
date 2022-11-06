@@ -32,6 +32,7 @@ import RecordingsCard from "../../components/actions/RecordingsCard";
 import EventTag from "../../components/utils/EventTag";
 import VenueCard from "../../components/cards/VenueCard";
 import YoutubeTag from "../../components/utils/YoutubeTag";
+import NFTCard from "../../components/utils/NFTCard";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -129,8 +130,10 @@ const DiscoursePage = () => {
                                 <div className="flex flex-col sm:flex-row gap-3 md2:gap-2">
                                     <div className="flex flex-col xs:flex-row gap-2">
                                         <EventTag irl={data.getDiscourseById.irl} />
-                                        <ChainExplorer data={data.getDiscourseById} />
-                                        {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
+                                        <div className="flex gap-2">
+                                            <ChainExplorer data={data.getDiscourseById} />
+                                            {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
+                                        </div>
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <PathTool size="16" color="#6a6a6a" />
