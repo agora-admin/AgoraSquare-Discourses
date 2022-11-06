@@ -39,7 +39,7 @@ const SpeakerInput: FC<Props> = ({ speakers, setSpeakers }) => {
                     <SpeakerCard key={index} speaker={speaker} removeSpeaker={removeSpeaker} />
                 ))
             }
-            { speakers.length < 2 && <SpeakerPop speakerInput={speakerInput} setSpeakerInput={setSpeakerInput} setSpeakers={addSpeaker} />}
+            { speakers.length < 2 && <SpeakerPop flag={true} setSpeakers={addSpeaker} />}
         </div>
     );
 }
@@ -49,7 +49,7 @@ interface CardProps {
     removeSpeaker: (speaker: Speaker) => void;
 }
 
-const SpeakerCard: FC<CardProps> = ({ speaker, removeSpeaker }) => {
+export const SpeakerCard: FC<CardProps> = ({ speaker, removeSpeaker }) => {
     return(
         <div className="w-full bg-[#0b0b0b] rounded-lg ring-[1px] ring-[#212427] p-4 flex items-center gap-2 justify-between">
                 <div className="flex items-center gap-4">

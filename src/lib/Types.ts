@@ -1,5 +1,6 @@
 export type CreateObj = {
     speakers: Array<any>;
+    moderator: any;
     propId: number;
     description: string;
     title: string;
@@ -35,3 +36,5 @@ export interface Speaker {
     name: string;
     profile_image_url: string;
 }
+
+export interface Moderator extends Speaker{}

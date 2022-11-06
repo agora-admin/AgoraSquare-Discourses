@@ -99,6 +99,11 @@ export const CREATE_DISCOURSE = gql`
                 confirmed
                 isTwitterHandle
             }
+            moderator {
+                name
+                username
+                image_url
+            }
             propId
             chainId
             prop_description

@@ -18,6 +18,11 @@ export const GET_DISCOURSES = gql`
                 confirmed
                 image_url
             }
+            moderator{
+                name
+                username
+                image_url
+            }
             propId
             chainId
             prop_description
@@ -60,6 +65,11 @@ export const GET_DISCOURSES_BY_CHAIN = gql`
                 username
                 address
                 confirmed
+                image_url
+            }
+            moderator{
+                name
+                username
                 image_url
             }
             propId
@@ -105,6 +115,11 @@ export const GET_DISCOURSE_BY_ID = gql`
                 address
                 confirmed
                 isTwitterHandle
+                image_url
+            }
+            moderator{
+                name
+                username
                 image_url
             }
             propId

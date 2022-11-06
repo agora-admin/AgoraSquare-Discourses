@@ -14,15 +14,18 @@ const TitleInput: FC<Props> = ({ title, setTitle }) => {
     const [error, setError] = useState("");
     const [ fetch, { data }] = useLazyQuery(CHECK_TITLE,{
         onCompleted(data) {
+            console.log("Inside TitleInput: ",{data});
+            
             if(data.checkTitle) {
                 setTitle(val);
                 setError("");
-            } else {
+            } else if(val !== "") {
                 setError("Error: Discourse with same title exist");
                 setTitle("");
-            }
+            }else setError("");
         },
     });
+
     const [, cancel] = useDebounce(
         () => {
             fetch({ variables: { title: val } });

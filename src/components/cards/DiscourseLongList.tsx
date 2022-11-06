@@ -7,7 +7,7 @@ import { getTime, formatDate, getTimeFromDate } from "../../helper/TimeHelper";
 import { SChainTag } from "../utils/ChainTag";
 import EventTag from "../utils/EventTag";
 
-const DiscourseLongList = ({ data }: { data: any }) => {
+const DiscourseLongList = ({ data }: { data: any }) => {   
     const route = useRouter();
 
     const handleClick = () => {
@@ -46,13 +46,24 @@ const DiscourseLongList = ({ data }: { data: any }) => {
             {/* divider */}
             <div className='w-full mx-1 h-[1px] mt-1 bg-[#303030] flex rounded-xl' />
 
-            <div className="flex w-full">
-                <div className='flex items-center gap-4 flex-1 justify-between min-h-[36px]'>
-                    <StateView state={getStateTS(data)} data={data} />
+            <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                    <span className="text-xs text-[#6A6A6A] font-Lexend">Moderator</span>
+
+                    <div className="flex items-center gap-2">
+                       {data.moderator.image_url ? <img className="w-6 h-6 rounded-full" src={data.moderator.image_url} alt="Profile Picture" /> : <div className="w-6 h-6 rounded-full" style={{background: "linear-gradient(90deg, #FF8008 0%, #FFC837 100%)"}} />}
+                        <span className="text-xs text-white font-Lexend font-medium">{data.moderator.name ? data.moderator.name : 'N/A'}</span>
+                    </div>
                 </div>
-                <div className="flex items-center justify-end gap-2 flex-1">
-                    <SChainTag />
-                    <p className='text-[#68D391] font-bold text-[12px]'>{getFundTotal(data.funds)} {getCurrencyName(data.chainId)}</p>
+
+                <div className="flex w-full">
+                    <div className='flex items-center gap-4 flex-1 justify-between min-h-[36px]'>
+                        <StateView state={getStateTS(data)} data={data} />
+                    </div>
+                    <div className="flex items-center justify-end gap-2 flex-1">
+                        <SChainTag />
+                        <p className='text-[#68D391] font-bold text-[12px]'>{getFundTotal(data.funds)} {getCurrencyName(data.chainId)}</p>
+                    </div>
                 </div>
             </div>
         </div>

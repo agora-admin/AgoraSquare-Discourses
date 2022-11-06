@@ -4,13 +4,12 @@ import { Popover } from '@headlessui/react';
 import useTwitterProfile from "../../hooks/useTwitterProfile";
 
 interface Props {
-    speakerInput: string;
-    setSpeakerInput: Dispatch<SetStateAction<string>>;
     setSpeakers: (speaker: Speaker) => void;
+    flag: boolean;
 }
 
 
-const SpeakerPop: FC<Props> = ({ setSpeakers }) => {
+const SpeakerPop: FC<Props> = ({ setSpeakers,flag }) => {
     const [speakerInput, setSpeakerInput] = useState("");
     const [state, setState] = useState(0);
     const [val, setVal] = useState("");
@@ -40,7 +39,7 @@ const SpeakerPop: FC<Props> = ({ setSpeakers }) => {
         <Popover className="relative">
             {({ open }) => (
                 <>
-                    <input onFocus={onFocus} onKeyDown={handleKeyDown} onBlur={onBlur} type="text" className="input-s w-full py-3" placeholder="Speaker's twitter handle" value={val} onChange={(e) => {
+                    <input onFocus={onFocus} onKeyDown={handleKeyDown} onBlur={onBlur} type="text" className="input-s w-full py-3" placeholder={flag ? "Speaker's twitter handle" : "Moderator's twitter handle"} value={val} onChange={(e) => {
                         setState(1);
                         setVal(e.target.value);
                     }} />
@@ -77,7 +76,6 @@ interface Speaker {
 }
 
 const SpeakerCard: FC<CardProps> = ({ speaker, setSpeakers, setVal, setSpeakerInput }) => {
-    
     const handleOnClick = () => {
         setSpeakers(speaker);
         setVal("");
