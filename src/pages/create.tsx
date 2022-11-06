@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import TopBar from "../components/topbar/TopBar";
 import CreateDiscourseDialog from "../components/dialogs/CreateDiscourseDailog";
-import { CreateObj, Speaker, ToastTypes } from "../lib/Types";
+import { CreateObj, Speaker,Moderator, ToastTypes } from "../lib/Types";
 import AppContext from "../components/utils/AppContext";
 import { uuid } from "uuidv4";
 import BDecoration from "../components/utils/BDecoration";
@@ -14,6 +14,7 @@ import TopicsInput from "../components/create/TopicsInput";
 import FundingInput from "../components/create/FundingInput";
 import CharityInput from "../components/create/CharityInput";
 import TitleInput from "../components/create/TitleInput";
+import ModeratorInput from "../components/create/ModeratorInput";
 
 let mockD: CreateObj = {
     speakers: [
@@ -34,6 +35,7 @@ let mockD: CreateObj = {
             image_url: ""
         }
     ],
+    moderator: {},
     propId: 0,
     description: "",
     title: "",
@@ -46,6 +48,8 @@ let mockD: CreateObj = {
     initialFunding: "1",
     fundingPeriod: 0
 }
+
+const labelCSS = "text-[14px] text-white/60 font-Lexend";
 
 const CreateDiscoursePage = () => {
     const route = useRouter();
@@ -97,9 +101,9 @@ const CreateDiscoursePage = () => {
         }
     }, [formError]);
 
-
     // Form values states
     const [speakers, setSpeakers] = useState<Array<Speaker>>([]);
+    const [moderator,setModerator] = useState<Moderator | null>(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [charityPercent, setCharityPercent] = useState(0);
@@ -134,6 +138,11 @@ const CreateDiscoursePage = () => {
                     image_url: speakers[1].profile_image_url
                 }
             ],
+            moderator: {
+                name: moderator?.name,
+                username: moderator?.screen_name,
+                image_url: moderator?.profile_image_url
+            },
             propId: 0,
             description: description,
             title: title,
@@ -181,29 +190,34 @@ const CreateDiscoursePage = () => {
                         <CreateDiscourseDialog open={openFundDialog} setOpen={setOpenFundDialog} data={newDiscourse} />
 
                         {/* Title input */}
-                        <label className="text-[14px] text-white/60 font-Lexend" htmlFor="title">Topic For Discussion</label>
+                        <label className={labelCSS} htmlFor="title">Topic For Discussion</label>
                         <TitleInput title={title} setTitle={setTitle} />
 
                         {/* Speaker input */}
-                        <label className="text-[14px] text-white/60 font-Lexend" htmlFor="speaker1">Invite speakers for discussion</label>
+                        <label className={labelCSS} htmlFor="speaker1">Invite speakers for discussion</label>
                         <SpeakerInput speakers={speakers} setSpeakers={setSpeakers} />
-                        {/* Discription */}
-                        <label className="text-[14px] text-white/60 font-Lexend" htmlFor="description">Description for the discussion</label>
+
+                        {/* Suggest a Moderator(Optional) */}
+                        <label className={labelCSS} htmlFor="moderator">Suggest a Moderator (Optional)</label>
+                        <ModeratorInput moderator={moderator} setModerator={setModerator} />
+
+                        {/* Description */}
+                        <label className={labelCSS} htmlFor="description">Description for the discussion</label>
                         <div className="flex relative w-full">
                             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={256} className="max-w-full w-full input-s" id="description" placeholder="What is goal for the discussion?" />
                             <p className="text-[10px] absolute bottom-2 right-2 text-[#c6c6c6]">{description.length} <span className="text-[#8e8e8e]"> / 256</span> </p>
                         </div>
 
                         {/* Topics */}
-                        <label className="text-[14px] font-Lexend text-white/60">To keep the conversation active, please enter atleast 3 sub-topic</label>
+                        <label className={labelCSS}>To keep the conversation active, please enter atleast 3 sub-topic</label>
                         <TopicsInput topics={topics} addTopic={handleAddTopic} removeTopic={handleRemoveTopic} />
 
                         {/* Funding Period Input */}
-                        <label className="text-[14px] font-Lexend text-white/60">Funding Period</label>
+                        <label className={labelCSS}>Funding Period</label>
                         <FundingInput fundingPeriod={fundingPeriod} setFundingPeriod={setFundingPeriod} />
 
                         {/* Charity Percent Input */}
-                        <label className="text-[14px] font-Lexend text-white/60">Charity Percentage</label>
+                        <label className={labelCSS}>Charity Percentage</label>
                         <CharityInput charityPercentage={charityPercent} setCharityPercentage={setCharityPercent} />
 
                         <div className="w-full h-[1px] bg-[#303030] my-2" />

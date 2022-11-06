@@ -128,6 +128,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                 variables: {
                     discourseInput: {
                         speakers: data.speakers,
+                        moderator: data.moderator,
                         propId: count,
                         chainId: activeChain?.id,
                         description: data.description,
