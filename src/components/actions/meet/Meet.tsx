@@ -45,8 +45,7 @@ const Meet = ({ dData }: { dData: any }) => {
     const videoEnabled = useHMSStore(selectIsLocalVideoEnabled);
 
     // onEvent to end
-    const onEndEvent = useCallback((msg) => {
-
+    const onEndEvent = useCallback((msg: any) => {
         if (msg.type === REJECT_END_EVENT) {
             setEndEventRequested(false);
             setEndEventRequest(false);
@@ -73,7 +72,7 @@ const Meet = ({ dData }: { dData: any }) => {
         if (notification.type === HMSNotificationTypes.PEER_JOINED) {
             addToast({
                 title: 'New User Joined',
-                body: shortAddress(notification.data?.customerUserId),
+                body: shortAddress(notification.data?.customerUserId as string),
                 type: ToastTypes.event,
                 id: uuid(),
                 duration: 3000
@@ -82,7 +81,7 @@ const Meet = ({ dData }: { dData: any }) => {
         if (notification.type === HMSNotificationTypes.PEER_LEFT) {
             addToast({
                 title: 'User Left',
-                body: shortAddress(notification.data?.customerUserId),
+                body: shortAddress(notification.data?.customerUserId as string),
                 type: ToastTypes.event,
                 id: uuid(),
                 duration: 3000
