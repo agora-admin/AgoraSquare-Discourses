@@ -69,7 +69,7 @@ const Chat = ({ open, setOpen, speakers } : { open: boolean, setOpen: Dispatch<S
                                         <p className="text-[#c6c6c6] font-Lexend text-[10px] flex items-center gap-1">
                                             {message.senderRole === 'speaker' && getSpeakerIndex(speakers, message.senderUserId+"") === 1 && <SpeakerOneCIcon />} 
                                             {message.senderRole === 'speaker' && getSpeakerIndex(speakers, message.senderUserId+"") !== 1 && <SpeakerTwoCIcon />} 
-                                            {shortAddress(message.senderName)}</p>
+                                            {shortAddress(message.senderName as string)}</p>
                                         <p className="text-[#797979] font-Lexend text-[10px]">{getAgoT((new Date(message.time)).toISOString())}</p>
                                     </div>
                                     <p key={message.id} className="text-xs font-Lexend text-white"><span className="text-[#c6c6c6]"></span> {message.message}</p>
