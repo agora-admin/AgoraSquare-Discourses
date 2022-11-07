@@ -236,13 +236,13 @@ const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<a
             spanishDays[newMonthFirstWeekdayNumber].spanishCalendarWeekdayNumber;
         const daysInMonth = new Date(newYear, newMonth + 1, 0).getDate();
 
-        let blankDaysArr = [];
+        let blankDaysArr:number[] = [];
         for (let i = 1; i <= spanishFirstWeekdayNumber; i++) {
             blankDaysArr.push(i);
         }
 
         setBlankDays(blankDaysArr);
-        let daysInMonthArr = [];
+        let daysInMonthArr:number[] = [];
         for (let i = 1; i <= daysInMonth; i++) {
             daysInMonthArr.push(i);
         }
@@ -275,14 +275,14 @@ const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<a
             spanishDays[newMonthFirstWeekdayNumber].spanishCalendarWeekdayNumber;
         const daysInMonth = new Date(newYear, newMonth + 1, 0).getDate();
 
-        let blankDaysArr = [];
+        let blankDaysArr:number[] = [];
         for (let i = 1; i <= spanishFirstWeekdayNumber; i++) {
             blankDaysArr.push(i);
         }
 
         setBlankDays(blankDaysArr);
 
-        let daysInMonthArr = [];
+        let daysInMonthArr:number[] = [];
         for (let i = 1; i <= daysInMonth; i++) {
             daysInMonthArr.push(i);
         }
