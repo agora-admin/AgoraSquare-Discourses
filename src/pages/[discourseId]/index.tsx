@@ -32,7 +32,6 @@ import RecordingsCard from "../../components/actions/RecordingsCard";
 import EventTag from "../../components/utils/EventTag";
 import VenueCard from "../../components/cards/VenueCard";
 import YoutubeTag from "../../components/utils/YoutubeTag";
-import NFTCard from "../../components/utils/NFTCard";
 
 const DiscoursePage = () => {
     const route = useRouter();
