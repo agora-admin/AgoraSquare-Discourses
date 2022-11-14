@@ -55,7 +55,7 @@ export const GET_DISCOURSES = gql`
 `
 
 export const GET_DISCOURSES_BY_CHAIN = gql`
-    query GetDiscourses($chainId: Int!) {
+    query GetDiscourses($chainId: [Int]!) {
         getDiscoursesByChainID(chainId: $chainId) {
             id
             title

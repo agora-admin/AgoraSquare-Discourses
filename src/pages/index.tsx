@@ -14,7 +14,7 @@ import HeroCard from '../components/actions/HeroCard'
 const Home: NextPage = () => {
 	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
 		variables: {
-			chainId: supportedChainIds[0]
+			chainId: supportedChainIds
 		}
 	});
 	
