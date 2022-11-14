@@ -34,7 +34,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
     const [error, setError] = useState({});
-    const [amount, setAmount] = useState('0.01');
+    const [amount, setAmount] = useState('1');
     const [discourseId, setDiscourseId] = useState('');
     const { activeChain } = useNetwork();
 
