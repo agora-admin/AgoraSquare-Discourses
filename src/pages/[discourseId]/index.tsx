@@ -267,12 +267,12 @@ const DiscoursePage = () => {
                                             <FundDiscourseDialog open={openFund} setOpen={setOpenFund} discourse={data?.getDiscourseById} />
                                         }
 
-                                        {loggedIn && t_connected && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max text-xs font-medium mt-4'>
+                                        {loggedIn && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max text-xs font-medium mt-4'>
                                             Fund
                                         </button>}
                                         {
-                                            !loggedIn || !t_connected && !fundingDone(data.getDiscourseById) &&
-                                            <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">You need to connect wallet and twitter to fund or participate.</p>
+                                            !loggedIn && !fundingDone(data.getDiscourseById) &&
+                                            <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">You need to connect wallet to fund or participate.</p>
                                         }
                                     </div>
 
