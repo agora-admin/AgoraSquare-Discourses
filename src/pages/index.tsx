@@ -44,7 +44,9 @@ const Home: NextPage = () => {
 					<div className='relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center px-4 sm:px-10 md2:px-0 gap-4'>
 						{
 							dData && dData.getDiscoursesByChainID.length > 0 &&
-							[].concat(dData.getDiscoursesByChainID).sort(
+							[].concat(dData.getDiscoursesByChainID)
+							.filter((e:any) => !e.disable)
+							.sort(
 								(a: any, b: any) => +b.initTS - +a.initTS
 							).map((data: any) => (
 								<DiscourseLongList key={data.id} data={data} />

@@ -46,7 +46,9 @@ let mockD: CreateObj = {
     endTS: "",
     topics: [],
     initialFunding: "1",
-    fundingPeriod: 0
+    fundingPeriod: 0,
+    yt_link: "",
+    disable: false
 }
 
 const labelCSS = "text-[14px] text-white/60 font-Lexend";
@@ -153,7 +155,9 @@ const CreateDiscoursePage = () => {
             endTS: "",
             topics: topics,
             initialFunding: "1",
-            fundingPeriod: fundingPeriod
+            fundingPeriod: fundingPeriod,
+            yt_link: "",
+            disable: false
         }
         return data;
     }
