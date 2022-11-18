@@ -45,16 +45,14 @@ export const IChainTag = ({ chainId }: { chainId: number }) => {
     );
 }
 
-export const ChainIcon = ({ chainId }: { chainId: number }) => {
-    if (chainId === 137 || chainId === 80001) {
-        return (
-            <Polygon16 />
-        );
+export const ChainIcon = ({chainId,size}:{chainId: number,size?: number}) => {
+    switch(chainId){
+        case 80001:
+        case 137:
+            return <Polygon16 size={size} />
+        default:
+            return <Box2 size={16} color="#c6c6c6" />
     }
-
-    return (
-        <Box2 size={16} color="#c6c6c6" />
-    );
 }
 
 export default ChainTag;

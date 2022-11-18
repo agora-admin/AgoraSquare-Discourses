@@ -1,5 +1,5 @@
 import Head from "next/head";
-import DiscourseLongList from "../components/cards/DiscourseLongList";
+import DiscourseLongList from "../components/cards/DiscourseCard";
 import Layout from "../components/layout/Layout";
 import Branding from "../components/utils/Branding";
 import { useRouter } from "next/router";
@@ -12,7 +12,6 @@ import { LINK_TWITTER } from "../lib/mutations";;
 import { shortAddress } from "../helper/StringHelper";
 import WalletOptionsLink from "../components/dialogs/WalletOptionsLink";
 import AppContext from "../components/utils/AppContext";
-import BDecoration from "../components/utils/BDecoration";
 
 const InvitePage = () => {
     const route = useRouter();
@@ -90,7 +89,7 @@ const InvitePage = () => {
             </Head>
 
             <Layout >
-                <BDecoration />
+                
 
                 <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10'>
                     {/* TopSection */}

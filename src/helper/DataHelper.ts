@@ -8,8 +8,8 @@ const getUsername = (user: string) => {
 }
 
 export const isSpeaker = (data : any, username: string) => {
-    let s1_username = getUsername(data.getDiscourseById.speakers[0].username);
-    let s2_username = getUsername(data.getDiscourseById.speakers[1].username); 
+    let s1_username = getUsername(data.speakers[0].username);
+    let s2_username = getUsername(data.speakers[1].username); 
     return s1_username === getUsername(username) || s2_username === getUsername(username);
 }
 
@@ -20,10 +20,10 @@ export const isSpeakerWallet = (data: any, walletAddress: string) => {
 }
 export const speakerConfirmed = (data : any, username: string) => {   
     let i = 0;
-    if (data.getDiscourseById.speakers[1].username.replace('@','') === username.replace('@','')) {
+    if (data.speakers[1].username.replace('@','') === username.replace('@','')) {
         i = 1;
     }
-    return data.getDiscourseById.speakers[i].confirmed;
+    return data.speakers[i].confirmed;
 }
 
 export const discourseConfirmed = (data : any) => {
@@ -55,35 +55,35 @@ export const getMeetDateTS = (data : any) => {
 // 5 - disputed
 // 6 - ongoing
 
-export enum DiscourseState{
+export enum DiscourseStateEnum{
     FUNDING,SCHEDULING,SCHEDULED,FINISHED,TERMINATED,DISPUTED,ONGOING
 }
 
 export const getStateTS = (data: any) => {
     if (!fundingDone(data)) {
-        return DiscourseState.FUNDING;
+        return DiscourseStateEnum.FUNDING;
     } else {
         if (data.status.terminated) {
-            return DiscourseState.TERMINATED;
+            return DiscourseStateEnum.TERMINATED;
         } else if (data.status.disputed) {
-            return DiscourseState.DISPUTED
+            return DiscourseStateEnum.DISPUTED
         } else if (data.status.completed) {
-            return DiscourseState.FINISHED
+            return DiscourseStateEnum.FINISHED
         } else if (discourseConfirmed(data)) {
             if(data.discourse.room_id) {
                 if (isPast(getMeetDateTS(data))) {
-                    return DiscourseState.ONGOING
+                    return DiscourseStateEnum.ONGOING
                 } else {
-                    return DiscourseState.SCHEDULED
+                    return DiscourseStateEnum.SCHEDULED
                 }
             } else {
                 if (data.discourse.meet_date) {
-                    return DiscourseState.SCHEDULED
+                    return DiscourseStateEnum.SCHEDULED
                 }
-                return DiscourseState.SCHEDULING
+                return DiscourseStateEnum.SCHEDULING
             }
         } else { // speaker didn't confirm self terminate
-            return DiscourseState.TERMINATED
+            return DiscourseStateEnum.TERMINATED
         }
     }
 }

@@ -7,6 +7,12 @@ export const getTime = (timeInSeconds: number) => {
     return date;
 }
 
+export const diff_hours = (dt2:Date, dt1:Date) => {
+    let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+    diff /= (60 * 60);
+    return Math.abs(Math.round(diff));
+}
+
 export const getSecNow = () => {
     const now = new Date();
     const sec = Math.floor(now.getTime() / 1000);

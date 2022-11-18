@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import UseAnimations from 'react-useanimations';
 import loading from 'react-useanimations/lib/loading';
-import { DiscourseIcon, FundDiscourseIcon } from '../utils/SvgHub';
+import { DiscourseIcon, FundDiscourseIcon, FundDiscourseIcon2 } from '../utils/SvgHub';
 import { FUND_UPDATE } from '../../lib/mutations';
 import { GET_DISCOURSE_BY_ID } from '../../lib/queries';
 import { chain, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
@@ -15,6 +15,7 @@ import AppContext from '../utils/AppContext';
 import { uuid } from 'uuidv4';
 import { ToastTypes } from '../../lib/Types';
 import { getChainName, getCurrencyName } from '../../Constants';
+import { ArrowCircleRight, CloseCircle, TickSquare } from 'iconsax-react';
 
 
 const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, discourse: any }) => {
@@ -24,7 +25,8 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
-    const [ amount, setAmount ] = useState('0.01');
+    const [ amount, setAmount ] = useState('1.0');
+    const [acceptTerms,setAcceptTerms] = useState(false);
     const { activeChain } = useNetwork();
     
     const [ updateFund, { data: fData } ] = useMutation(FUND_UPDATE);
@@ -106,9 +108,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
         setMinting(false);
         setFunded(false);
         setTxn("");
-    }
-
-    
+    }    
 
     const handleFundClick = async () => {
         if (activeChain?.id === discourse.chainId) {
@@ -129,73 +129,97 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                 duration: 5000,
                 id: uuid()
             })
-            
         }
     }
 
-
     return (
-
-
             <Dialog as='div' open={open} onClose={handleClose}
                 initialFocus={buttonRef}
                 className='fixed z-20 inset-0 w-screen h-screen overflow-hidden'>
                 <div className="flex items-center justify-center h-screen backdrop-blur-sm overflow-hidden">
                     <Dialog.Overlay className="fixed inset-0 bg-black opacity-0 w-screen h-screen overflow-hidden" />
 
-                    <div className={`${open ? 'animate-dEnter': 'animate-dExit'} relative bg-[#141515] border border-[#212427]  rounded-2xl max-w-sm w-full mx-auto px-6 py-4 sm:py-10 gap-4`}>
-                        {/* Mint Post View */}
+                    <div className={`${open ? 'animate-dEnter': 'animate-dExit'} fixed inset-0 xs2:relative bg-[#0A0A0A] xs2:rounded-3xl xs2:max-w-sm w-full p-4 flex flex-col gap-3`}>
+                        {/* Fund Post View */}
                         {!minting && !funded && <>
-                            <Dialog.Title className="text-white text-base  font-bold tracking-wide flex items-center gap-2 w-max self-center mx-auto ">
-                                <FundDiscourseIcon />
+                        <div className="absolute top-3 right-3 cursor-pointer" onClick={handleClose}>
+                            <CloseCircle size={23} color="#6C6C6C" variant='Bulk' />
+                        </div>
 
-                                Fund Discourse
-                            </Dialog.Title>
-                            <Dialog.Description className="flex flex-col  w-full items-center  gap-4 text-center justify-between mt-4">
-                                <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>You are about to fund a discoures. Select the amount in {getCurrencyName(discourse.chainId)}. </p>
-                                <div className='flex flex-col items-center justify-center w-full gap-4'>
-                                    <label htmlFor="amount" className='relative flex items-center'>
-                                        <p className='absolute text-white m-auto inset-y-0 left-3 h-max'></p>
-                                        <input value={amount} onChange={(e) => setAmount(e.target.value) } type="number" id='amount' className=" input-s pl-8 text-white" placeholder='Stake Amount' />
-                                    </label>
-                                    <button onClick={handleFundClick} ref={buttonRef} className='button-s font-semibold tracking-wide px-6 py-3  text-xs bg-[#212427] rounded-lg outline-none'>Fund &rarr;</button>
+                        <section className="flex flex-col gap-2">
+                            <header className="flex items-center gap-2">
+                                <FundDiscourseIcon2 />
+                                <h3 className="font-bold text-white text-sm">Fund Discourse</h3>
+                            </header>
+
+                            <p className='text-[#E5F7FFE5] text-[13px]'>You are about to fund a discourse. Select the amount in MATIC</p>
+
+                            <input type="number" 
+                            value={amount} 
+                            onChange={(e) => setAmount(e.target.value)} 
+                            placeholder="Stake amount" 
+                            className="bg-[#141414] border-2 border-[#1E1E1E] outline-none text-[#7D8B92] text-[13px] font-semibold py-2 px-3 rounded-lg "
+                            />
+                        </section>
+
+                        <div className="w-full h-[1.2px] bg-[#1E1E1E]" />
+
+                        <section className='flex flex-col gap-3'>
+                            <div className='flex items-center justify-between'>
+                                <p className='font-Lexend font-semibold text-xs text-[#E5F7FF] max-w-[230px]'>I agree with <span className='underline text-[#6A8BFF] cursor-pointer'>terms & conditions</span>, and wish to Proceed.</p>
+                                
+                                <div onClick={() => setAcceptTerms(prev => !prev)} className="cursor-pointer">
+                                    {acceptTerms ? <TickSquare size={24} color="white" /> : 
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15 22.75H9C3.57 22.75 1.25 20.43 1.25 15V9C1.25 3.57 3.57 1.25 9 1.25H15C20.43 1.25 22.75 3.57 22.75 9V15C22.75 20.43 20.43 22.75 15 22.75ZM9 2.75C4.39 2.75 2.75 4.39 2.75 9V15C2.75 19.61 4.39 21.25 9 21.25H15C19.61 21.25 21.25 19.61 21.25 15V9C21.25 4.39 19.61 2.75 15 2.75H9Z" fill="white"/>
+                                        </svg>
+                                    }
                                 </div>
-                            </Dialog.Description>
-                        </>
-                        }
-                        {/* Minting.. Post View */}
-                        {minting  &&
-                            <>
-                                <Dialog.Title className="text-white text-base  font-bold tracking-wide flex items-center gap-2 w-max self-center mx-auto ">
-                                    <FundDiscourseIcon />
-                                    Funding Discourse
-                                </Dialog.Title>
-                                <Dialog.Description className="flex flex-col  w-full items-center  gap-4 text-center justify-between mt-4">
-                                    <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>Approve the transaction from metamask.<br /> {amount} {getCurrencyName(discourse.chainId)} will be funded to the discourse.</p>
+                            </div>
+
+                            <button onClick={handleFundClick} ref={buttonRef} className="mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-3 cursor-pointer flex justify-center text-xs font-Lexend text-black font-medium">
+                                Fund
+                            </button>
+                        </section>
+                        </>}
+
+
+                        {/* Funding View */}
+                        {minting && <>
+                            <header className="flex items-center gap-2">
+                                <FundDiscourseIcon2 />
+                                <h3 className="font-bold text-white text-sm">Funding Discourse</h3>
+                            </header> 
+
+                            <div className="flex flex-col w-full text-center gap-4">
+                                    <div className="flex flex-col gap-1">
+                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>Approve the transaction from metamask.</p>
+                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>{amount} {getCurrencyName(discourse.chainId)} will be funded to the discourse.</p>
+                                    </div>
                                     <div className='flex items-center justify-center gap-2'>
                                         <UseAnimations animation={loading} size={20} strokeColor="#ffffff" className='text-white' />
-                                        <p className='text-sm text-white/50' >Please Wait...</p>
+                                        <p className='text-sm text-[#E5F7FFE5] font-semibold' >Please Wait...</p>
                                     </div>
-                                </Dialog.Description>
-                            </>
-                        }
-                        {/* Minted Post */}
+                            </div> 
+                        </>}
+
+
+                        {/* Funded View */}
                         {!minting && funded &&
                             <>
-                            <Dialog.Title className="text-white text-base  font-bold tracking-wide flex items-center gap-2 w-max self-center mx-auto ">
-                                <DiscourseIcon />
-
-                                Funded Discourse
-                            </Dialog.Title>
-                            <Dialog.Description className="flex flex-col  w-full items-center  gap-4 text-center justify-between mt-4">
-                                <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>Thanks for funding the discourse. You&apos;ll get notification once the stream is scheduled and speakers confirms.</p>
-                                <div className='flex items-center justify-center w-full px-10 gap-10'>
-                                    <a href={`${activeChain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" className='text-xs font-bold  text-gradient' rel="noreferrer" >View Transaction ↗</a>
-                                </div>
-                            </Dialog.Description>
+                            <header className="flex items-center gap-2">
+                                <FundDiscourseIcon2 />
+                                <h3 className="font-bold text-white text-sm">Funded Discourse</h3>
+                            </header> 
+                            <div className="flex flex-col w-full items-center gap-4 text-center justify-between">
+                                <p className='text-[#E5F7FFE5] text-semibold text-xs'>Thanks for funding the discourse. You&apos;ll get notification once the stream is scheduled and speakers confirms.</p>
+                                <a href={`${activeChain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" rel="noreferrer" className='mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-2 cursor-pointer flex items-center gap-2'>
+                                    <span className='text-[11px] font-Lexend text-black font-medium'>View Transaction</span>
+                                    <ArrowCircleRight color="#7E6C97" variant="Bold" />
+                                </a>  
+                            </div>
                             </>
                         }
-
                     </div>
                 </div>
             </Dialog>

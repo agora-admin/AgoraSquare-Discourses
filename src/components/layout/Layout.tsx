@@ -2,6 +2,7 @@ import { Link1, Warning2 } from "iconsax-react";
 import { useContext, useEffect } from "react";
 import { Chain, useConnect, useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
+import TopBar from "../topbar/TopBar";
 import AppContext from "../utils/AppContext";
 
 const Layout = ({ children }: { children: any }) => {
@@ -41,11 +42,11 @@ const Layout = ({ children }: { children: any }) => {
     }
     
     return (
-        <div className="flex-col min-h-screen flex items-center relative justify-center bg-[#000000]">
-            <div className="w-full max-w-4xl flex">
+        <div className="min-h-screen flex items-center justify-center bg-black">
+            <div className="w-full px-3 sm:px-10 lg:px-0 max-w-5xl flex flex-col">
                 {children}
             </div>
-            <div className="fixed bottom-6 left-6 flex flex-col gap-2 z-40">
+            <div className="fixed bottom-6 left-6 flex flex-col gap-2 z-50">
                 {
                     wrongChain && loggedIn &&
                     <div className=" bg-card p-4 gap-2 rounded-xl z-40 max-w-sm flex flex-row">
@@ -56,13 +57,13 @@ const Layout = ({ children }: { children: any }) => {
                         </div>
                         <div className="flex flex-col ">
                             <p className="text-[#fc8181] font-Lexend text-sm">Wrong Chain</p>
-                            <p className="text-[#c6c6c6] font-Lexend text-[10px] max-w-[25ch] w-full gap-2 items-center">This app is only available on <b>{activeChain?.name === 'Polygon' ? 'Polygon Mumbai' : 'Polygon'}</b></p>
+                            <p className="text-[#c6c6c6] font-Lexend text-[10px] max-w-[25ch] w-full gap-2 items-center">This app is only available on <b>{activeChain?.name === 'Polygon' ? 'Polygon Mumbai and GodWoken Testnet' : 'Polygon'}</b></p>
                             <span onClick={() => handleSwitchChain()} className="cursor-pointer font-regular text-blue-400 text-[10px] mt-1 font-medium">Click to change</span>
                         </div>
                     </div>
                 }
                 {showBetaMsg &&
-                    <div className=" bg-card p-4 gap-2 rounded-xl  max-w-sm flex flex-row">
+                    <div className="bg-card p-4 gap-2 rounded-xl  max-w-sm flex flex-row">
                         <div className="flex flex-col items-center justify-between">
                             <Warning2 size='24' color="#6c6c6c" />
                         </div>

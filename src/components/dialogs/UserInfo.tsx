@@ -1,19 +1,18 @@
-import { Popover, Transition } from "@headlessui/react";
-import { Wallet1, ArrowRight2, Logout, Refresh, I3DRotate, Repeat } from "iconsax-react";
+import { Popover } from "@headlessui/react";
+import { Logout, Repeat } from "iconsax-react";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { uuid } from "uuidv4";
-import { useBalance, useDisconnect, useFeeData, useNetwork } from "wagmi";
-import { getSwitchNetwork, supportedChainIds } from "../../Constants";
+import { useBalance, useDisconnect, useNetwork } from "wagmi";
+import { supportedChainIds } from "../../Constants";
 import { shortAddress } from "../../helper/StringHelper";
 import { ToastTypes } from "../../lib/Types";
-import ChainBar from "../actions/ChainBar";
 import AppContext from "../utils/AppContext";
-import ChainTag, { ChainIcon, IChainTag, SChainTag } from "../utils/ChainTag";
-import { Twitter_x10, Twitter_x16 } from "../utils/SvgHub";
+import { ChainIcon } from "../utils/ChainTag";
+import { Twitter_x16 } from "../utils/SvgHub";
 
-const LogoutPop = () => {
+const UserInfo = () => {
 
     const { disconnectAsync } = useDisconnect();
     const { t_connected, walletAddress, t_handle, t_img, addToast } = useContext(AppContext);
@@ -60,18 +59,19 @@ const LogoutPop = () => {
         })
     }
 
-    const getBalance = () => {
+    const getBalance = () => {    
         if (bal && activeChain && supportedChainIds.includes(activeChain?.id)) {
             let val = Number(bal.data?.formatted);
-            if (bal.data?.symbol === "ETH") {
-                return val > 999999 ? 999999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
-            }
-            if (bal.data?.symbol === "rETH") {
-                return val > 999999 ? 999999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
-            }
-
-            if (bal.data?.symbol === "MATIC") {
-                return val > 9999 ? 9999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
+            
+            switch(bal.data?.symbol){
+                case "ETH":
+                    return val > 999999 ? 999999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
+                case "rETH":
+                    return val > 999999 ? 999999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
+                case "MATIC":
+                    return val > 9999 ? 9999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
+                case "pCKB":
+                    return val > 9999 ? 9999 + "+" : val.toFixed(3) + " " + "pCKB";
             }
 
             return val.toFixed(3) + " " + bal.data?.symbol;
@@ -79,25 +79,20 @@ const LogoutPop = () => {
         return "--";
     }
 
-
     return (
         <Popover className="relative">
             {({ open }) => (
                 <>
-                    <Popover.Button className={`t-all outline-none text-white text-xs ${open ? 'bg-[#212427]' : ''} hover:bg-white/10 group rounded-xl font-Lexend px-4 py-2 flex items-center gap-2`}>
-                        <div className='hidden relative sm:flex items-center  w-6 h-6 ' >
-                            <div className={`absolute flex bottom-0 right-0 inset-y-0 h-max my-auto  ${open ? '-translate-x-[25%]' : '-translate-x-[70%]'} group-hover:-translate-x-[25%] rounded-xl t-all`}>
-                                <IChainTag chainId={activeChain?.id!} />
-                            </div>
-                            <img className="w-6 h-6 z-10 object-cover rounded-lg object-center" src={t_connected ? t_img :`https://avatar.tobi.sh/${walletAddress}`} alt="Profile image" />
-                        </div>
-                        <div className="flex flex-col justify-center items-start">
-                            <p className='text-white text-[10px] font-Lexend sm:text-xs'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>
-                            <p className='text-[#c6c6c6] text-[8px] font-Lexend sm:text-[10px]'>{getBalance()}</p>
+                    <Popover.Button className="flex items-center gap-3 outline-none xs2:bg-[#141414] xs2:rounded-xl xs2:px-3 xs2:py-2 cursor-pointer">
+                        <img className="w-8 h-8 rounded-full " src={t_connected ? t_img : "/profile_avatar.png"} alt="Profile image"/>
+
+                        <div className="hidden xs2:flex flex-col gap-[2px] items-start">
+                            <p className='text-[#E5F7FF] text-[10px] font-Lexend'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>
+                            <p className='text-[#84B9D1] font-semibold text-[8px] sm:text-[10px]'>{getBalance()}</p>
                         </div>
                     </Popover.Button>
                 
-                    <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 -right-2 mt-2 bg-card bg-[#141515] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
+                    <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 mobile2:bottom-12 mobile:bottom-16  -right-2 mt-2 bg-card bg-[#0A0A0A] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
                             {activeChain?.id !== supportedChainIds[0] &&
                                 <button onClick={() => handleSwitch(supportedChainIds[0])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
@@ -105,13 +100,6 @@ const LogoutPop = () => {
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
                                 </button>}
 
-                            {
-                            activeChain?.id === supportedChainIds[0] &&
-                                <div className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 `}>
-                                    {!switching && <ChainIcon chainId={activeChain?.id!} />}
-                                    <p className="text-[10px] text-[#7B3FE4] font-bold">{activeChain?.name}</p>
-                                </div>
-                            }
                             {
                                 !t_connected &&
                                 <Link href="/link">
@@ -142,4 +130,4 @@ const LogoutPop = () => {
     );
 }
 
-export default LogoutPop;
+export default UserInfo;

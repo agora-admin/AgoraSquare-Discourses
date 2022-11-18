@@ -39,7 +39,7 @@ const SpeakerPop: FC<Props> = ({ setSpeakers,flag }) => {
         <Popover className="relative">
             {({ open }) => (
                 <>
-                    <input onFocus={onFocus} onKeyDown={handleKeyDown} onBlur={onBlur} type="text" className="input-s w-full py-3" placeholder={flag ? "Speaker's twitter handle" : "Moderator's twitter handle"} value={val} onChange={(e) => {
+                    <input onFocus={onFocus} onKeyDown={handleKeyDown} onBlur={onBlur} type="text" className="input-s w-full" placeholder={flag ? "Speaker's twitter handle" : "Moderator's twitter handle"} value={val} onChange={(e) => {
                         setState(1);
                         setVal(e.target.value);
                     }} />
