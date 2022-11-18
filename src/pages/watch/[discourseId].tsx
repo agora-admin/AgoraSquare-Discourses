@@ -56,7 +56,7 @@ const Watch: NextPage = () => {
             <Layout>
                 
                 <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10'>
-                    <TopBar />
+                    <TopBar onDiscoursePage={false} />
                     {
                         sessionLoading || Dloading &&
                         <div className="flex gap-4 flex-col w-full md:flex-[0.6] items-center pt-20">

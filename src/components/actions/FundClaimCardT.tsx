@@ -10,7 +10,6 @@ import AppContext from "../utils/AppContext";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { uuid } from "uuidv4";
-import {toast} from 'react-toastify';
 
 const FundClaimCardT = ({ data }: { data: any }) => {
 
