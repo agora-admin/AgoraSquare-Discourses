@@ -38,7 +38,7 @@ const TopicsInput: FC<Props> = ({ topics, addTopic, removeTopic }) => {
     }, [error])
 
     return (
-        <div className="w-full grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
+        <div className="w-full max-w-[585px] grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
             {
                 topics.map((topic, index) => (
                     <div key={index} className="w-full bg-[#0b0b0b] rounded-lg ring-[1px] ring-[#212427] py-2 px-4 flex items-center gap-2 justify-between h-full" >
@@ -50,7 +50,7 @@ const TopicsInput: FC<Props> = ({ topics, addTopic, removeTopic }) => {
                 ))
             }
             <div className="w-full flex relative" >
-                <input value={topic} onKeyDown={handleKeyDown} onChange={(e) => setTopic(e.target.value)} className="input-s text-white/80 text-xs w-full py-3" type="text" placeholder="another sub-topic" />
+                <input value={topic} onKeyDown={handleKeyDown} onChange={(e) => setTopic(e.target.value)} className="input-s text-white/80 text-xs w-full" type="text" placeholder="another sub-topic" />
                 { topic && <button onClick={() => handleAddTopic(topic)} className="button-i absolute inset-y-0  right-1 h-max my-auto">
                     <Add size={20} color="#5f5f5f" />
                 </button>}

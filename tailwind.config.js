@@ -3,17 +3,21 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    
     extend: {
+      gridTemplateColumns: {
+        'nftCard': "repeat(auto-fill,minmax(210px,1fr))"
+      },
       screens: {
         'md2' : '900px',
-        'xs' : '400px'
+        'xs' : '400px',
+        'xs2' : '465px',
+        'mobile': {'max': '639px'},
+        'mobile2': {'max': '400px'},
       },
       fontFamily: {
         'montserrat': ['Montserrat', 'sans-serif'],
-        'Lexend': ['Lexend', 'sans-serif'],
+        Lexend: ['Lexend', 'sans-serif'],
       },
-
       keyframes: {
         load: {
           '0%': {

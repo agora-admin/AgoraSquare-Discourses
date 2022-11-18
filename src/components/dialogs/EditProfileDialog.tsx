@@ -56,7 +56,7 @@ const EditProfileDialog = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: 
             <div className="flex items-center justify-center h-screen backdrop-blur-sm overflow-hidden">
                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-0 w-screen h-screen overflow-hidden" />
 
-                <div className={`${isOpen ? 'animate-dEnter': 'animate-dExit'} relative flex flex-col gap-4 bg-[#141515] border border-[#212427] rounded-lg max-w-sm w-full mx-auto p-2`}>
+                <div className={`${isOpen ? 'animate-dEnter': 'animate-dExit'} fixed inset-0 xs2:relative flex flex-col gap-4 bg-[#141515] border border-[#212427] rounded-lg xs2:max-w-sm w-full mx-auto p-2`}>
                     <div className="flex items-center gap-2">
                         <CloseCircle size="25" color="rgb(255 255 255/0.5)" ref={buttonRef} onClick={handleClose} className="cursor-pointer"/>
                         <span className="flex-1 text-white text-xs font-Lexend">Edit Profile</span>

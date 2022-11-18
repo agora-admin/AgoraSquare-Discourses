@@ -1,37 +1,35 @@
 import Head from "next/head";
 import Layout from "../../components/layout/Layout";
 import { useRouter } from "next/router";
-import { Clock, Maximize4, MoneyRecive, PathTool, Profile2User, Wallet1 } from "iconsax-react";
+import { ArrowCircleRight, Clock, Maximize4, MoneyRecive, PathTool, Profile2User, ProfileTick, Wallet1 } from "iconsax-react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { useQuery } from "@apollo/client";
-import { shortAddress } from "../../helper/StringHelper";
+import { getProfileImageUrl, shortAddress } from "../../helper/StringHelper";
 import { formatDate, getAgo, getAgoT, getTime } from "../../helper/TimeHelper";
 import { getFund, getFundTotal } from "../../helper/FundHelper";
 import { useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
-import ConnectWalletDailog from "../../components/dialogs/ConnectWalletDailog";
 import TopBar from "../../components/topbar/TopBar";
-import { SpeakerConfirmationIcon, TwitterIcon } from "../../components/utils/SvgHub";
+import { ArrowNE, EditIcon, IRLIcon, RecordingIcon} from "../../components/utils/SvgHub";
 import FundDiscourseDialog from "../../components/dialogs/FundDiscourseDialog";
 import FundsDialog from "../../components/dialogs/FundsDialog";
 import Link from "next/link";
 import SpeakerConfirmationCard from "../../components/actions/SpeakerConfirmationCard";
-import { canClaimC, discourseConfirmed, DiscourseState, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
+import { canClaimC, discourseConfirmed, DiscourseStateEnum, fundingDone, getStateTS, hasWithdrawn, isSpeaker, isSpeakerWallet, speakerConfirmed } from "../../helper/DataHelper";
 import SlotCard from "../../components/actions/SlotCard";
 import JoinMeetCard from "../../components/actions/meet/JoinMeetCard";
 import FundClaimCardT from "../../components/actions/FundClaimCardT";
 import FundClaimCardC from "../../components/actions/FundClaimCardC";
 import { useNetwork } from "wagmi";
-import BDecoration from "../../components/utils/BDecoration";
 import AppContext from "../../components/utils/AppContext";
-import ChainExplorer from "../../components/utils/ChainExplorer";
 import { ToastTypes } from "../../lib/Types";
 import { uuid } from "uuidv4";
 import { getChainName, getCurrencyName } from "../../Constants";
 import RecordingsCard from "../../components/actions/RecordingsCard";
-import EventTag from "../../components/utils/EventTag";
 import VenueCard from "../../components/cards/VenueCard";
 import YoutubeTag from "../../components/utils/YoutubeTag";
+import { ChainIcon } from "../../components/utils/ChainTag";
+import DiscourseState from "../../components/discoursePage/DiscourseState";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -56,6 +54,10 @@ const DiscoursePage = () => {
     }, [Dloading, data])
 
     const handleFund = async () => {
+        console.log("handleFund");
+        console.log({loggedIn});
+        
+        
         if (loggedIn) {
             if (activeChain?.id === data.getDiscourseById.chainId) {
                 setOpenFund((prev: boolean) => !prev);
@@ -83,10 +85,35 @@ const DiscoursePage = () => {
     }
 
     const slotConfirmed = (data: any) => {
-        let d = data.getDiscourseById.discourse;
+        let d = data.discourse;
         if (d.meet_date !== "") {
             return true;
         }
+        return false;
+    }
+
+    const getChainExplorerUrl = () => {
+        switch(data.getDiscourseById.chainId){
+            case 137:
+                return "https://polygonscan.com/tx/"+data.getDiscourseById.txnHash;
+            case 80001:
+                return "https://mumbai.polygonscan.com/tx/"+data.getDiscourseById.txnHash;
+            case 71401:
+                return "https://v1.testnet.gwscan.com/tx/"+data.getDiscourseById.txnHash;
+            default:
+                return "https://etherscan.io/tx/"+data.getDiscourseById.txnHash;
+        }
+    }
+
+    const checkNeedForPadding = () => {
+        if(!discourseConfirmed(data.getDiscourseById) && fundingDone(data.getDiscourseById))
+            return true;
+        if(getStateTS(data.getDiscourseById) === DiscourseStateEnum.FINISHED && canClaimC(data.getDiscourseById, walletAddress) && !hasWithdrawn(data.getDiscourseById, walletAddress))
+            return true;
+        
+        if(!fundingDone(data.getDiscourseById) && loggedIn && t_connected && isSpeaker(data.getDiscourseById, t_handle) && !speakerConfirmed(data.getDiscourseById, t_handle) && !slotConfirmed(data.getDiscourseById))
+            return true;
+        
         return false;
     }
 
@@ -102,14 +129,9 @@ const DiscoursePage = () => {
                 {data && <meta property="og:description" content={data.getDiscourseById.description} />}
             </Head>
 
-            <Layout >
-                <BDecoration />
-
-                <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10'>
-                    {/* TopSection */}
-
-                    <TopBar showLogo={true} />
-
+            <Layout>
+                {!loading && data && !error && <TopBar onDiscoursePage discourseData={data.getDiscourseById} handleFund={handleFund}/>}
+                <div className='w-full min-h-screen flex flex-col pt-3 gap-4 z-10'>
                     {
                         loading &&
                         <div className='flex-1 flex justify-center items-center'>
@@ -118,215 +140,169 @@ const DiscoursePage = () => {
                     }
 
                     {/* Body */}
-                    <div className="flex flex-col md2:flex-row md2:justify-between mt-5 sm:mt-10 px-4 sm:px-10 lg:px-0">
-                        {/* left section */}
-                        {error && <div className='w-full py-4 flex items-center justify-center mt-10'>
-                            <img className='w-48' src="/404_dis.png" alt="404 not found" />
-                        </div>}
-                        {!loading && data && !error &&
-                            <div className="flex flex-col gap-2 w-full md2:flex-[0.7]">
-                                <h3 className="text-white font-semibold text-sm sm:text-xl">{data.getDiscourseById.title}</h3>
-                                <div className="flex flex-col sm:flex-row gap-3 md2:gap-2">
-                                    <div className="flex flex-col xs:flex-row gap-2">
-                                        <EventTag irl={data.getDiscourseById.irl} />
-                                        <div className="flex gap-2">
-                                            <ChainExplorer data={data.getDiscourseById} />
-                                            {data.getDiscourseById.irl && <YoutubeTag url={data.getDiscourseById.yt_link} />}
-                                        </div>
+                    {error && <div className='w-full py-4 flex items-center justify-center mt-10'>
+                                <img className='w-48' src="/404_dis.png" alt="404 not found" />
+                            </div>}
+                    {!loading && data && !error &&
+                    <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
+                        <DiscourseState discourseData={data.getDiscourseById} slotConfirmed={slotConfirmed} />
+
+                        <div className="flex flex-col gap-5">
+                            {/* Top Section */}
+                            <div className="w-full flex items-center justify-between sm:px-8">
+                                <div className="flex items-center">
+                                    <div className="relative flex items-center">
+                                        <img className="w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(data.getDiscourseById.speakers[0]?.image_url)} alt="user profile image" />
+                                        <img className="relative top-0 right-3 w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(data.getDiscourseById.speakers[1]?.image_url)} alt="user profile image" />
                                     </div>
-                                    <div className="flex gap-2 items-center">
-                                        <PathTool size="16" color="#6a6a6a" />
-                                        <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>
-                                            <p className='text-white/60 text-xs'>{shortAddress(data.getDiscourseById.prop_starter)}</p>
-                                        </div>
-                                        <p className="text-white/40 text-[10px] ">{getAgo(data?.getDiscourseById?.initTS)}</p>
+                                
+                                    <div className="flex flex-col gap-[6px]">
+                                        <small className="font-Lexend text-base !leading-3 text-[#E5F7FF] font-medium lowercase">{data.getDiscourseById.speakers[0]?.name}</small>
+                                        <small className="font-Lexend text-base !leading-3 text-[#E5F7FF] font-medium lowercase">{data.getDiscourseById.speakers[1]?.name}</small>
                                     </div>
-                                </div>
-                                <p className=" mt-4 w-full text-white/60 text-xs xs:text-sm leading-5 tracking-wide">{data.getDiscourseById.description}</p>
-                                <div className="bg-card flex flex-col gap-2 p-6 rounded-xl w-full md2:max-w-[80%] mt-2">
-                                    <h4 className="text-sm text-white/40">Topics :</h4>
-                                    <ul className="list-inside">
-                                        {
-                                            data.getDiscourseById.topics.map((item: string, index: number) => (
-                                                <li className="text-white/40 text-xs xs:text-sm list-disc mb-2 leading-5" key={index}>{item}</li>
-                                            ))
-                                        }
-                                    </ul>
                                 </div>
 
-                                <div className="flex items-center gap-4 mt-8">
-                                    <div className="flex flex-col">
-                                        <p className=" w-full text-white/60 text-xs xs:text-sm leading-5 tracking-wide">Total Stake:</p>
-                                        <h3 className="text-white/80 text-base sm:text-lg font-bold tracking-wider">{getFundTotal(data.getDiscourseById.funds)} {getCurrencyName(data.getDiscourseById.chainId)}</h3>
-                                    </div>
-                                    {!fundingDone(data.getDiscourseById) && <div className="h-[80%] w-[2px] bg-[#212427]" />}
-                                    {!fundingDone(data.getDiscourseById) && <div className='flex flex-col gap-1'>
-                                        <div className='flex items-end gap-2'>
-                                            <Wallet1 size="16" color="#68D391" variant='Bold' />
-                                            <p className='uppercase text-[10px] text-[#68D391] tracking-wider font-medium'>funding</p>
-                                        </div>
-                                        <div className='flex items-end gap-2'>
-                                            <Clock size="16" color="#6a6a6a" />
-                                            <p className='uppercase text-[10px] text-[#6a6a6a] tracking-wider font-semibold'>{formatDate(getTime(data.getDiscourseById.endTS))}</p>
-                                        </div>
-                                    </div>}
-                                </div>
+                                {/* Check Recording Button */}
+                                {
+                                    (getStateTS(data.getDiscourseById) === DiscourseStateEnum.FINISHED) &&
+                                    <>
+                                        <Link href={data.getDiscourseById.irl ? data.getDiscourseById.yt_link : `/watch/${data.getDiscourseById.id}`} passHref>
+                                            <div className="mobile:hidden flex items-center gap-2 bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
+                                                <small className="text-xs font-Lexend text-black font-medium">Check recordings</small>
+                                                <ArrowCircleRight color="#4F6F7D" variant="Bold"/>
+                                            </div>
+                                        </Link>
 
-                                {/* Condition to check the funding period */}
-                                { !data.getDiscourseById.irl && data.getSlotById && fundingDone(data.getDiscourseById) && discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === DiscourseState.SCHEDULING &&
-                                    <SlotCard id={data.getDiscourseById.id} propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} endTS={+data.getDiscourseById.endTS} data={data.getSlotById} />
+                                        <Link href={data.getDiscourseById.irl ? data.getDiscourseById.yt_link : `/watch/${data.getDiscourseById.id}`} passHref>
+                                            <div className="sm:hidden bg-[#84B9D1] rounded-full p-2">
+                                                <RecordingIcon size={20} />
+                                            </div>
+                                        </Link>
+                                    </>
                                 }
 
-                            </div>}
+                                {/* Funding Button */}
+                                {
+                                    loggedIn && !fundingDone(data.getDiscourseById) && 
+                                    <div onClick={handleFund} className="mobile2:hidden flex items-center gap-2 bg-[#D2B4FC] rounded-2xl px-4 py-2 cursor-pointer">
+                                        <span className="text-xs font-Lexend text-black font-medium">Fund</span>
+                                        <ArrowCircleRight color="#7E6C97" variant="Bulk" />
+                                    </div>
+                                }
 
-                        {/* Right section */}
-                        <div className="flex flex-col gap-4 flex-[.3] mt-5 sm:mt-10 w-full md2:mt-0">
-                            {/* Card Speakers */}
-                            {!loading && data && !error &&
-                                <>
-                                    
-                                    {
-                                        !discourseConfirmed(data.getDiscourseById) && fundingDone(data.getDiscourseById) &&
-                                        <FundClaimCardT data={data.getDiscourseById} />
-                                    }
+                                {
+                                    loggedIn && !fundingDone(data.getDiscourseById) &&
+                                    <FundDiscourseDialog open={openFund} setOpen={setOpenFund} discourse={data?.getDiscourseById} />
+                                }
+                            </div>
 
-                                    {
-                                        getStateTS(data.getDiscourseById) === DiscourseState.FINISHED && canClaimC(data.getDiscourseById, walletAddress) && !hasWithdrawn(data.getDiscourseById, walletAddress) &&
-                                        <FundClaimCardC data={data.getDiscourseById} />
-                                    }
-
-                                    {
-                                        getStateTS(data.getDiscourseById) === DiscourseState.FINISHED &&
-                                        <RecordingsCard data={data.getDiscourseById} />
-                                    }
-
-                                    {
-                                        slotConfirmed(data) && !data.getDiscourseById.irl &&
-                                        <JoinMeetCard data={data.getDiscourseById} />
-                                    }
-                                    {/* Speaker message */}
-                                    {!fundingDone(data.getDiscourseById) && <>
-                                        {
-                                            loggedIn && t_connected && isSpeaker(data, t_handle) && !speakerConfirmed(data, t_handle) &&
-                                            !slotConfirmed(data) &&
-                                            <SpeakerConfirmationCard data={data.getDiscourseById} />
-                                        }
-                                        {
-                                            loggedIn && t_connected && isSpeaker(data, t_handle) && speakerConfirmed(data, t_handle) &&
-                                            !slotConfirmed(data) &&
-                                            <div className="bg-gradient rounded-xl p-4 flex flex-col">
-                                                <div className="flex items-center gap-2">
-                                                    <SpeakerConfirmationIcon />
-                                                    <p className="text-[#212221] font-Lexend font-semibold text-sm">You&apos;ve confirmed</p>
-                                                </div>
-                                            </div>
-                                        }
-                                    </>}
-                                    {
-                                        loggedIn && !t_connected && getStateTS(data.getDiscourseById) !== DiscourseState.TERMINATED &&
-                                        <div className="bg-card rounded-xl p-4 flex flex-col">
-                                            <div className="flex items-center gap-2">
-                                                <TwitterIcon />
-                                                <p className="text-gradient font-Lexend font-bold text-sm">Are you a speaker?</p>
-                                            </div>
-                                            <p className="text-[#c6c6c6] text-[10px] mt-2">
-                                                Connect you wallet with twitter account get the speakers previleges for the discourse you&apos;re invited to.
-                                                <Link href="/link">
-                                                    <a className="text-[#1DA1F2]"> Click here to link</a>
-                                                </Link>
-                                            </p>
-                                        </div>
-                                    }
-
-                                    <div className="flex flex-col gap-2 bg-card rounded-xl p-4">
-                                        <div className="flex items-center gap-2">
-                                            <Profile2User size="18" color="#797979" />
-                                            <p className="font-medium text-sm font-Lexend text-[#797979]">Speakers</p>
+                            {/* Discourse Content Section */}
+                            <div className="bg-[#141414] rounded-3xl flex flex-col gap-3 p-5 px-7 mobile_discourse_content">
+                                {/* Part 1 */}
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex flex-col  xs:flex-row xs:items-center gap-2 sm:gap-4">
+                                        <div className="flex items-center gap-1">
+                                            <IRLIcon size={20} />
+                                            <span className="font-Lexend font-medium text-xs text-[#FCB4BD]">IRL</span>
                                         </div>
 
-                                        <div className='flex items-center gap-1 mt-2'>
-                                            {/* avatar */}
-                                            <div className='flex items-center w-16 h-8 relative'>
-                                                <div className='flex items-center w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[0]?.image_url} alt="profile image" />
-                                                </div>
-                                                <div className='flex items-center absolute left-[35%] w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                    <img className="scale-105 w-8 h-8 object-cover rounded-xl object-center" src={data.getDiscourseById.speakers[1]?.image_url} alt="profile image" />
-                                                </div>
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[0]?.username}`} className='text-[#c6c6c6] text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[0]?.name}</a>
-                                                <a href={`https://twitter.com/${data.getDiscourseById.speakers[1]?.username}`} className='text-[#c6c6c6] text-xs tracking-wide font-medium'>{data.getDiscourseById.speakers[1]?.name}</a>
-                                            </div>
+                                        <div className="hidden xs:block w-[1.5px] h-3 bg-white/20"/>
+
+                                        <div className="flex items-center gap-1">
+                                            <ChainIcon chainId={data.getDiscourseById.chainId} size={20} />
+                                            <span className="font-Lexend font-medium text-xs text-[#714FE0]">{getChainName(data.getDiscourseById.chainId)}</span>
                                         </div>
 
-                                        {!loggedIn &&
-                                            <ConnectWalletDailog open={openConnectWallet} setOpen={setOpenConnectWallet} />
-                                        }
+                                        <div className="hidden xs:block w-[1.5px] h-3 bg-white/20"/>
 
-                                        {
-                                            loggedIn && !fundingDone(data.getDiscourseById) &&
-                                            <FundDiscourseDialog open={openFund} setOpen={setOpenFund} discourse={data?.getDiscourseById} />
-                                        }
-
-                                        {loggedIn && t_connected && !fundingDone(data.getDiscourseById) && <button onClick={handleFund} className='button-s w-max text-xs font-medium mt-4'>
-                                            Fund
-                                        </button>}
-                                        {
-                                            !loggedIn || !t_connected && !fundingDone(data.getDiscourseById) &&
-                                            <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">You need to connect wallet and twitter to fund or participate.</p>
-                                        }
+                                        <a href={getChainExplorerUrl()} target="_blank" rel="noreferrer" className="flex items-center gap-1 cursor-pointer">
+                                            <EditIcon size={18} />
+                                            <span className="font-Lexend font-medium text-xs underline text-[#E5F7FF]">{shortAddress(data.getDiscourseById.prop_starter)}</span>
+                                            <ArrowNE />
+                                        </a>
                                     </div>
 
-                                    {
-                                        data.getDiscourseById.irl && 
-                                        <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
-                                    }
+                                    <div>
+                                        <h1 className="text-2xl text-white lowercase -tracking-[0.08em] font-Lexend font-semibold">{data.getDiscourseById.title}</h1>
+                                        <small className="text-[#7D8B92] text-xs font-Lexend font-semibold">{getAgo(data?.getDiscourseById?.initTS)}</small>
+                                    </div>
 
-                                    {/* Card funding */}
-                                    <div className="flex flex-col gap-2 bg-card rounded-xl p-6">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <div className="flex items-center gap-2">
-                                                <MoneyRecive size="18" color="#797979" />
-                                                <p className="font-medium font-Lexend text-sm text-[#797979]">Recent Funding</p>
-                                            </div>
-                                            <button onClick={() => setOpenViewFunds((prev: boolean) => !prev)} className="button-i">
-                                                <Maximize4 size="16" color="#797979" />
-                                            </button>
-                                        </div>
+                                    <p className="text-[#E5F7FFE5] font-semibold text-[11px] xs:text-xs">{data.getDiscourseById.description}</p>
+                                </div>
 
-                                        {
-                                            data.getDiscourseById.funds.length !== 0 &&
-                                            <FundsDialog chainId={data.getDiscourseById.chainId} open={openViewFunds} setOpen={setOpenViewFunds} funds={data.getDiscourseById.funds} />
-                                        }
+                                {/* Divider */}
+                                <div className="bg-[#1E1E1E] w-full h-[1.5px]" />
 
-                                        {/* list */}
-                                        <div className="flex flex-col gap-1">
+                                {/* Part 2 */}
+                                <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-6">
+                                    {/* Topics List */}
+                                    <div className="flex flex-col gap-2 min-w-[60%]">
+                                        <small className="text-[#7D8B92] font-Lexend font-semibold">sub-topics</small>
+                                        <ul className="list-inside flex flex-col gap-3 pl-4">
                                             {
-                                                [].concat(data.getDiscourseById.funds)
-                                                    .sort((a: any, b: any) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
-                                                    .slice(0, data.getDiscourseById.funds.length > 3 ? 3 : data.getDiscourseById.funds.length)
-                                                    .map((item: any, index: number) => (
-                                                        <div key={index} className="flex flex-col gap-2 py-2">
-                                                            <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>
-                                                                <div className='bg-gradient-g w-4 h-4 rounded-xl overflow-clip' >
-                                                                    <img className="w-full h-full object-cover rounded-xl object-center" src={`https://avatar.tobi.sh/${item.address}`} alt="" />
-                                                                </div>
-                                                                <p className='text-white/60 text-xs'>{shortAddress(item.address)}</p>
-                                                            </div>
-                                                            <div className="flex items-center justify-between">
-                                                                <p className="text-gradient text-xs xs:text-sm font-bold">{getFund(item.amount)} {getCurrencyName(data.getDiscourseById.chainId)}</p>
-                                                                <p className="text-white/40 text-[10px] ">{getAgoT(item.timestamp)}</p>
-                                                            </div>
-                                                        </div>
-                                                    ))
+                                                data.getDiscourseById.topics.map((item: string, index: number) => (
+                                                    <li className="text-white text-xs" key={index}>{item}</li>
+                                                ))
                                             }
-                                        </div>
+                                        </ul>
                                     </div>
-                                </>
-                            }
+
+                                    {
+                                        data.getDiscourseById.irl &&
+                                        <> 
+                                            {/* Divider */}
+                                            <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
+                                            <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
+                                        </>
+                                    }
+                                </div>
+                            </div>
+
+                            {/* Stats Section */}
+                            <div className="flex flex-col gap-4 sm:px-8">
+                                <div className="flex items-center gap-4">
+                                    {/* Total Stake */}
+                                    <div className="flex flex-col ">
+                                        <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total stake</small>
+                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds)} <span className="text-xs">{getCurrencyName(data.getDiscourseById.chainId)}</span></small>
+                                    </div>
+
+                                    <div className="w-[1.5px] h-10 bg-white/20" />
+
+                                    {/* Total pledger */}
+                                    <div className="flex flex-col ">
+                                        <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total pledger</small>
+                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds)} <span className="text-xs">{getCurrencyName(data.getDiscourseById.chainId)}</span></small>
+                                    </div>
+                                </div>
+
+                                <div className="w-full h-[1px] bg-[#1E1E1E]" />
+
+                                {/* Funders list */}
+                                <div className="flex flex-col gap-3">
+                                    {
+                                        [].concat(data.getDiscourseById.funds)
+                                            .sort((a: any, b: any) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
+                                            .map((item: any, index: number) => (
+                                                <div key={uuid()} className="flex items-center gap-4">
+                                                    <img src={`https://avatar.tobi.sh/${item.address}`} alt="profile image" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl" />
+
+                                                    <div className="flex flex-col">
+                                                        <div className="flex gap-2">
+                                                            <span className="font-semibold text-[#7D8B92] text-[10px]">{shortAddress(item.address)}</span>
+                                                            <span className="font-semibold text-[#7D8B92] text-[10px]">{getAgoT(item.timestamp)}</span>
+                                                        </div>
+
+                                                        <div className="font-Lexend font-semibold text-xs xs:text-sm sm:text-lg text-[#E5F7FFE5]">{getFund(item.amount)} {getCurrencyName(data.getDiscourseById.chainId)}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    } 
                 </div>
             </Layout>
 

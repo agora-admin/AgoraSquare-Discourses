@@ -1,28 +1,28 @@
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useContext, useEffect } from "react";
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
 import EditProfile from "../../components/user/EditProfile";
+import NFTS from "../../components/user/NFTs";
+import RecentActivity from "../../components/user/RecentActivity";
 import Tabs from "../../components/user/Tabs";
 import AppContext from "../../components/utils/AppContext";
-import BDecoration from "../../components/utils/BDecoration";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
-import {
-    ArrowNE,
-    TwitterIcon,
-} from "../../components/utils/SvgHub";
+import {TwitterIcon2, WalletIcon,} from "../../components/utils/SvgHub";
+import { getProfileImageUrl } from "../../helper/StringHelper";
+
+const ClassString = "bg-black border-2 border-[#1E1E1E] rounded-2xl p-3 text-[#E5F7FF] text-[10px] sm:text-xs font-Lexend font-medium";
+const SelectedClassString = "!bg-[#D2B4FC] text-[#000000]"
+const StatNumberClassString = "text-white text-lg sm:text-xl font-Lexend font-semibold"
+const StatTextClassString = "text-[#7D8B92] text-[10px] sm:text-xs font-Lexend font-semibold"
 
 const UserPage = () => {
     const route = useRouter();
     const [loading, setLoading] = useState(false);
+    const [currentTab,setCurrentTab] = useState(0)
 
     const { loggedIn, t_handle,t_img,t_name,t_connected, walletAddress,bio,name } = useContext(AppContext);
-
-    const getProfileImageUrl = (url: string) => {
-        return url.replace('normal','400x400')
-    }
 
     useEffect(() => {
         if(!loggedIn || !t_connected){
@@ -45,80 +45,83 @@ const UserPage = () => {
                     </Head>
 
                     <Layout>
-                        <BDecoration />
-
-                        <div className="w-full min-h-screen flex flex-col py-10 gap-4 z-10">
-                            <TopBar showLogo={false} />
-
+                        <TopBar onDiscoursePage={false} />
+                        <div className="w-full min-h-screen flex flex-col py-4 sm:py-5 mobile:pb-[90px] gap-4 z-10">
                             {loading ? (
                                 <div className="flex-1 flex justify-center items-center">
                                     <LoadingSpinner strokeColor="#ffffff" />
                                 </div>
                             ) : (
                                 // Main Body
-                                <div className="flex flex-col items-center gap-2 sm:gap-4 relative">
-                                    {/* Profile Pic Section */}
-                                    <img
-                                        src={getProfileImageUrl(t_img)}
-                                        alt="Person profile pic"
-                                        className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] ios_curve"
-                                    />
+                                <div className="flex flex-col gap-8 sm:gap-14 relative">
+                                    {/* User info section */}
+                                    <section className="flex flex-col items-center xs2:items-start xs2:flex-row gap-2 xs2:gap-5 sm:gap-8">
+                                        <img src={getProfileImageUrl(t_img)} alt="Person profile pic" className="w-24 h-24 sm:w-36 sm:h-36 object-cover rounded-[32px]"/>
 
-                                    {/* About Section*/}
-                                    <div className="flex flex-col items-center gap-2 sm:gap-4">
-                                        <div className="flex flex-col gap-1">
-                                            <div className="flex gap-2 items-center justify-center">
-                                                <h1 className="text-gradient text-lg sm:text-2xl text-center font-semibold font-Lexend">
-                                                    {name ? name : t_name}
-                                                </h1>
+                                        {/* Bio Section */}
+                                        <div className="w-full xs2:max-w-fit flex flex-col items-center xs2:items-start gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <h1 className="text-2xl font-Lexend text-white font-semibold">{name ? name : t_name}</h1>
                                                 <EditProfile />
                                             </div>
-                                            <div className="flex items-center">
-                                                <a
-                                                    href={`https://www.twitter.com/${t_handle}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    <div className="flex items-center cursor-pointer">
-                                                        <div className="mr-2">
-                                                            <TwitterIcon
-                                                                color="#C0C0C0"
-                                                                width={16}
-                                                                height={16}
-                                                            />
-                                                        </div>
-                                                        <span className="text-[#D5D5D5] text-xs font-semibold hover:underline underline-offset-2">
-                                                            @{t_handle}
-                                                        </span>
-                                                        <ArrowNE color="#C0C0C0" />
-                                                    </div>
+                                            
+                                            <div className="flex items-center gap-2">
+                                                {/* Twitter handle */}
+                                                <a href={`https://www.twitter.com/${t_handle}`} target="_blank" rel="noreferrer" className="flex items-center gap-1">
+                                                    <TwitterIcon2 size={26}/>
+                                                    <span className="text-[#498CD6] font-medium font-Lexend text-xs">@{t_handle}</span>
                                                 </a>
 
                                                 {/* Divider */}
-                                                <div className="w-[2px] mx-2 h-4 bg-[#444444] flex rounded-xl" />
-                                                <div className="flex items-center cursor-pointer">
-                                                    <span className="text-[#D5D5D5] text-xs font-semibold hover:underline underline-offset-2">
-                                                        0xb...8A3
-                                                    </span>
-                                                    <ArrowNE color="#C0C0C0" />
+                                                <div className="w-[1.2px] h-4 bg-white/20" />
+
+                                                {/* Wallet Address */}
+                                                <div className="flex items-center gap-1">
+                                                    <WalletIcon size={23} />
+                                                    <span className="text-[#E5F7FF] font-medium font-Lexend text-xs">0xb...8A3</span>
+                                                </div>
+                                            </div>
+
+                                            {bio && <p className="text-[#E5F7FFE5] font-semibold text-[11px] sm:text-[13px]">{bio}</p>}
+
+                                            {/* Divider */}
+                                            <div className="w-full h-[1.2px] bg-[#1E1E1E]" />
+
+                                            {/* Stats */}
+                                            <div className="flex items-center gap-6">
+                                                {/* Discourse funded */}
+                                                <div className="flex flex-col items-center">
+                                                    <big className={StatNumberClassString}>23</big>
+                                                    <small className={StatTextClassString}>discourse funded</small>
+                                                </div>
+
+                                                {/* No of nfts */}
+                                                <div className="flex flex-col items-center">
+                                                    <big className={StatNumberClassString}>04</big>
+                                                    <small className={StatTextClassString}>nfts</small>
+                                                </div>
+
+                                                {/* discourse invitation */}
+                                                <div className="flex flex-col items-center">
+                                                    <big className={StatNumberClassString}>26</big>
+                                                    <small className={StatTextClassString}>discourse invitation</small>
                                                 </div>
                                             </div>
                                         </div>
+                                    </section>
 
-                                        {/* Bio Section */}
-                                        {bio && <p className="text-[#BABABA] font-Lexend text-sm text-center max-w-lg">
-                                            {bio}
-                                        </p>}
-                                    </div>
+                                    {/* NFTs & Recent Activity Section */}
+                                    <section className="flex flex-col gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <button onClick={() => setCurrentTab(0)} className={ClassString+" "+(currentTab == 0 && SelectedClassString)}>NFTs</button>
+                                            <button onClick={() => setCurrentTab(1)} className={ClassString+" "+(currentTab == 1 && SelectedClassString)}>Recent Activities</button>
+                                        </div>
 
-                                    <div className="mt-2 sm:mt-4 flex">
-                                        <Stats />
-                                    </div>
-
-                                    <div className="mt-8 flex w-full">
-                                        <Tabs />
-                                    </div>
-                                </div>
+                                        <div>
+                                            {currentTab === 0 ? <NFTS /> : <RecentActivity />}
+                                        </div>
+                                    </section>
+                                </div>       
                             )}
                         </div>
                     </Layout>
@@ -129,26 +132,3 @@ const UserPage = () => {
 };
 
 export default UserPage;
-
-const Stats = () => {
-    return (
-        <div className="flex gap-2 bg-[#0B0B0B] border-2 border-white/5 rounded-lg p-4 items-center">
-            <div className="flex flex-col items-center">
-                <h3 className="text-white font-Lexend text-base sm:text-[18px]">23</h3>
-                <small className="text-[#BABABA] font-Lexend text-[11px]">
-                    Discourse Funded
-                </small>
-            </div>
-
-            {/* Divider */}
-            <div className="w-[2px] mx-2 h-[90%] bg-[#444444] flex rounded-xl" />
-
-            <div className="flex flex-col items-center">
-                <h3 className="text-white font-Lexend text-base sm:text-[18px]">26</h3>
-                <small className="text-[#BABABA] font-Lexend text-[11px]">
-                    Discourse Invitation
-                </small>
-            </div>
-        </div>
-    );
-};

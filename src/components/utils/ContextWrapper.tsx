@@ -198,7 +198,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
 
     return (
         <AppContext.Provider value={injectedContext}>
-            <div className="fixed pointer-events-none z-40 max-w-xs flex flex-col-reverse sm:flex-col h-full items-end inset-y-0 my-auto w-full right-0 p-6 gap-4 t-all">
+            <div className="fixed pointer-events-none z-40 max-w-xs flex flex-col h-full items-end inset-y-0 my-auto w-full right-0 p-6 gap-4 t-all">
                 {
                     toasts.map(t => (
                         <ToastCard data={t} key={t.id} close={removeToast} />

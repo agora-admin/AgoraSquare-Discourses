@@ -18,14 +18,13 @@ export const getChainName = (chainId: number) => {
 
 export const getCurrencyName = (chainId: number) => {
     switch (chainId) {
-        case 137:
-            return 'MATIC'
         case 80001:
-            return 'MATIC'
+        case 137:
+            return 'matic'
         case 71401:
-            return 'PCKB'
+            return 'pCKB'
         default:
-            return 'ETH'
+            return 'eth'
     }
 }
 

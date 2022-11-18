@@ -1,15 +1,14 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import DiscourseLongList from '../components/cards/DiscourseLongList'
 import Layout from '../components/layout/Layout'
 import { useEffect } from 'react'
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { GET_DISCOURSES, GET_DISCOURSES_BY_CHAIN } from '../lib/queries'
 import LoadingSpinner from '../components/utils/LoadingSpinner'
 import TopBar from '../components/topbar/TopBar'
-import BDecoration from '../components/utils/BDecoration'
 import { supportedChainIds } from '../Constants'
 import HeroCard from '../components/actions/HeroCard'
+import DiscourseCard from '../components/cards/DiscourseCard'
 
 const Home: NextPage = () => {
 	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
@@ -32,22 +31,20 @@ const Home: NextPage = () => {
 				<link rel="icon" href="/discourse_logo_fav.svg" />
 			</Head>
 			<Layout >
-				<BDecoration />
-				<div className='w-full min-h-screen flex flex-col py-10 sm:px-0 gap-4 z-10'>
-					{/* TopSection */}
-					<TopBar showLogo={true} />
-
+				<TopBar onDiscoursePage={false} />
+				<div className='w-full min-h-screen relative flex flex-col py-4 sm:py-5 mobile:pb-[80px] gap-3 sm:gap-4 z-10'>
 					{/* Body */}
 					<HeroCard />
 					
 					{/* list */}
-					<div className='relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center px-4 sm:px-10 md2:px-0 gap-4'>
+					<div className='sm:mt-4 relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center gap-3 sm:gap-4'>
 						{
 							dData && dData.getDiscoursesByChainID.length > 0 &&
-							[].concat(dData.getDiscoursesByChainID).sort(
-								(a: any, b: any) => +b.initTS - +a.initTS
-							).map((data: any) => (
-								<DiscourseLongList key={data.id} data={data} />
+							[].concat(dData.getDiscoursesByChainID)
+							.filter((e:any) => !e.disable)
+							.sort((a: any, b: any) => +b.initTS - +a.initTS)
+							.map((data: any) => (
+								<DiscourseCard key={data.id} data={data} />
 							))
 						}
 						{

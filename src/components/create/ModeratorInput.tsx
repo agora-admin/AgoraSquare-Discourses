@@ -18,7 +18,7 @@ const ModeratorInput: FC<Props> = ({ moderator,setModerator }) => {
     }
     
     return (
-        <div className="w-full grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
+        <div className="w-full max-w-[585px] grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
             {
                 moderator ? 
                 <SpeakerCard speaker={moderator} removeSpeaker={removeModerator} />

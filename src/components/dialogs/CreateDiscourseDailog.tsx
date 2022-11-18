@@ -211,7 +211,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                             Fund Discourse
                         </Dialog.Title>
                         <Dialog.Description className="flex flex-col  w-full items-center  gap-4 text-center justify-between mt-4">
-                            <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>This is initial funding of the discourse required from creator. Need to fund min 0.01 {getCurrencyName(activeChain?.id!)}</p>
+                            <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>This is initial funding of the discourse required from creator. Need to fund min 1 {getCurrencyName(activeChain?.id!)}</p>
                             <div className='flex flex-col items-center justify-center w-full gap-4'>
                                 <label htmlFor="amount" className='relative flex items-center'>
                                     <p className='absolute text-white m-auto inset-y-0 left-3 h-max'></p>
