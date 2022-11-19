@@ -1,7 +1,6 @@
 import Head from "next/head";
 import MeetLayout from "../../components/layout/MeetLayout";
 import Link from "next/link";
-import BDecoration from "../../components/utils/BDecoration";
 
 const LivePage = () => {
 
@@ -15,7 +14,7 @@ const LivePage = () => {
 
             <MeetLayout>
                 {/* <div className='w-32 h-32 bg-gradient rounded-full blur-3xl fixed top-24 right-72 z-0 t-all' /> */}
-                <BDecoration />
+                
                 <div className=' xl:aspect-video lg:max-h-[70vh] justify-center overflow-hidden w-full max-w-6xl flex gap-4 z-10 t-all'>
                     {/* TopSection */}
 

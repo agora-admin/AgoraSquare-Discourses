@@ -2,12 +2,10 @@ import { NextPage } from "next";
 import Head from "next/head";
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
-import BDecoration from "../../components/utils/BDecoration";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 import { GET_DISCOURSE_BY_ID, GET_SESSIONS } from "../../lib/queries";
-import { ArrowRight, Calendar1, PathTool, Play, VideoOctagon, VideoSlash } from "iconsax-react";
-import ChainExplorer from "../../components/utils/ChainExplorer";
+import { Calendar1, PathTool, Play, VideoOctagon, VideoSlash } from "iconsax-react";
 import { shortAddress } from "../../helper/StringHelper";
 import { formatDate, getAgo, getTimeFromDate } from "../../helper/TimeHelper";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
@@ -56,9 +54,9 @@ const Watch: NextPage = () => {
                 {/* TODO: <meta property="og:url" content="https://www.imdb.com/title/tt0117500/" /> */}
             </Head>
             <Layout>
-                <BDecoration />
+                <TopBar onDiscoursePage={false} />
+                
                 <div className='w-full min-h-screen flex flex-col py-10 gap-4 z-10'>
-                    <TopBar showLogo={true} />
                     {
                         sessionLoading || Dloading &&
                         <div className="flex gap-4 flex-col w-full md:flex-[0.6] items-center pt-20">
@@ -77,7 +75,7 @@ const Watch: NextPage = () => {
                             <div className="flex gap-4 sm:flex-row flex-col w-full md:flex-[0.6]">
                                 <h3 className="text-white font-semibold text-2xl">{data.getDiscourseById.title}</h3>
                                 <div className="flex gap-2 items-center">
-                                    <ChainExplorer data={data.getDiscourseById} />
+                                    {/* <ChainExplorer data={data.getDiscourseById} /> */}
                                     {/* <div className="h-1/2 rounded-xl w-[2px] bg-[#212427]" /> */}
                                     <PathTool size="16" color="#6a6a6a" />
                                     <div className='flex items-center gap-2 text-[#616162] text-sm font-semibold'>

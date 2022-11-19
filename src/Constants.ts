@@ -8,6 +8,8 @@ export const getChainName = (chainId: number) => {
             return 'Polygon Mumbai'
         case 137:
             return 'Polygon'
+        case 71401:
+            return 'Godwoken Testnet'
         default:
             return 'Unknown'
     }
@@ -16,11 +18,12 @@ export const getChainName = (chainId: number) => {
 export const getCurrencyName = (chainId: number) => {
     switch (chainId) {
         case 80001:
-            return 'MATIC'
         case 137:
-            return 'MATIC'
+            return 'matic'
+        case 71401:
+            return 'pCKB'
         default:
-            return 'ETH'
+            return 'eth'
     }
 }
 
@@ -30,6 +33,8 @@ export const rpcUrl = (chainId: number) => {
             return { http: 'https://polygon-mainnet.g.alchemy.com/v2/Gqd71GlllOjZhCCq1FjqzKofdLig5Tww'}
         case 80001:
             return { http: "https://polygon-mumbai.g.alchemy.com/v2/ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj" }
+        case 71401:
+            return { http: "https://godwoken-testnet-v1.ckbapp.dev" }
         default:
             return null;
 

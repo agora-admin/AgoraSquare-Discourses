@@ -26,7 +26,6 @@ import Link from "next/link";
 import { END_MEET, STOP_STREAM } from "../../lib/mutations";
 import AppContext from "../../components/utils/AppContext";
 import Cookies from "js-cookie";
-import BDecoration from "../../components/utils/BDecoration";
 
 const LivePage = () => {
 
@@ -119,7 +118,6 @@ const LivePage = () => {
     }
     const peers = useHMSStore(selectPeers);
     const roomState = useHMSStore(selectRoomState);
-    
 
     useEffect(() => {
         if (token !== "" && token!== "undefined" && dData && isSpeakerWallet(dData, walletAddress) && !meetEnded) {
@@ -199,7 +197,7 @@ const LivePage = () => {
             </Head>
 
             <MeetLayout>
-                <BDecoration />
+                
                 {
                     meetEnded && <div className=' justify-center overflow-hidden w-full max-w-6xl flex gap-4 z-10 t-all'>
                         <div className="bg-card p-4 w-full max-w-sm rounded-xl flex flex-col items-center gap-2">

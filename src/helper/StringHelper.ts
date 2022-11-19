@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+
 export const shortAddress = (address: string) => {
     if(address.length < 10) {
         return address;
@@ -12,4 +13,8 @@ export const validateEmail = (email: string) => {
 
 export const keccak256 = (str: string) => {
     return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(str));
+}
+
+export const getProfileImageUrl = (url: string) => {
+    return url.replace('normal','400x400')
 }

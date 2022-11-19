@@ -14,6 +14,7 @@ export type CreateObj = {
     fundingPeriod: number;
     yt_link: string;
     disable: boolean;
+    irl: boolean;
 }
 
 export enum ToastTypes {

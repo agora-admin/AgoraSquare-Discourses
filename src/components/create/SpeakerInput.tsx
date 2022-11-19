@@ -33,7 +33,7 @@ const SpeakerInput: FC<Props> = ({ speakers, setSpeakers }) => {
     }
     
     return (
-        <div className="w-full grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
+        <div className="w-full max-w-[585px] grid grid-cols-1 items-center sm:grid-cols-2 gap-4 grid-flow-row">
             {
                 speakers.map((speaker, index) => (
                     <SpeakerCard key={index} speaker={speaker} removeSpeaker={removeSpeaker} />

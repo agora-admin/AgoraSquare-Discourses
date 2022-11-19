@@ -1,5 +1,4 @@
 import { CloseCircle, Information, Timer, Verify, Warning2 } from "iconsax-react";
-import { uuid } from "uuidv4";
 import { Toast, ToastTypes } from "../../lib/Types";
 
 const ToastCard = ({ data, close }: { data: Toast, close: (id: string) => void }) => {
@@ -33,7 +32,7 @@ const ToastCard = ({ data, close }: { data: Toast, close: (id: string) => void }
     }
 
     return (
-        <div className=" pointer-events-auto w-full bg-card p-4 rounded-xl flex flex-col gap-2 relative t-all-100 animate-animateIn">
+        <div className="pointer-events-auto w-full bg-card p-4 rounded-xl flex flex-col gap-2 relative t-all-100 animate-animateIn">
             <button onClick={() => handleClose()} className="button-i absolute right-0 top-0 m-2"><CloseCircle size={16} color="#c6c6c6" /></button>
             <div className="flex items-center gap-2">
                 { data.type === ToastTypes.info && <Warning2 size={16} color="#c6c6c6" />}

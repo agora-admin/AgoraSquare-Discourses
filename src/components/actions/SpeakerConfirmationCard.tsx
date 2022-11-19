@@ -1,21 +1,15 @@
-import LoadingSpinner from "../utils/LoadingSpinner";
-import { SpeakerConfirmationIcon } from "../utils/SvgHub";
 import { useContext, useState } from "react";
 import { formatDate, getTime, getTimeFromDate } from "../../helper/TimeHelper";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { SET_WALLETADDRESS, SPEAKER_CONFIRMATION } from "../../lib/mutations";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
-import DiscourseHub from '../../web3/abi/DiscourseHub.json';
-import Addresses from '../../web3/addresses.json';
-import Web3 from "web3";
-import { ethers } from "ethers";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import { contractData } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
 import { uuid } from "uuidv4";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
-
+import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
 
 const SpeakerConfirmationCard = ({ data }: { data: any }) => {
 
@@ -33,7 +27,6 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
         }
         return false;
     }
-
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {
         variables: {
@@ -163,28 +156,27 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
 
     }
 
-
     return (
-        <div className="bg-gradient rounded-xl p-4 flex flex-col">
-            <div className="flex items-center gap-2">
-                <SpeakerConfirmationIcon />
-                <p className="text-[#212221] font-Lexend font-semibold text-sm">Speaker Confirmation</p>
+        <div className="mobile:fixed mobile:bottom-[60px] mobile:inset-x-0 mobile:max-h-[220px] flex flex-col sm:flex-row items-center mobile:gap-4 sm:justify-between py-6 sm:py-3 px-6 bg-[#141414] sm:border-[1.2px] sm:border-[#E5F7FF] rounded-t-[30px] sm:rounded-3xl">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
+                <div className="mobile:hidden">
+                    <ProfileCircle size="34" color="#84B9D1" variant="Bulk" />
+                </div>
+
+                <div className="sm:hidden">
+                    <ProfileCircle size="50" color="#84B9D1" variant="Bulk" />
+                </div>
+
+                <div className="flex flex-col">
+                    <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation</h4>
+                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">you need to confirm your participation before <span className="font-semibold underline">{formatDate(getTime(data.endTS))} • {getTimeFromDate(getTime(data.endTS))}</span></small>
+                </div>
             </div>
-            <p className="text-[#212221] font-medium text-[10px] mt-2">
-                You need to confirm your participation before <span className="font-semibold underline">{formatDate(getTime(data.endTS))} • {getTimeFromDate(getTime(data.endTS))}</span>
-            </p>
-            <div className="flex items-center justify-between">
-
-                {!loading && <button onClick={handleClick} className="button-s w-max mt-2">
-                    <p className="text-[10px] text-gradient font-bold">Confirm</p>
-                </button>}
-
-                {loading && <button disabled className="button-s-d w-max mt-2">
-                    <p className="text-[10px] text-gradient font-bold">Please wait..</p>
-                </button>}
-
-                {loading && <LoadingSpinner strokeColor="#212221" />}
-            </div>
+            
+            <button disabled={loading} onClick={handleClick} className="flex items-center gap-2 bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
+                <span className="text-black text-xs font-Lexend font-medium">{loading ? "Please wait..." : "Confirm"}</span>
+                <ArrowCircleRight color="#4F6F7D" variant="Bulk" fill="#000"/>
+            </button>
         </div>
     );
 }

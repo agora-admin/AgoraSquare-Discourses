@@ -1,10 +1,9 @@
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 import { Dispatch, FC, SetStateAction, useContext, useRef } from "react";
 import { useRouter } from 'next/router';
-import Web3 from "web3";
 import { BigNumber, ethers } from "ethers";
 import { useState, useEffect } from 'react';
-import { useLazyQuery, useMutation, gql } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import UseAnimations from 'react-useanimations';
 import loading from 'react-useanimations/lib/loading';
 import { DiscourseIcon, FundDiscourseIcon } from '../utils/SvgHub';
@@ -12,7 +11,7 @@ import DiscourseHub from '../../web3/abi/DiscourseHub.json';
 import { CREATE_DISCOURSE } from '../../lib/mutations';
 import { getSecNow } from '../../helper/TimeHelper';
 import { GET_DISCOURSES } from '../../lib/queries';
-import { chain, useContractRead, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
+import { useContractRead, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
 import { contractData } from '../../helper/ContractHelper';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
@@ -28,7 +27,7 @@ interface Props {
 
 const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
     let buttonRef = useRef(null);
-    const { loggedIn, walletAddress, addToast } = useContext(AppContext);
+    const { walletAddress, addToast } = useContext(AppContext);
 
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
@@ -123,6 +122,11 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
 
     const writeDiscourse = (txnD: TransactionReceipt) => {
         getCount().then((tData) => {
+            console.log({tData});
+            const temp = BigNumber.from(tData.data);
+            console.log({temp});
+            console.log("To Number: ",temp.toNumber());
+            
             let count = BigNumber.from(tData.data).toNumber();
             createDiscourse({
                 variables: {

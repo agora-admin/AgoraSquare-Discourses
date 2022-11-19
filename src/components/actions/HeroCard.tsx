@@ -1,5 +1,3 @@
-import { Add } from "iconsax-react";
-import { ChainIcon } from "../utils/ChainTag";
 import { ArrowNE } from "../utils/SvgHub";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -8,7 +6,7 @@ import { useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { uuid } from "uuidv4";
-import Link from "next/link";
+import { ArrowCircleRight } from "iconsax-react";
 import ConnectWalletDailog from "../dialogs/ConnectWalletDailog";
 
 const HeroCard = () => {
@@ -16,7 +14,7 @@ const HeroCard = () => {
     const { loggedIn, addToast } = useContext(AppContext);
     const [openConnectWallet, setOpenConnectWallet] = useState(false);
     const { activeChain } = useNetwork();
-
+    
     const handleCreate = () => {
         if (loggedIn) {
             if (supportedChainIds.includes(activeChain?.id!)) {
@@ -35,44 +33,52 @@ const HeroCard = () => {
         }
     }
 
+    const getChainVersion = () => {
+        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401)){
+            return "mainnet"
+        }else {
+            return "testnet"
+        }
+    }
+
+    const getChainVersionLink = () => {
+        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401)){
+            return "https://discourses.agorasquare.xyz"
+        }else {
+            return "https://testnet.discourses.agorasquare.xyz"
+        }
+    }
+
     return (
-        <div className="w-full flex items-center justify-between px-4 sm:px-10 pt-6 pb-0 xs:py-6">
-            <div className="flex flex-col w-max ">
-                <h4 className="text-white font-Lexend">Introducing</h4>
-                <h2 className="text-gradient font-bold text-4xl">Discourses</h2>
-                <p className="text-[#c6c6c6] font-Lexend text-xs max-w-[50ch] mt-2">
-                    Crowdfund discourse from thought leaders to dialogue on the platfrom through discourse pools!
-                </p>
-                {
-                    !loggedIn && <ConnectWalletDailog open={openConnectWallet} setOpen={setOpenConnectWallet} />
-                }
-                <div className="flex flex-col xs:flex-row xs:items-center gap-2 mt-4">
-                    <button onClick={() => handleCreate()} className="button-o flex items-center max-w-max xs:w-full gap-2 p-3 hover:bg-[#c6c6c6]/10">
-                        <Add size={16} color="#fff" />
-                        <p className="text-xs text-white font-Lexend ">Create New Disourse</p>
-                    </button>
-                    <Link href="https://discourses.agorasquare.xyz" passHref >
-                        <a target="_blank" className="button-t flex sm:hidden items-center gap-2 w-max p-2 ">
-                            <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore mainnet</p>
-                            <ArrowNE color="#1FA2FF" />
-                        </a>
-                    </Link>
+        <div className="bg-[#0A0A0A] flex flex-col md:flex-row gap-4 md:gap-0 mobile:items-center md:items-center md:justify-between p-6 rounded-3xl">
+            {
+                !loggedIn && <ConnectWalletDailog open={openConnectWallet} setOpen={setOpenConnectWallet} />
+            }
+            <div className="flex flex-col mobile:items-center gap-4">
+                <div className="flex flex-col mobile:items-center">
+                    <small className="text-[#D2B4FC] font-Lexend font-medium">introducing</small>
+                    <big className="text-white text-4xl font-bold font-Lexend -tracking-[0.07em]">discourses</big>
+                    <p className="text-xs xs:text-[13px] text-[#E5F7FF] mobile:mt-1 mobile:text-center">Create crowdfunding campaigns to see thought leaders engage in dialogue.</p>
+                </div>
+
+                <div className="flex flex-col xs:flex-row items-center gap-2">
+                    <div className="text-white flex items-center cursor-pointer font-bold underline">
+                        <small className="text-xs">watch tutorial</small>
+                        <ArrowNE color="#FFF" />
+                    </div>
+
+                    <div className="hidden xs:block h-3 w-[1.5px] bg-white/20"/>
+                    
+                    <a href={getChainVersionLink()} target="_blank" rel="noreferrer" className="text-white flex items-center cursor-pointer font-bold underline">
+                        <small className="text-xs">try on {getChainVersion()}</small>
+                        <ArrowNE color="#FFF" />
+                    </a>
                 </div>
             </div>
 
-            <div className="hidden sm:flex flex-[0.6] flex-col h-full relative px-10 justify-center">
-                <div className="w-[1px] h-full bg-[#303030] absolute left-0" />
-                <p className="text-[10px] font-Lexend text-[#c6c6c6]">You&apos;re currently on </p>
-                <div className="py-2 px-4 bg-white/10 border-[2px] border-white/10 w-max rounded-full my-2 flex items-center gap-2">
-                    <ChainIcon chainId={137} />
-                    <p className="text-[10px] text-[#7B3FE4] font-bold">Polygon Mainnet</p>
-                </div>
-                <Link href="https://testnet.discourses.agorasquare.xyz" passHref>
-                    <button className="button-t flex items-center gap-2 w-max p-0 mt-4">
-                        <p className="text-xs text-[#1FA2FF] font-Lexend ">Explore testnet</p>
-                        <ArrowNE color="#1FA2FF" />
-                    </button>
-                </Link>
+            <div onClick={handleCreate} className="flex items-center gap-2 max-w-fit md:max-w-none bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
+                <small className="text-xs font-Lexend text-black font-medium">create discourse</small>
+                <ArrowCircleRight color="#4F6F7D" variant="Bold" fill="#000"/>
             </div>
         </div>
     );

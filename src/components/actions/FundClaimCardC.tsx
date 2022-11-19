@@ -1,9 +1,8 @@
-import { MessageRemove, MoneySend } from "iconsax-react";
-import { useSelector } from "react-redux";
-import { getFundClaimDate, hasWithdrawn, isPledger } from "../../helper/DataHelper";
+import { ArrowCircleRight, MoneySend } from "iconsax-react";
+import { getFundClaimDate, hasWithdrawn } from "../../helper/DataHelper";
 import { FUND_WITHDRAWN } from "../../lib/mutations";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { formatDate, isPast } from "../../helper/TimeHelper";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
@@ -151,38 +150,38 @@ const FundClaimCardC = ({ data }: { data: any }) => {
     }
 
     return (
-        <div className="bg-card rounded-xl p-4 flex flex-col">
-            <div className="flex items-center gap-2">
-                <MoneySend size='16' color='#ABECD6' />
-                <p className="text-[#ABECD6] font-Lexend text-sm">Claim funds</p>
-            </div>
-            {isPast(getFundClaimDate(data).toISOString()) ?
-                <p className="text-[#c6c6c6] text-[10px] mt-2">
-                    Fund can be claimed now.
-                </p>
-                :
-                <p className="text-[#c6c6c6] text-[10px] mt-2">
-                    You can claim funds after <b>
-                        {formatDate(getFundClaimDate(data))}
-                    </b>
-                </p>
-            }
-            {
-                !loggedIn &&
-                <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">Connect your wallet to withdraw your fund.</p>
-            }
-            {
-                isPast(getFundClaimDate(data).toISOString()) && !hasWithdrawn(data, walletAddress) &&
-                <>
-                    {!loading && <button onClick={handleClaim} className="button-s text-[#c6c6c6] font-Lexend text-sm mt-2">
-                        Claim Funds
-                    </button>}
-                    {loading && <button disabled className="button-s-d text-[#797979] font-Lexend text-sm mt-2">
-                        wait..
-                    </button>}
-                </>
-            }
+        <div className="mobile:fixed mobile:bottom-[60px] mobile:inset-x-0 mobile:max-h-[220px] flex flex-col sm:flex-row mobile:gap-4 items-center sm:justify-between py-6 sm:py-3 sm:px-4 bg-[#141414] sm:border-[1.2px] sm:border-[#FCB4BD] rounded-t-[30px] sm:rounded-3xl">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
+                <div className="mobile:hidden">
+                    <MoneySend size={40} color='#FCB4BD' variant="Bulk" />
+                </div>
 
+                <div className="sm:hidden">
+                    <MoneySend size={50} color='#FCB4BD' variant="Bulk" />
+                </div>
+                <div className="flex flex-col">
+                    <h4 className="text-[#FCB4BD] font-bold text-[13px] sm:text-sm">Claim Funds</h4>
+                    <small className="text-[11px] sm:text-xs text-[#E5F7FFE5] font-semibold">
+                        {
+                            isPast(getFundClaimDate(data).toISOString()) ?
+                            "Fund can be claimed now.":
+                            <>
+                                You can claim funds after <b>
+                                {formatDate(getFundClaimDate(data))}</b>
+                            </>
+                        }
+                    </small>
+                    {!loggedIn && <small className="text-[11px] text-[#E5F7FFE5] font-semibold">Connect your wallet to withdraw your fund.</small>}
+                </div>
+            </div>
+
+            {
+                isPast(getFundClaimDate(data).toISOString()) && !hasWithdrawn(data, walletAddress) && 
+                <button disabled={loading} onClick={handleClaim} className="flex items-center gap-2 bg-[#FCB4BD] rounded-2xl p-3 cursor-pointer">
+                    <span className="text-black text-xs font-Lexend font-medium">{loading ? "Wait..." : "Claim Funds"}</span>
+                    <ArrowCircleRight color="#976C71" variant="Bulk" fill="#000"/>
+                </button>
+            }
         </div>
     );
 }

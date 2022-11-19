@@ -1,5 +1,4 @@
-import { MessageRemove } from "iconsax-react";
-import { useSelector } from "react-redux";
+import { ArrowCircleRight, Danger } from "iconsax-react";
 import { hasWithdrawn, isPledger } from "../../helper/DataHelper";
 import { TERMINATE_PROPOSAL, FUND_WITHDRAWN } from "../../lib/mutations";
 import { useMutation, useLazyQuery } from "@apollo/client";
@@ -134,7 +133,7 @@ const FundClaimCardT = ({ data }: { data: any }) => {
         } else {
             addToast({
                 title: "Different Chain",
-                body: `This discourse is on [${getChainName(data.chainId)}]. Please use the correct chain.`,
+                body: `This discourse is on ${getChainName(data.chainId)}. Please use the correct chain.`,
                 type: ToastTypes.error,
                 duration: 5000,
                 id: uuid()
@@ -143,30 +142,28 @@ const FundClaimCardT = ({ data }: { data: any }) => {
     }
 
     return (
-        <div className="bg-card rounded-xl p-4 flex flex-col">
-            <div className="flex items-center gap-2">
-                <MessageRemove size='16' color='#fc8181' />
-                <p className="text-[#fc8181] font-Lexend text-sm">Discourse Terminated</p>
-            </div>
-            <p className="text-[#c6c6c6] text-[10px] mt-2">
-                Speakers didn&apos;t confirmed
-            </p>
-            {
-                !loggedIn &&
-                <p className="text-yellow-200/70 text-[10px] font-medium bg-yellow-200/10 px-2 rounded-md mt-2 py-1">Connect your wallet to withdraw your fund.</p>
-            }
-            {
-                loggedIn && isPledger(data, walletAddress) && !hasWithdrawn(data, walletAddress) &&
-                <>
-                    {!loading && <button onClick={handleClaim} className="button-s text-[#c6c6c6] font-Lexend text-sm mt-2">
-                        Claim Funds
-                    </button>}
-                    {loading && <button disabled className="button-s-d text-[#797979] font-Lexend text-sm mt-2">
-                        wait..
-                    </button>}
-                </>
-            }
+        <div className="mobile:fixed mobile:bottom-[60px] mobile:inset-x-0 mobile:max-h-[220px] flex flex-col sm:flex-row mobile:gap-4 items-center sm:justify-between py-6 sm:py-3 sm:px-4 bg-[#141414] sm:border-[1.2px] sm:border-[#FCB4BD] rounded-t-[30px] sm:rounded-3xl">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
+                <div className="mobile:hidden">
+                    <Danger variant="Bulk" color="#FCB4BD" size={40}/>
+                </div>
 
+                <div className="sm:hidden">
+                    <Danger variant="Bulk" color="#FCB4BD" size={50}/>
+                </div>
+                <div className="flex flex-col">
+                    <h4 className="text-[#FCB4BD] font-bold text-[13px] sm:text-sm">Discourse Terminated</h4>
+                    <small className="text-[11px] sm:text-xs text-[#E5F7FFE5] font-semibold">Speaker didn&apos;t confirmed</small>
+                    {!loggedIn && <small className="text-[11px] text-[#E5F7FFE5] font-semibold">Connect your wallet to withdraw your fund.</small>}
+                </div>
+            </div>
+
+            {loggedIn && isPledger(data, walletAddress) && !hasWithdrawn(data, walletAddress) && 
+                <button disabled={loading} onClick={handleClaim} className="flex items-center gap-2 bg-[#FCB4BD] rounded-2xl p-3 cursor-pointer">
+                    <span className="text-black text-xs font-Lexend font-medium">{loading ? "wait..." : "withdraw funds"}</span>
+                    <ArrowCircleRight color="#976C71" variant="Bulk" fill="#000"/>
+                </button>
+            }
         </div>
     );
 }
