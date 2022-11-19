@@ -135,7 +135,7 @@ const DiscoursePage = () => {
                                 <img className='w-48' src="/404_dis.png" alt="404 not found" />
                             </div>}
                     {!loading && data && !error &&
-                    <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
+                    <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "mobile:!pb-72"} sm:pb-5`}>
                         <DiscourseState discourseData={data.getDiscourseById} slotConfirmed={slotConfirmed} />
 
                         <div className="flex flex-col gap-5">
@@ -227,7 +227,7 @@ const DiscoursePage = () => {
                                 {/* Part 2 */}
                                 <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-6">
                                     {/* Topics List */}
-                                    <div className="flex flex-col gap-2 min-w-[60%]">
+                                    <div className="flex-[0.6] md2:flex-auto flex flex-col gap-2 min-w-0 md2:min-w-[60%]">
                                         <small className="text-[#7D8B92] font-Lexend font-semibold">sub-topics</small>
                                         <ul className="list-inside flex flex-col gap-3 pl-4">
                                             {
@@ -243,7 +243,9 @@ const DiscoursePage = () => {
                                         <> 
                                             {/* Divider */}
                                             <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
-                                            <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
+                                            <div className="flex-[0.4] md2:flex-auto">
+                                                <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
+                                            </div>
                                         </>
                                     }
                                 </div>

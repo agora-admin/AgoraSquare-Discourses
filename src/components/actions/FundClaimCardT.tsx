@@ -151,7 +151,7 @@ const FundClaimCardT = ({ data }: { data: any }) => {
                 <div className="sm:hidden">
                     <Danger variant="Bulk" color="#FCB4BD" size={50}/>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col mobile:text-center">
                     <h4 className="text-[#FCB4BD] font-bold text-[13px] sm:text-sm">Discourse Terminated</h4>
                     <small className="text-[11px] sm:text-xs text-[#E5F7FFE5] font-semibold">Speaker didn&apos;t confirmed</small>
                     {!loggedIn && <small className="text-[11px] text-[#E5F7FFE5] font-semibold">Connect your wallet to withdraw your fund.</small>}
