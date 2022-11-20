@@ -42,8 +42,8 @@ const DiscourseCard = ({ data }: { data: any }) => {
                     </div>
 
                     <div className="flex flex-col justify-center">
-                        <small className="font-Lexend text-[10px] xs:text-xs text-[#E5F7FF] font-medium">Daniel F.</small>
-                        <small className="font-Lexend text-[10px] xs:text-xs text-[#E5F7FF] font-medium">Arsh V.</small>
+                        <small className="font-Lexend text-[10px] xs:text-xs text-[#E5F7FF] font-medium max-w-[15ch] line-clamp-1">{data.speakers[0]?.name}</small>
+                        <small className="font-Lexend text-[10px] xs:text-xs text-[#E5F7FF] font-medium max-w-[15ch] line-clamp-1">{data.speakers[1]?.name}</small>
                     </div>
                 </div>
 
