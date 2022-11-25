@@ -145,7 +145,7 @@ const DiscoursePage = () => {
                             </div>}
                     {!loading && data && !error &&
                     <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
-                        <DiscourseState discourseData={data.getDiscourseById} slotConfirmed={slotConfirmed} />
+                        <DiscourseState data={data} slotConfirmed={slotConfirmed} />
 
                         <div className="flex flex-col gap-5">
                             {/* Top Section */}
