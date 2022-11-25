@@ -135,8 +135,8 @@ const DiscoursePage = () => {
                                 <img className='w-48' src="/404_dis.png" alt="404 not found" />
                             </div>}
                     {!loading && data && !error &&
-                    <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "mobile:!pb-72"} sm:pb-5`}>
-                        <DiscourseState discourseData={data.getDiscourseById} slotConfirmed={slotConfirmed} />
+                    <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
+                        <DiscourseState data={data} slotConfirmed={slotConfirmed} />
 
                         <div className="flex flex-col gap-5">
                             {/* Top Section */}
