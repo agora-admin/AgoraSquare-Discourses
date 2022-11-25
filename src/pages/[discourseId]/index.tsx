@@ -17,7 +17,7 @@ import { canClaimC, discourseConfirmed, DiscourseStateEnum, fundingDone, getStat
 import { useNetwork } from "wagmi";
 import AppContext from "../../components/utils/AppContext";
 import { ToastTypes } from "../../lib/Types";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { getChainName, getCurrencyName } from "../../Constants";
 import VenueCard from "../../components/cards/VenueCard";
 import { ChainIcon } from "../../components/utils/ChainTag";
