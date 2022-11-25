@@ -4,6 +4,7 @@ import { canClaimC, discourseConfirmed, DiscourseStateEnum, fundingDone, getStat
 import AreYouSpeakerCard from '../actions/AreYouSpeakerCard';
 import FundClaimCardC from '../actions/FundClaimCardC';
 import FundClaimCardT from '../actions/FundClaimCardT';
+import JoinMeetCard from '../actions/meet/JoinMeetCard';
 import SlotCard from '../actions/SlotCard';
 import SpeakerConfirmationCard from '../actions/SpeakerConfirmationCard';
 import AppContext from "../utils/AppContext";
@@ -23,9 +24,9 @@ const DiscourseState = ({ data,slotConfirmed }: { data:any,slotConfirmed: (data:
             <FundClaimCardC data={data.getDiscourseById} />
         }
 
-        {/* {slotConfirmed(data.getDiscourseById) && !data.getDiscourseById.irl && (
+        {slotConfirmed(data.getDiscourseById) && !data.getDiscourseById.irl && (
             <JoinMeetCard data={data.getDiscourseById} />
-        )}  */}
+        )} 
 
         { !data.getDiscourseById.irl && data.getSlotById && fundingDone(data.getDiscourseById) && discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === 1 &&
             <SlotCard id={data.getDiscourseById.id} propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} endTS={+data.getDiscourseById.endTS} data={data.getSlotById} />

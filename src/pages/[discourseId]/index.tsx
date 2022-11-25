@@ -23,7 +23,7 @@ import FundClaimCardC from "../../components/actions/FundClaimCardC";
 import { useNetwork } from "wagmi";
 import AppContext from "../../components/utils/AppContext";
 import { ToastTypes } from "../../lib/Types";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { getChainName, getCurrencyName } from "../../Constants";
 import RecordingsCard from "../../components/actions/RecordingsCard";
 import VenueCard from "../../components/cards/VenueCard";
