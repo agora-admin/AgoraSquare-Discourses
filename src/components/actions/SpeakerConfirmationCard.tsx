@@ -1,5 +1,3 @@
-import LoadingSpinner from "../utils/LoadingSpinner";
-import { SpeakerConfirmationIcon } from "../utils/SvgHub";
 import { useContext, useState } from "react";
 import { formatDate, getTime, getTimeFromDate } from "../../helper/TimeHelper";
 import { useMutation, useLazyQuery } from "@apollo/client";
@@ -8,14 +6,13 @@ import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import { contractData } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
 
 
 const SpeakerConfirmationCard = ({ data }: { data: any }) => {
-
     const [loading, setLoading] = useState(false);
     const { walletAddress, t_handle, addToast } = useContext(AppContext);
     const { activeChain } = useNetwork();
@@ -30,7 +27,6 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
         }
         return false;
     }
-
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {
         variables: {
@@ -74,6 +70,7 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
     const waitForTxn = useWaitForTransaction(
         {
             hash: confirmSpeaker.data?.hash,
+            confirmations: 5,
             onSettled: (txn) => {
                 console.log('settled:', txn);
                 if (txn) {

@@ -25,7 +25,7 @@ const LivePage = () => {
                     {/* Body */}
                     {<div className="flex flex-col gap-2 mx-20 self-center items-center">
                         <h3 className="text-white/70  text-center font-Lexend text-xl font-semibold">Error!</h3>
-                        {<p className="text-[#c6c6c6] text-center font-Lexend text-xs">Coul<span className="font-Lexend text-xs">d</span>n&apos;t find what you&apos;re looking for.</p>}
+                        {<p className="text-[#c6c6c6] text-center font-Lexend text-xs">Couldn&apos;t find what you&apos;re looking for.</p>}
                         <Link href="/">
                             <a className="text-gradient text-sm font-Lexend">&larr; go back</a>
                         </Link>

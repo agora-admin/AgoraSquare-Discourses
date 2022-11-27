@@ -2,7 +2,7 @@ import { Dialog } from '@headlessui/react';
 import { CloseCircle } from 'iconsax-react';
 import {useRef,Dispatch,SetStateAction} from 'react';
 import { ClaimNFTIcon } from '../utils/SvgHub';
-import {uuid} from 'uuidv4'
+import {v4 as uuid} from 'uuid'
 
 const ClaimNFTDialog = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) => {
     const buttonRef = useRef(null);

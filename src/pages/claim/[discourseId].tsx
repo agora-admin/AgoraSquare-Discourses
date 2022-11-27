@@ -7,13 +7,22 @@ import TopBar from "../../components/topbar/TopBar"
 import AppContext from "../../components/utils/AppContext"
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries"
 import LoadingSpinner from "../../components/utils/LoadingSpinner"
+import ClaimMessageDialogBox from "../../components/dialogs/ClaimMessageDialogBox"
+import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi"
+import { contractData } from "../../helper/ContractHelper"
+import { ToastTypes } from "../../lib/Types"
+import {v4 as uuid} from "uuid"
 
 const NFTClaimPage = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const { discourseId } = router.query;
+    const [txn, setTxn] = useState("");
+    const [openClaimMessageBox,setOpenClaimMessageBox] = useState(false);
+    const [claiming,setClaiming] = useState(false);
 
-    const { loggedIn } = useContext(AppContext);
+    const { discourseId } = router.query;
+    const { loggedIn,walletAddress,addToast } = useContext(AppContext);
+    const { activeChain } = useNetwork();
 
     const { loading: Dloading, error, data } = useQuery(GET_DISCOURSE_BY_ID, {
         variables: {
@@ -21,6 +30,52 @@ const NFTClaimPage = () => {
         },
         nextFetchPolicy: 'network-only'
     })
+
+    const claim = useContractWrite(
+        contractData(activeChain?.id!),
+        'mintSpeakerNFT',
+        {
+            args: [+2],
+            overrides: { from: walletAddress },
+            onSettled: (txn) => {
+                console.log('submitted:', txn);
+                addToast({
+                    title: "Transaction Submitted",
+                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                    type: ToastTypes.wait,
+                    duration: 5000,
+                    id: uuid()
+                })
+            },
+            onError: (error) => {
+                console.log('error:', error);
+                addToast({
+                    title: "Error Occured",
+                    body: error.message,
+                    type: ToastTypes.error,
+                    duration: 5000,
+                    id: uuid()
+                })
+                setClaiming(false);
+            }
+        }
+    )
+
+    const waitForTxn = useWaitForTransaction({
+        hash: claim.data?.hash,
+        onSettled: (txn) => {
+            console.log('settled:', txn);
+            if (txn) {
+                setTxn(txn?.transactionHash);
+            }
+        }
+    })
+
+    const handleClaim = () => {
+        setClaiming(true);
+        setOpenClaimMessageBox(true);
+        claim.write();
+    }
 
     useEffect(() => {
         setLoading(Dloading);
@@ -36,7 +91,7 @@ const NFTClaimPage = () => {
 
                 <Layout>
                     <TopBar onDiscoursePage={false} />
-
+                    <ClaimMessageDialogBox open={openClaimMessageBox} setOpen={setOpenClaimMessageBox} />
                     <div className='w-full min-h-screen relative flex flex-col items-center py-4 sm:py-5 mobile:pb-[80px] gap-3 sm:gap-4 z-10'>
                         {
                             loading &&
@@ -67,7 +122,7 @@ const NFTClaimPage = () => {
                                 </div>
 
                                 {/* Claim Button */}
-                                <button className="max-w-[481px] font-Lexend font-medium text-black text-sm w-full py-3 rounded-2xl bg-[#D2B4FC] border-2 border-[#1E1E1E]">Claim Now</button>
+                                <button onClick={handleClaim} className="max-w-[481px] font-Lexend font-medium text-black text-sm w-full py-3 rounded-2xl bg-[#D2B4FC] border-2 border-[#1E1E1E]">Claim Now</button>
                             </>
                         }
                     </div>

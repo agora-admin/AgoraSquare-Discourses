@@ -22,12 +22,14 @@ import { GET_DISCOURSE_BY_ID } from "../../../lib/queries";
 import AppContext from "../../utils/AppContext";
 import { ToastTypes } from "../../../lib/Types";
 import { uuid } from "uuidv4";
+import { useRouter } from "next/router";
 
 
 const END_EVENT = "END_MEET_REQUEST";
 const REJECT_END_EVENT = "END_MEET_REQUEST_REJECT";
 
 const Meet = ({ dData }: { dData: any }) => {
+    const router = useRouter();
     const hmsActions = useHMSActions();
     const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
@@ -192,6 +194,7 @@ const Meet = ({ dData }: { dData: any }) => {
 
             endMeet();
             refetch();
+            router.push('/claim/'+dData.id);
         } catch (error) {
             console.log(error);
             rejectEndCall();
