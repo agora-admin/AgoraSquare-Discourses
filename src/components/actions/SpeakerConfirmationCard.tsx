@@ -6,13 +6,12 @@ import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import { contractData } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
 
 const SpeakerConfirmationCard = ({ data }: { data: any }) => {
-
     const [loading, setLoading] = useState(false);
     const { walletAddress, t_handle, addToast } = useContext(AppContext);
     const { activeChain } = useNetwork();
@@ -70,6 +69,7 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
     const waitForTxn = useWaitForTransaction(
         {
             hash: confirmSpeaker.data?.hash,
+            confirmations: 5,
             onSettled: (txn) => {
                 console.log('settled:', txn);
                 if (txn) {
