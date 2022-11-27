@@ -35,7 +35,6 @@ const NFTClaimPage = () => {
         contractData(activeChain?.id!),
         'mintSpeakerNFT',
         {
-            args: [+2],
             overrides: { from: walletAddress },
             onSettled: (txn) => {
                 console.log('submitted:', txn);
@@ -74,7 +73,9 @@ const NFTClaimPage = () => {
     const handleClaim = () => {
         setClaiming(true);
         setOpenClaimMessageBox(true);
-        claim.write();
+        claim.write({
+            args: [+data.getDiscourseById.propId],
+        });
     }
 
     useEffect(() => {
