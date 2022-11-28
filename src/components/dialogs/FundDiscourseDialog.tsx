@@ -22,7 +22,6 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     let buttonRef = useRef(null);
     const { walletAddress, addToast } = useContext(AppContext);
 
-    const [openDisclamer,setOpenDisclamer] = useState(false);
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
@@ -151,7 +150,6 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                     <Dialog.Overlay className="fixed inset-0 bg-black opacity-0 w-screen h-screen overflow-hidden" />
 
                     <div className={`${open ? 'animate-dEnter': 'animate-dExit'} fixed inset-0 xs2:relative bg-[#0A0A0A] xs2:rounded-3xl xs2:max-w-sm w-full p-4 flex flex-col gap-3`}>
-                        <Disclamer open={openDisclamer} setOpen={setOpenDisclamer} />
                         {/* Fund Post View */}
                         {!minting && !funded && <>
                         <div className="absolute top-3 right-3 cursor-pointer" onClick={handleClose}>
@@ -178,7 +176,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
 
                         <section className='flex flex-col gap-3'>
                             <div className='flex items-center justify-between'>
-                                <p className='font-Lexend font-semibold text-xs text-[#E5F7FF] max-w-[230px]'>I agree with <span onClick={() => setOpenDisclamer(true)} className='underline text-[#6A8BFF] cursor-pointer'>terms & conditions</span>, and wish to Proceed.</p>
+                                <p className='font-Lexend font-semibold text-xs text-[#E5F7FF] max-w-[230px]'>I agree with <a href="/disclamer" target="_blank" rel="noreferrer" className='underline text-[#6A8BFF] cursor-pointer'>terms & conditions</a>, and wish to Proceed.</p>
                                 
                                 <div onClick={() => setAcceptTerms(prev => !prev)} className="cursor-pointer">
                                     {acceptTerms ? <TickSquare size={24} color="white" /> : 
@@ -239,26 +237,3 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
 }
 
 export default FundDiscourseDialog;
-
-const Disclamer = ({open,setOpen}:{open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) => {
-    const handleClose = () => setOpen(false);
-    const buttonRef = useRef(null);
-    
-    return (
-        <Dialog as='div' open={open} onClose={handleClose}
-        initialFocus={buttonRef}
-        className='fixed z-20 inset-0 w-screen h-screen overflow-hidden'>
-        <div className="flex items-center justify-center h-screen backdrop-blur-sm overflow-hidden">
-            <Dialog.Overlay className="fixed inset-0 bg-black opacity-0 w-screen h-screen overflow-hidden" />
-
-            <div className={`${open ? 'animate-dEnter': 'animate-dExit'} fixed inset-0 xs2:relative bg-[#0A0A0A] text-white xs2:rounded-3xl xs2:max-w-sm w-full p-4 flex flex-col gap-3`}>
-                <div className="absolute top-3 right-3 cursor-pointer" onClick={handleClose}>
-                    <CloseCircle size={23} color="#6C6C6C" variant='Bulk' />
-                </div>
-                <h3 className='font-bold text-white text-base'>Disclamer</h3>
-                <p className='font-medium text-white text-sm'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum minima officia placeat vel, soluta eligendi autem esse maiores rem ducimus doloribus quam nemo quaerat porro fugiat recusandae reiciendis doloremque nesciunt?</p>
-            </div>
-        </div>
-    </Dialog>
-    )
-}
