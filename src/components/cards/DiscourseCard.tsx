@@ -81,8 +81,8 @@ const DiscourseCard = ({ data }: { data: any }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div title={getDiscourseStateTitle(getStateTS(data))}>
-                        {getDiscourseStateIcon(getStateTS(data))}
+                    <div title={getDiscourseStateTitle(getStateTS(data) as DiscourseStateEnum)}>
+                        {getDiscourseStateIcon(getStateTS(data) as DiscourseStateEnum)}
                     </div>
                     <div className="h-4 w-[1px] bg-[#1E1E1E]"/>
                     <ChainIcon chainId={data.chainId} size={20} />
