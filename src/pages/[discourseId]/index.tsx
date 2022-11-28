@@ -10,7 +10,7 @@ import { getFund, getFundTotal } from "../../helper/FundHelper";
 import { useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import TopBar from "../../components/topbar/TopBar";
-import { ArrowNE, EditIcon, IRLIcon, RecordingIcon} from "../../components/utils/SvgHub";
+import { ArrowNE, EditIcon, IRLIcon, RecordingIcon, VirtualIcon} from "../../components/utils/SvgHub";
 import FundDiscourseDialog from "../../components/dialogs/FundDiscourseDialog";
 import FundsDialog from "../../components/dialogs/FundsDialog";
 import Link from "next/link";
@@ -202,8 +202,9 @@ const DiscoursePage = () => {
                                 <div className="flex flex-col gap-3">
                                     <div className="flex flex-col  xs:flex-row xs:items-center gap-2 sm:gap-4">
                                         <div className="flex items-center gap-1">
-                                            <IRLIcon size={20} />
-                                            <span className="font-Lexend font-medium text-xs text-[#FCB4BD]">IRL</span>
+                                            {data.getDiscourseById.irl ? <IRLIcon size={20} /> : <VirtualIcon size={20} /> }
+                                            {data.getDiscourseById.irl ? <span className="font-Lexend font-medium text-xs text-[#FCB4BD]">IRL</span> :
+                                            <span className="font-Lexend font-medium text-xs text-[#FCB4F5]">VIRTUAL</span>} 
                                         </div>
 
                                         <div className="hidden xs:block w-[1.5px] h-3 bg-white/20"/>
