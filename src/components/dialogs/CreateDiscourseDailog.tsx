@@ -80,7 +80,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                 +data?.charityPercent,
                 +data?.fundingPeriod
             ],
-            overrides: { from: walletAddress, value: ethers.utils.parseEther(amount) },
+            overrides: { from: walletAddress, value: ethers.utils.parseEther(amount || '0.0') },
             onSettled: (txn) => {
                 console.log('submitted:', txn);
                 addToast({

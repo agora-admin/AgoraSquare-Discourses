@@ -99,11 +99,11 @@ const InvitePage = () => {
                     </div>
 
                     {/* Body */}
-                    <div className="flex flex-col gap-4 mt-10 grow mx-20">
+                    <div className="flex flex-col gap-4 mt-10 grow mx-2 md:mx-10 lg:mx-20">
                         {/* left section */}
                         <div className="relative bg-card w-full flex flex-col p-8 rounded-2xl">
                             <h3 className="text-white/70 text-xl font-semibold">Link Accounts</h3>
-                            {<p className="text-[#c6c6c6] text-xs w-[50%] my-4">Link you wallet address and twitter account for a better experience with Discourses</p>}
+                            {<p className="text-[#c6c6c6] text-xs sm:w-[50%] my-4">Link you wallet address and twitter account for a better experience with Discourses</p>}
 
                             {walletAddress === "" && <WalletOptionsLink /> }
                             {loggedIn && <div className='cursor-default py-2 flex items-center w-max gap-2 text-[#616162] text-sm font-semibold'>
@@ -134,8 +134,10 @@ const InvitePage = () => {
                         </div>
                     </div>
 
-                    <footer className="flex justify-center items-center gap-4">
-                        <FooterIcon />
+                    <footer className="flex justify-center items-center gap-2 xs:gap-4">
+                        <div className="hidden xs:block">
+                            <FooterIcon />
+                        </div>
                         <div className=" h-full w-[2px] bg-[#212427]" />
 
                         <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Terms & conditions</a>
