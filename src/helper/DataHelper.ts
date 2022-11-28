@@ -60,32 +60,51 @@ export enum DiscourseStateEnum{
 }
 
 export const getStateTS = (data: any) => {
-    if (!fundingDone(data)) {
-        return DiscourseStateEnum.FUNDING;
-    } else {
-        if (data.status.terminated) {
-            return DiscourseStateEnum.TERMINATED;
-        } else if (data.status.disputed) {
-            return DiscourseStateEnum.DISPUTED
-        } else if (data.status.completed) {
-            return DiscourseStateEnum.FINISHED
-        } else if (discourseConfirmed(data)) {
-            if(data.discourse.room_id) {
-                if (isPast(getMeetDateTS(data))) {
-                    return DiscourseStateEnum.ONGOING
-                } else {
-                    return DiscourseStateEnum.SCHEDULED
-                }
-            } else {
-                if (data.discourse.meet_date) {
-                    return DiscourseStateEnum.SCHEDULED
-                }
-                return DiscourseStateEnum.SCHEDULING
-            }
-        } else { // speaker didn't confirm self terminate
-            return DiscourseStateEnum.TERMINATED
-        }
+    if (data.status.terminated) {
+        return DiscourseStateEnum.TERMINATED;
+    } else if (data.status.disputed) {
+        return DiscourseStateEnum.DISPUTED
+    } else if (data.status.completed) {
+        return DiscourseStateEnum.FINISHED
     }
+
+    if(discourseConfirmed(data)){
+        if(data.discourse.room_id) {
+            if (isPast(getMeetDateTS(data))) {
+                return DiscourseStateEnum.ONGOING
+            } else {
+                return DiscourseStateEnum.SCHEDULED
+            }
+        } else {
+            return DiscourseStateEnum.SCHEDULING
+        }
+    }else if(!fundingDone(data)) {
+        return DiscourseStateEnum.FUNDING;
+    }
+    
+    // if(!(now.getTime() > fDate.getTime())) {
+    //     return DiscourseStateEnum.FUNDING;
+    // } else {
+    //     if (data.status.terminated) {
+    //         return DiscourseStateEnum.TERMINATED;
+    //     } else if (data.status.disputed) {
+    //         return DiscourseStateEnum.DISPUTED
+    //     } else if (data.status.completed) {
+    //         return DiscourseStateEnum.FINISHED
+    //     } else if (discourseConfirmed(data)) {
+    //         if(data.discourse.room_id) {
+    //             if (isPast(getMeetDateTS(data))) {
+    //                 return DiscourseStateEnum.ONGOING
+    //             } else {
+    //                 return DiscourseStateEnum.SCHEDULED
+    //             }
+    //         } else {
+    //             return DiscourseStateEnum.SCHEDULING
+    //         }
+    //     } else { // speaker didn't confirm self terminate
+    //         return DiscourseStateEnum.TERMINATED
+    //     }
+    // }
 }
 
 export const hasWithdrawn = (data: any, address: string) => {
@@ -96,7 +115,7 @@ export const hasWithdrawn = (data: any, address: string) => {
 }
 
 export const fundingDone = (data: any) => {
-    var fDate = getTime(+data.endTS);
+    var fDate = getTime(+data.endTS+1468800);
     var now = new Date();
     return now.getTime() > fDate.getTime();
 }

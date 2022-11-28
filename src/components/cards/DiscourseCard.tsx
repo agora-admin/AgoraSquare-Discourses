@@ -8,10 +8,43 @@ import { ChainIcon } from "../utils/ChainTag";
 import { ClockIcon, IRLIcon, MessageRemoveIcon, VerifyIcon, VirtualIcon } from "../utils/SvgHub";
 
 const DiscourseCard = ({ data }: { data: any }) => { 
+
+    console.log("Discourse Name: ",data.title," Discourse State: ",data.status)
     const route = useRouter();
 
     const handleClick = () => {
         route.push(`/${data.id}`)
+    }
+
+    const getDiscourseState = () => {
+        if(data.status.completed){
+            return <small className="text-[#84B9D1] font-semibold text-sm">Completed</small>
+        }else if(data.status.terminated){
+            return <small className="text-[#84B9D1] font-semibold text-sm">Terminated</small>
+        }else if(data.status.disputed){
+            return <small className="text-[#84B9D1] font-semibold text-sm">Disputed</small>
+        }else {
+            return <small className="text-[#84B9D1] font-semibold text-sm xs:text-base">{diff_hours(getTime(data.endTS),new Date())} <span className="font-Lexend text-[#E5F7FF] text-[10px] xs:text-xs">hrs left</span></small>
+        }
+    }
+
+    const getDiscourseStateTitle = (state: DiscourseStateEnum) => {
+        switch(state){
+            case DiscourseStateEnum.SCHEDULED:
+                return "Scheduled"
+            case DiscourseStateEnum.SCHEDULING:
+                return "Scheduling"
+            case DiscourseStateEnum.FUNDING:
+                return "Funding"
+            case DiscourseStateEnum.FINISHED:
+                return "Finished"
+            case DiscourseStateEnum.TERMINATED:
+                return "Terminated"
+            case DiscourseStateEnum.DISPUTED:
+                return "Disputed"
+            case DiscourseStateEnum.ONGOING:
+                return "On Going"
+        }
     }
 
     const getDiscourseStateIcon = (state: DiscourseStateEnum) => {
@@ -48,7 +81,9 @@ const DiscourseCard = ({ data }: { data: any }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {getDiscourseStateIcon(getStateTS(data))}
+                    <div title={getDiscourseStateTitle(getStateTS(data))}>
+                        {getDiscourseStateIcon(getStateTS(data))}
+                    </div>
                     <div className="h-4 w-[1px] bg-[#1E1E1E]"/>
                     <ChainIcon chainId={data.chainId} size={20} />
                 </div>
@@ -69,7 +104,7 @@ const DiscourseCard = ({ data }: { data: any }) => {
                     <div className="h-4 w-[1px] bg-[#1E1E1E]"/>
 
                     {/* Time Left Column */}
-                    <small className="text-[#84B9D1] font-semibold text-sm xs:text-base">{diff_hours(getTime(data.endTS),new Date())} <span className="font-Lexend text-[#E5F7FF] text-[10px] xs:text-xs">hrs left</span></small>
+                    {getDiscourseState()}
                     
                     <div className="h-4 w-[1px] bg-[#1E1E1E]"/>
 
