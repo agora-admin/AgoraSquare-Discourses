@@ -62,10 +62,10 @@ const HeroCard = () => {
                 </div>
 
                 <div className="flex flex-col xs:flex-row items-center gap-2">
-                    <div className="text-white flex items-center cursor-pointer font-bold underline">
+                    <a href="https://www.loom.com/share/a871f5c4e2fb40de9e4ea9c921e64d35" target="_blank" rel="noreferrer" className="text-white flex items-center cursor-pointer font-bold underline">
                         <small className="text-xs">watch tutorial</small>
                         <ArrowNE color="#FFF" />
-                    </div>
+                    </a>
 
                     <div className="hidden xs:block h-3 w-[1.5px] bg-white/20"/>
                     
