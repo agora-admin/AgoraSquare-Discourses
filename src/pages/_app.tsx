@@ -14,6 +14,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import SEOHome from '../components/utils/SEOHome'
 import ContextWrapper from '../components/utils/ContextWrapper'
 import { rpcUrl } from '../Constants'
+import Script from 'next/script'
 
 const { provider, chains } = configureChains(
   [ chain.polygonMumbai,chain.polygon ],
@@ -57,19 +58,30 @@ const wagmiClient = createClient({
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const apolloClient = useApollo(pageProps.initialApolloState)
   return (
-    <WagmiConfig client={wagmiClient}>
-      <ApolloProvider client={apolloClient}>
-        <SessionProvider session={session}>
-          <HMSRoomProvider>
-            <SEOHome />
-            <ContextWrapper>
-              <Component {...pageProps} />
-            </ContextWrapper>
-          </HMSRoomProvider>
-        </SessionProvider>
-      </ApolloProvider>
-    </WagmiConfig>
+    <>
+      <Script strategy="lazyOnload" async src="https://www.googletagmanager.com/gtag/js?id=G-GETMY8D13E"></Script>
+      <Script id="google-analytics-script" strategy="lazyOnload">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
+          gtag('config', 'G-GETMY8D13E');
+        `}
+      </Script>
+      <WagmiConfig client={wagmiClient}>
+        <ApolloProvider client={apolloClient}>
+          <SessionProvider session={session}>
+            <HMSRoomProvider>
+              <SEOHome />
+              <ContextWrapper>
+                <Component {...pageProps} />
+              </ContextWrapper>
+            </HMSRoomProvider>
+          </SessionProvider>
+        </ApolloProvider>
+      </WagmiConfig>
+    </>
   )
 }
 
