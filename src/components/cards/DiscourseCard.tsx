@@ -8,8 +8,6 @@ import { ChainIcon } from "../utils/ChainTag";
 import { ClockIcon, IRLIcon, MessageRemoveIcon, VerifyIcon, VirtualIcon } from "../utils/SvgHub";
 
 const DiscourseCard = ({ data }: { data: any }) => { 
-
-    console.log("Discourse Name: ",data.title," Discourse State: ",data.status)
     const route = useRouter();
 
     const handleClick = () => {

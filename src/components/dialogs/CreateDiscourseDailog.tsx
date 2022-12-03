@@ -16,14 +16,14 @@ import { contractData } from '../../helper/ContractHelper';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
 import { getCurrencyName, supportedChainIds } from '../../Constants';
-import { ToastTypes } from '../../lib/Types';
+import { CreateObj, ToastTypes } from '../../lib/Types';
 import { uuid } from 'uuidv4';
 import { CloseCircle, TickSquare } from 'iconsax-react';
 
 interface Props {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-    data: any;
+    data: CreateObj;
 }
 
 const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
@@ -41,7 +41,6 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
 
     const route = useRouter();
 
-    const abi = DiscourseHub;
     const [refetch] = useLazyQuery(GET_DISCOURSES);
     const [createDiscourse, { data: cData }] = useMutation(CREATE_DISCOURSE, {
         onCompleted: (data) => {
@@ -268,7 +267,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                             <div className="flex flex-col w-full text-center gap-4">
                                     <div className="flex flex-col gap-1">
                                         <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>Approve the transaction from metamask.</p>
-                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>{amount} {getCurrencyName(data.getDiscourseById.chainId)} will be funded to the discourse.</p>
+                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>{amount} {getCurrencyName(activeChain?.id as number)} will be funded to the discourse.</p>
                                     </div>
                                     <div className='flex items-center justify-center gap-2'>
                                         <UseAnimations animation={loading} size={20} strokeColor="#ffffff" className='text-white' />
