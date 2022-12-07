@@ -3,7 +3,7 @@ import { Wallet1, ArrowRight2, Logout, Refresh, I3DRotate, Repeat } from "iconsa
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useBalance, useDisconnect, useFeeData, useNetwork } from "wagmi";
 import { getSwitchNetwork, supportedChainIds } from "../../Constants";
 import { shortAddress } from "../../helper/StringHelper";

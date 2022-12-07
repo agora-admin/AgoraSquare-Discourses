@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";

@@ -1,6 +1,6 @@
 import { CloseCircle } from "iconsax-react";
 import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { Speaker, ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
 import SpeakerPop from "./SpeakerPop";

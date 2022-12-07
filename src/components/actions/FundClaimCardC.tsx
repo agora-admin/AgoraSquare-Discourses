@@ -8,7 +8,7 @@ import { formatDate, isPast } from "../../helper/TimeHelper";
 import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import { contractData } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 

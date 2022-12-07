@@ -9,7 +9,7 @@ import { contractData } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 const FundClaimCardT = ({ data }: { data: any }) => {
 

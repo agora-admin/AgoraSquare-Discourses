@@ -3,7 +3,7 @@ import { Logout, Repeat } from "iconsax-react";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useBalance, useDisconnect, useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { shortAddress } from "../../helper/StringHelper";

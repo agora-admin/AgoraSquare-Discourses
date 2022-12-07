@@ -6,7 +6,7 @@ import TopBar from "../components/topbar/TopBar";
 import CreateDiscourseDialog from "../components/dialogs/CreateDiscourseDailog";
 import { CreateObj, Speaker,Moderator, ToastTypes } from "../lib/Types";
 import AppContext from "../components/utils/AppContext";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import CreateCard from "../components/create/CreateCard";
 import SpeakerInput from "../components/create/SpeakerInput";
 import TopicsInput from "../components/create/TopicsInput";

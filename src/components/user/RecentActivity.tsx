@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4"
+import { v4 as uuid } from "uuid"
 import { ArrowNE, NotificationIcon, Polygon16 } from "../utils/SvgHub" 
 
 const RecentActivity = () => {

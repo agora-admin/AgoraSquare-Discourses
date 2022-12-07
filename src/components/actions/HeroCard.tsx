@@ -5,7 +5,7 @@ import AppContext from "../utils/AppContext";
 import { useNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { ArrowCircleRight } from "iconsax-react";
 import ConnectWalletDailog from "../dialogs/ConnectWalletDailog";
 

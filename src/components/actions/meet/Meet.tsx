@@ -19,7 +19,7 @@ import { CHECK_STREAM, END_MEET, STOP_STREAM } from "../../../lib/mutations";
 import { GET_DISCOURSE_BY_ID } from "../../../lib/queries";
 import AppContext from "../../utils/AppContext";
 import { ToastTypes } from "../../../lib/Types";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 
 

@@ -3,7 +3,7 @@ import { CloseCircle, Information, Verify, Warning2 } from "iconsax-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { Dispatch, FC, ReactNode, useEffect, useState } from "react";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { useConnect, useDisconnect } from "wagmi";
 import { GET_USERDATA } from "../../lib/queries";
 import { Toast, ToastTypes } from "../../lib/Types";
