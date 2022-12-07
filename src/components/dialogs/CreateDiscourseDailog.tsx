@@ -6,8 +6,7 @@ import { useState, useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import UseAnimations from 'react-useanimations';
 import loading from 'react-useanimations/lib/loading';
-import { DiscourseIcon, FundDiscourseIcon, FundDiscourseIcon2 } from '../utils/SvgHub';
-import DiscourseHub from '../../web3/abi/DiscourseHub.json';
+import { DiscourseIcon, FundDiscourseIcon2 } from '../utils/SvgHub';
 import { CREATE_DISCOURSE } from '../../lib/mutations';
 import { getSecNow } from '../../helper/TimeHelper';
 import { GET_DISCOURSES } from '../../lib/queries';
@@ -35,7 +34,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
     const [error, setError] = useState({});
-    const [amount, setAmount] = useState('0.01');
+    const [amount, setAmount] = useState('1.0');
     const [discourseId, setDiscourseId] = useState('');
     const { activeChain } = useNetwork();
 
