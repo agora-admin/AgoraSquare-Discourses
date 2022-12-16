@@ -3,17 +3,18 @@ import { TickCircle } from "iconsax-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useContext, useEffect } from "react";
+import { useNetwork } from "wagmi";
 import ClaimNFTDialog from "../../components/dialogs/ClaimNFTDialog";
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
 import EditProfile from "../../components/user/EditProfile";
 import NFTS from "../../components/user/NFTs";
 import RecentActivity from "../../components/user/RecentActivity";
-import Tabs from "../../components/user/Tabs";
 import AppContext from "../../components/utils/AppContext";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import {TwitterIcon2, WalletIcon,} from "../../components/utils/SvgHub";
 import { getProfileImageUrl } from "../../helper/StringHelper";
+import axios from 'axios';
 
 const ClassString = "min-w-[55px] text-[#7D8B92] text-sm sm:text-sm font-Lexend font-medium";
 const SelectedClassString = " flex items-center gap-2 !text-[#D2B4FC]"
@@ -27,8 +28,10 @@ const UserPage = () => {
     const [currentTab,setCurrentTab] = useState(0)
     const [activeNFTTab,setActiveNFTTab] = useState("All NFTs");
     const [openClaimNFTDialog,setOpenClaimNFTDialog] = useState(false);
+    const [nfts,setNfts] = useState([]);
 
     const { loggedIn, t_handle,t_img,t_name,t_connected, walletAddress,bio,name } = useContext(AppContext);
+    const {activeChain} = useNetwork();
 
     useEffect(() => {
         if(!loggedIn || !t_connected){
@@ -39,6 +42,24 @@ const UserPage = () => {
     if(route.query.userId !== walletAddress){
         route.push('/');
     }
+
+    const getNFTData = async () => {
+        const R = await axios.request({
+            method: 'GET',
+            url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/api/nft`,
+            params: {
+                walletAddress,
+                chainId: activeChain?.id
+            },
+            headers: {accept: 'application/json'}
+        })
+        
+        setNfts(R.data.msg.result)
+    }
+
+    useEffect(() => {
+        getNFTData()
+    }, [])
 
     return (
         <>
@@ -127,7 +148,7 @@ const UserPage = () => {
                                     {/* NFTs & Recent Activity Section */}
                                     <section className="flex flex-col gap-6">
                                         <div className="flex items-center gap-5">
-                                            <button onClick={() => setCurrentTab(0)} className={ClassString+" "+(currentTab == 0 && SelectedClassString)}>
+                                            <div onClick={() => setCurrentTab(0)} className={ClassString+" "+(currentTab == 0 && SelectedClassString)}>
                                                 <span className={`py-2 ${currentTab === 0 && "text-border"}`}>NFTs</span>
                                                 {
                                                     currentTab === 0 &&  
@@ -152,11 +173,11 @@ const UserPage = () => {
                                                         </Popover.Panel>
                                                     </Popover>
                                                 }
-                                            </button>
+                                            </div>
                                             <button onClick={() => setCurrentTab(1)} className={"py-2 "+ClassString+" "+(currentTab == 1 && SelectedClassString+" text-border")}>Recent Activities</button>
                                         </div>
                                         
-                                        {currentTab === 0 ? <NFTS /> : <RecentActivity />}
+                                        {currentTab === 0 ? <NFTS nfts={nfts} /> : <RecentActivity />}
                                     </section>                                
                                 </div>       
                             )}
