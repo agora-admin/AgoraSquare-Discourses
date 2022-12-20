@@ -12,7 +12,7 @@ import { chain, useContractWrite, useNetwork, useWaitForTransaction } from 'wagm
 import { contractData } from '../../helper/ContractHelper';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import { ToastTypes } from '../../lib/Types';
 import { getChainName, getCurrencyName } from '../../Constants';
 import { ArrowCircleRight, CloseCircle, TickSquare } from 'iconsax-react';

@@ -16,7 +16,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
 import { getCurrencyName, supportedChainIds } from '../../Constants';
 import { CreateObj, ToastTypes } from '../../lib/Types';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import { CloseCircle, TickSquare } from 'iconsax-react';
 
 interface Props {
