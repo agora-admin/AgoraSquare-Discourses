@@ -238,7 +238,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
 
                         <section className='flex flex-col gap-3'>
                             <div className='flex items-center justify-between'>
-                                <p className='font-Lexend font-semibold text-xs text-[#E5F7FF] max-w-[230px]'>I agree with <a href="/disclamer" target="_blank" rel="noreferrer" className='underline text-[#6A8BFF] cursor-pointer'>terms & conditions</a>, and wish to Proceed.</p>
+                                <p className='font-Lexend font-semibold text-xs text-[#E5F7FF] max-w-[230px]'>I agree with <a href="/disclaimer" target="_blank" rel="noreferrer" className='underline text-[#6A8BFF] cursor-pointer'>terms & conditions</a>, and wish to Proceed.</p>
                                 
                                 <div onClick={() => setAcceptTerms(prev => !prev)} className="cursor-pointer">
                                     {acceptTerms ? <TickSquare size={24} color="white" /> : 
