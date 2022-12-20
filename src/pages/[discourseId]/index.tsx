@@ -265,7 +265,7 @@ const DiscoursePage = () => {
 
                                     {/* Total pledger */}
                                     <div className="flex flex-col ">
-                                        <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total pledger</small>
+                                        <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total plegers</small>
                                         <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds)} <span className="text-xs">{getCurrencyName(data.getDiscourseById.chainId)}</span></small>
                                     </div>
                                 </div>
