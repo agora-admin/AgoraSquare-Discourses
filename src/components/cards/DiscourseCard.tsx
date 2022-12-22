@@ -97,7 +97,7 @@ const DiscourseCard = ({ data }: { data: any }) => {
 
                 <div className="flex items-center justify-between">
                     {/* Fund Column */}
-                    <small className="text-[#84B9D1] font-semibold text-sm xs:text-base">{getFundTotal(data.funds)} <span className="font-Lexend text-[#E5F7FF] text-[10px] xs:text-xs">{getCurrencyName(data.chainId)}</span></small>
+                    <small className="text-[#84B9D1] font-semibold text-sm xs:text-base">{getFundTotal(data.funds).toFixed(2)} <span className="font-Lexend text-[#E5F7FF] text-[10px] xs:text-xs">{getCurrencyName(data.chainId)}</span></small>
                     
                     <div className="h-4 w-[1px] bg-[#1E1E1E]"/>
 
