@@ -258,7 +258,7 @@ const DiscoursePage = () => {
                                     {/* Total Stake */}
                                     <div className="flex flex-col ">
                                         <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total stake</small>
-                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds).toFixed(1)}</small>
+                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds).toFixed(1)} <span className="text-xs">{getCurrencyName(data.getDiscourseById.chainId)}</span></small>
                                     </div>
 
                                     <div className="w-[1.5px] h-10 bg-white/20" />
@@ -266,7 +266,7 @@ const DiscoursePage = () => {
                                     {/* Total pledger */}
                                     <div className="flex flex-col ">
                                         <small className="text-[#7D8B92] font-Lexend font-semibold text-xs xs:text-sm">total plegers</small>
-                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds)} <span className="text-xs">{getCurrencyName(data.getDiscourseById.chainId)}</span></small>
+                                        <small className="text-[#D2B4FC] font-Lexend font-semibold text-lg sm:text-xl">{getFundTotal(data.getDiscourseById.funds)}</small>
                                     </div>
                                 </div>
 
