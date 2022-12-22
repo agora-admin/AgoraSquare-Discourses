@@ -169,7 +169,7 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
 
                 <div className="flex flex-col">
                     <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation</h4>
-                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">you need to confirm your participation before <span className="font-semibold underline">{formatDate(getTime(data.endTS))} • {getTimeFromDate(getTime(data.endTS))}</span></small>
+                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">Connect your wallet with your twitter account and confirm your participation before <span className="font-semibold underline">{formatDate(getTime(data.endTS))} • {getTimeFromDate(getTime(data.endTS))}</span></small>
                 </div>
             </div>
             

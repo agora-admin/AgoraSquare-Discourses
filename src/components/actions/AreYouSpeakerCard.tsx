@@ -17,7 +17,7 @@ const AreYouSpeakerCard = () => {
 
                 <div className="flex flex-col gap-1">
                     <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px] sm:text-sm">Are You A Speaker?</h4>
-                    <small className="text-[11px] sm:text-xs text-[#E5F7FFE5] max-w-md mobile:text-center font-semibold">connect your wallet with twitter account and get speakers provelages for the discourse you&apos;re invited to.</small>
+                    <small className="text-[11px] sm:text-xs text-[#E5F7FFE5] max-w-md mobile:text-center font-semibold">connect your wallet with twitter account and get speakers privileges for the discourse you&apos;re invited to.</small>
                 </div>
             </div>
             
