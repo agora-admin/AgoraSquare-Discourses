@@ -143,8 +143,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     }
 
     return (
-            <Dialog as='div' open={open} onClose={handleClose}
-                initialFocus={buttonRef}
+            <Dialog as='div' open={open} onClose={() => {}} initialFocus={buttonRef}
                 className='fixed z-20 inset-0 w-screen h-screen overflow-hidden'>
                 <div className="flex items-center justify-center h-screen backdrop-blur-sm overflow-hidden">
                     <Dialog.Overlay className="fixed inset-0 bg-black opacity-0 w-screen h-screen overflow-hidden" />

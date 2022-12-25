@@ -30,7 +30,7 @@ const DiscourseState = ({ data,slotConfirmed }: { data:any,slotConfirmed: (data:
             <JoinMeetCard data={data.getDiscourseById} />
         )} 
 
-        { !data.getDiscourseById.irl && data.getSlotById && fundingDone(data.getDiscourseById) && discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === 1 &&
+        {   discourseConfirmed(data.getDiscourseById) && isSpeakerWallet(data, walletAddress) && getStateTS(data.getDiscourseById) === DiscourseStateEnum.SCHEDULING &&
             <SlotCard id={data.getDiscourseById.id} propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} endTS={+data.getDiscourseById.endTS} data={data.getSlotById} />
         }
         
