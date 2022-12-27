@@ -180,9 +180,9 @@ const DiscoursePage = () => {
                                     <div className="flex flex-col gap-[6px]">
                                         <small className="font-Lexend text-base !leading-3 text-[#E5F7FF] font-medium lowercase">{data.getDiscourseById.speakers[0]?.name}</small>
                                         <small className="font-Lexend text-base !leading-3 text-[#E5F7FF] font-medium lowercase">{data.getDiscourseById.speakers[1]?.name}</small>
-                                        <div>
-                                            <p src={getSpaces(data.getDiscourseById.speakers[0]?.username + "," + data.getDiscourseById.speakers[1]?.username)}></p>
-                                        </div>
+                                        <script>
+                                        console.log('res',getSpaces(data.getDiscourseById.speakers[0]?.username + "," + data.getDiscourseById.speakers[1]?.username));
+                                        </script>
                                     </div>
                                 </div>
 
