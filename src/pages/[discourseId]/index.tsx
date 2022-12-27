@@ -92,18 +92,17 @@ const DiscoursePage = () => {
         return false;
     }
     async function getIds(usernames: string) {
-        interface UserData {
-            id : string;
-        }
-        let response = await fetch(`https://twitter-user-lookup.dylanwong007.workers.dev/?username=${usernames}`);
-        const data =  JSON.parse(await response.json()).data;
+        let response = await fetch(`https://twitter-user-lookup.dylanwong007.workers.dev/?usernames=${usernames}`);
+        response = await response.json();
+        const data = response.data;
+        console.log(data);
         let ids = '';
-        data.array.forEach((user : UserData) => {
+        data?.forEach(user => {
             ids += user.id;
         });
         return ids;
     }
-    
+
     async function getSpaces (usernames : string) {
         const ids = await getIds(usernames);
         const response = await fetch(`https://twitter-spaces-api.dylanwong007.workers.dev/?id=${ids}`);
