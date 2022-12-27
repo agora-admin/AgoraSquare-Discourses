@@ -91,6 +91,28 @@ const DiscoursePage = () => {
         }
         return false;
     }
+    async function getIds(usernames: string) {
+        interface UserData {
+            id : string;
+        }
+        let response = await fetch(`https://twitter-user-lookup.dylanwong007.workers.dev/?username=${usernames}`);
+        const data =  JSON.parse(await response.json()).data;
+        let ids = '';
+        data.array.forEach((user : UserData) => {
+            ids += user.id;
+        });
+        return ids;
+    }
+    
+    async function getSpaces (usernames : string) {
+        const ids = await getIds(usernames);
+        const response = await fetch(`https://twitter-spaces-api.dylanwong007.workers.dev/?id=${ids}`);
+        return await response.json();
+    }
+
+    const res = getSpaces(data.getDiscourseById.speakers[0]?.username + "," + data.getDiscourseById.speakers[1]?.username);
+    console.log('res: ', res);
+
 
     const getChainExplorerUrl = () => {
         switch(data.getDiscourseById.chainId){
