@@ -92,9 +92,10 @@ const DiscoursePage = () => {
         return false;
     }
     async function getIds(usernames: string) {
+        
         let response = await fetch(`https://twitter-user-lookup.dylanwong007.workers.dev/?usernames=${usernames}`);
         response = await response.json();
-        const data = response.data;
+        const data = response['data'];
         console.log(data);
         let ids = '';
         data?.forEach(user => {
