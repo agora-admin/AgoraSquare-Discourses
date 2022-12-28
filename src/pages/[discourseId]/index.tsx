@@ -27,6 +27,7 @@ import { v4 as uuid } from "uuid";
 import { getChainName, getCurrencyName } from "../../Constants";
 import RecordingsCard from "../../components/actions/RecordingsCard";
 import VenueCard from "../../components/cards/VenueCard";
+import SpacesCard from "../../components/cards/SpacesCard";
 import YoutubeTag from "../../components/utils/YoutubeTag";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
@@ -104,7 +105,7 @@ const DiscoursePage = () => {
         return ids;
     }
 
-    async function getSpaces (usernames : string) {
+    async function getSpaces (usernames : string) : Promise<JSON>{
         const ids = await getIds(usernames);
         const response = await fetch(`https://twitter-spaces-api.dylanwong007.workers.dev/?id=${ids}`);
         return await response.json();
@@ -276,6 +277,7 @@ const DiscoursePage = () => {
                                             {/* Divider */}
                                             <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
                                             <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
+                                            <SpacesCard spacesData={getSpaces(data.getDiscourseById.speakers[0]?.name+','+data.getDiscourseById.speakers[1]?.name)} />
                                         </>
                                     }
                                 </div>
