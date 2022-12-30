@@ -162,13 +162,14 @@ const DiscoursePage = () => {
                     }
 
                     {/* Body */}
+
                     {error && <div className='w-full py-4 flex items-center justify-center mt-10'>
                                 <img className='w-48' src="/404_dis.png" alt="404 not found" />
                             </div>}
                     {!loading && data && !error &&
                     <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
                         <DiscourseState data={data} slotConfirmed={slotConfirmed} />
-
+                        <SpacesCard spaceUrl="placeholder"></SpacesCard>
                         <div className="flex flex-col gap-5">
                             {/* Top Section */}
                             <div className="w-full flex items-center justify-between sm:px-8">
@@ -277,7 +278,6 @@ const DiscoursePage = () => {
                                             {/* Divider */}
                                             <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
                                             <VenueCard propId={+data.getDiscourseById.propId} chainId={+data.getDiscourseById.chainId} />
-                                            <SpacesCard spacesData={getSpaces(data.getDiscourseById.speakers[0]?.name+','+data.getDiscourseById.speakers[1]?.name)} />
                                         </>
                                     }
                                 </div>

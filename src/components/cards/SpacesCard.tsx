@@ -1,40 +1,42 @@
-import { useQuery } from "@apollo/client";
-import { Location } from "iconsax-react";
-import { FC } from "react";
-import { formatDate, getDayFromDate, getTimeFromDate } from "../../helper/TimeHelper";
-import { GET_EVENT } from "../../lib/queries";
+import { useContext, useState } from "react";
+import { formatDate, getTime, getTimeFromDate } from "../../helper/TimeHelper";
+import { useMutation, useLazyQuery } from "@apollo/client";
+import { SET_WALLETADDRESS, SPEAKER_CONFIRMATION } from "../../lib/mutations";
+import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
+import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
+import { contractData } from "../../helper/ContractHelper";
+import AppContext from "../utils/AppContext";
+import { v4 as uuid } from "uuid";
+import { getChainName } from "../../Constants";
+import { ToastTypes } from "../../lib/Types";
+import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
+import { TwitterIcon } from "../utils/SvgHub";
 
-interface Props {
-    spacesData: Promise<JSON>;
-}
-const VenueCard: FC<Props> = ({ spacesData }) => {
-    var valid = false;
-    if (spacesData.hasOwnProperty('data')) {
-        valid = true;
-    }
-
+const TwitterCard = ({ spaceUrl }: { spaceUrl: string }) => {
+    const [loading] = useState(false);
+    
     return (
-        <div className="flex flex-col gap-2">
-            <small className="text-[#7D8B92] font-Lexend font-semibold">twitter space info</small> 
-            {valid && <>
-                <div className="flex flex-col">
-                    <p className="text-xs text-[#fff]">{formatDate(new Date(spacesData["data"][0]["scheduled_start"]))} , {new Date(spacesData["data"][0]["scheduled_start"])}</p>
-                    <p className="text-xs text-[#fff]">{getTimeFromDate(new Date(spacesData["data"][0]["scheduled_start"]))}</p>
+        <div className="mobile:fixed mobile:bottom-[60px] mobile:inset-x-0 mobile:max-h-[220px] flex flex-col sm:flex-row items-center mobile:gap-4 sm:justify-between py-6 sm:py-3 px-6 bg-[#141414] sm:border-[0.1px] sm:border-[#498CD6] rounded-t-[30px] sm:rounded-3xl">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
+                <div className="mobile:hidden">
+                    <TwitterIcon color="#498CD6" width={34} height={34} />
+                </div>
+
+                <div className="sm:hidden">
+                    <TwitterIcon color="#498CD6" width={50} height={50}/>
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-xs text-[#fff]">{spacesData["data"][0]["title"]}</p>
-                    <p className="text-xs text-[#fff]">Status: {spacesData["data"][0]["state"]}</p>
-                  
+                    <h4 className="text-[#498CD6] mobile:text-center font-bold text-[13px]">Twitter Spaces Scheduled</h4>
                 </div>
-            </>}
-            { !valid && <>
-                <div className="flex flex-col">
-                    <p className="text-xs text-[#797979]">No space scheduled yet</p>
-                </div>
-            </>}
+            </div>
+            
+            <button disabled={loading} onClick={() => { window.location.href = spaceUrl; } } className="flex items-center gap-2 bg-[#498CD6] rounded-2xl p-3 cursor-pointer">
+                <span className="text-white text-xs font-Lexend font-medium">spaces link</span>
+                <ArrowCircleRight color="#FFFFFF" variant="Bulk" fill="#000"/>
+            </button>
         </div>
     );
 }
 
-export default VenueCard;
+export default TwitterCard;
