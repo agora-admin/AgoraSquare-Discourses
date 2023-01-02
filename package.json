@@ -13,6 +13,7 @@
     "@apollo/client": "^3.5.10",
     "@headlessui/react": "^1.7.2",
     "@tailwindcss/line-clamp": "^0.4.0",
+    "@uauth/js": "^2.4.0",
     "ethers": "^5.6.2",
     "fs": "^0.0.1-security",
     "gql": "^1.1.2",

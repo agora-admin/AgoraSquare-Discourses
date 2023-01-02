@@ -16,7 +16,7 @@ interface TopBarProp{
 }
 
 const TopBar:FC<TopBarProp> = ({onDiscoursePage,discourseData,handleFund}) => {
-	const { loggedIn } = useContext(AppContext);
+	const { loggedIn,unstoppableLoggedIn } = useContext(AppContext);
 
 	const {activeChain} = useNetwork();
 
@@ -68,7 +68,7 @@ const TopBar:FC<TopBarProp> = ({onDiscoursePage,discourseData,handleFund}) => {
 			}
 
 			{/* Right side part */}
-			{loggedIn ? <div className={`${onDiscoursePage && "mobile:hidden"}`}><UserInfo /></div> : <div className={`${onDiscoursePage && "mobile:hidden"}`}><ConnectWalletButton /></div>}
+			{loggedIn || unstoppableLoggedIn ? <div className={`${onDiscoursePage && "mobile:hidden"}`}><UserInfo /></div> : <div className={`${onDiscoursePage && "mobile:hidden"}`}><ConnectWalletButton /></div>}
 		</nav>
 	);
 }

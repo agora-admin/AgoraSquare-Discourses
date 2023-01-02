@@ -1,9 +1,14 @@
+import { UserInfo } from "@uauth/js";
 import { createContext, Dispatch } from "react";
 import { Toast } from "../../lib/Types";
 
 export interface ContextType {
+    unstoppableLoggedIn: boolean,
+    setUnstoppableLoggedIn: Dispatch<boolean>,
     loggedIn: boolean;
     setLoggedIn: Dispatch<boolean>;
+    unstoppableUser: UserInfo | null;
+    setUnstoppableUser: Dispatch<UserInfo | null>;
     walletAddress: string;
     setWalletAddress: Dispatch<string>;
     username: string;
@@ -34,8 +39,12 @@ export interface ContextType {
 }
 
 const AppContext = createContext<ContextType>({
+    unstoppableLoggedIn: false,
+    setUnstoppableLoggedIn: () => {},
     loggedIn: false,
     setLoggedIn: () => {},
+    unstoppableUser: null,
+    setUnstoppableUser: () => {},
     walletAddress: "",
     setWalletAddress: () => {},
     username: "",

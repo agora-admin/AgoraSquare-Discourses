@@ -10,10 +10,11 @@ import { shortAddress } from "../../helper/StringHelper";
 import { ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
 import { Twitter_x16 } from "../utils/SvgHub";
+import uauth from "../../web3/Connectors";
 
 const UserInfo = () => {
     const { disconnectAsync } = useDisconnect();
-    const { t_connected, walletAddress, t_handle, t_img, addToast } = useContext(AppContext);
+    const { t_connected, walletAddress, t_handle, t_img, addToast,unstoppableLoggedIn,setUnstoppableLoggedIn,unstoppableUser,setUnstoppableUser } = useContext(AppContext);
     const { refresh } = useContext(AppContext);
     const { activeChain, switchNetworkAsync } = useNetwork();
     const [switching, setSwitching] = useState(false);
@@ -24,12 +25,19 @@ const UserInfo = () => {
     });
 
     const handleLogout = async () => {
-        disconnectAsync().then(() => {
-            Cookies.remove('jwt');
-            refresh();
-        }).catch(err => {
-            console.log(err);
-        })
+        if(unstoppableLoggedIn){
+            await uauth.logout()
+            setUnstoppableUser(null);
+            setUnstoppableLoggedIn(false);
+            console.log('Logged out with Unstoppable')
+        }else{
+            disconnectAsync().then(() => {
+                Cookies.remove('jwt');
+                refresh();
+            }).catch(err => {
+                console.log(err);
+            })
+        }
     }
 
     const handleSwitch = (id: number) => {
@@ -85,18 +93,20 @@ const UserInfo = () => {
                         <img className="w-8 h-8 rounded-full " src={t_connected ? t_img : "/profile_avatar.png"} alt="Profile image"/>
 
                         <div className="hidden xs2:flex flex-col gap-[2px] items-start">
-                            <p className='text-[#E5F7FF] text-[10px] font-Lexend'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>
-                            <p className='text-[#84B9D1] font-semibold text-[8px] sm:text-[10px]'>{getBalance()}</p>
+                            <p className='text-[#D2B4FC] text-[11px] font-Lexend'>{unstoppableUser?.sub}</p>
+                            {unstoppableLoggedIn && <p className='text-[#E5F7FF] text-[10px] font-Lexend'>{shortAddress(unstoppableUser?.wallet_address === "" ? '' : unstoppableUser?.wallet_address as string)}</p>}
+                            {!unstoppableLoggedIn && <p className='text-[#84B9D1] font-semibold text-[8px] sm:text-[10px]'>{getBalance()}</p>}
                         </div>
                     </Popover.Button>
                 
                     <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 mobile2:bottom-12 mobile:bottom-16  -right-2 mt-2 bg-card bg-[#0A0A0A] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
-                            {activeChain?.id !== supportedChainIds[0] &&
+                            {activeChain?.id !== supportedChainIds[0] && !unstoppableLoggedIn &&
                                 <button onClick={() => handleSwitch(supportedChainIds[0])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                     {!switching && <Repeat size={16} color="#c6c6c6" />}
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
-                                </button>}
+                                </button>
+                            }
 
                             {
                                 !t_connected &&

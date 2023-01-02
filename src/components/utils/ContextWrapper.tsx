@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { CloseCircle, Information, Verify, Warning2 } from "iconsax-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { UserInfo } from "@uauth/js";
 import { Dispatch, FC, ReactNode, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { useConnect, useDisconnect } from "wagmi";
@@ -18,6 +19,8 @@ interface Props {
 const ContextWrapper: FC<Props> = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [unstoppableLoggedIn, setUnstoppableLoggedIn] = useState(false); 
+    const [unstoppableUser,setUnstoppableUser] = useState<UserInfo | null>(null);
     const [walletAddress, setWalletAddress] = useState("");
     const [wrongChain, setWrongChain] = useState(false);
     const [showBetaMsg, setShowBetaMsg] = useState(true);
@@ -166,6 +169,10 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     }
 
     const injectedContext = {
+        unstoppableLoggedIn,
+        setUnstoppableLoggedIn,
+        unstoppableUser,
+        setUnstoppableUser,
         loggedIn,
         setLoggedIn,
         walletAddress,

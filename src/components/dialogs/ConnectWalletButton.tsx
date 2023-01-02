@@ -1,20 +1,37 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Popover } from "@headlessui/react";
-import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { Connector, useAccount, useConnect, useSignMessage } from "wagmi";
 import { VERIFY_SIG } from "../../lib/mutations";
 import { GET_NONCE, GET_USERDATA } from "../../lib/queries";
+import uauth from "../../web3/Connectors";
 import MobileConnectWallet from "../topbar/MobileConnectWallet";
 import AppContext from "../utils/AppContext";
-import { MetamaskIcon, NullWalletIcon, WalletConnectIcon, WalletIcon } from "../utils/SvgHub";
+import { MetamaskIcon, NullWalletIcon, UnstoppableIcon, WalletConnectIcon, WalletIcon } from "../utils/SvgHub";
 
 const ConnectWalletButton = () => {
-    const route = useRouter();
-	const { refresh, loggedIn } = useContext(AppContext);
-    const { connectors, connectAsync, isConnecting, isConnected, data: wData } = useConnect();
+    const { refresh, loggedIn,setUnstoppableLoggedIn,setUnstoppableUser } = useContext(AppContext);
+
+    // Unstoppable domain Connector
+    async function handleUnstoppableLogin() {
+        try {
+            const authorization = await uauth.loginWithPopup()
+            
+            uauth.user().then(user => {
+                if(user){
+                    setUnstoppableUser(user);
+                    setUnstoppableLoggedIn(true);
+                }
+            })
+
+          } catch (error) {
+            console.error(error)
+          }
+    }
+      
+    // Wagmi Connect 
+    const { connectors, connectAsync, isConnected } = useConnect();
     const { data: smData, signMessageAsync } = useSignMessage();
-    const [walletAddress, setWalletAddress] = useState('');
 	const account = useAccount();
 
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
@@ -30,7 +47,7 @@ const ConnectWalletButton = () => {
     });
 	const [verifySig] = useMutation(VERIFY_SIG, {
 		fetchPolicy: 'no-cache',
-		onCompleted: (data) => {
+		onCompleted: () => {
             refresh();
 		},
 		onError: (error) => {
@@ -85,11 +102,9 @@ const ConnectWalletButton = () => {
 
     const handleConnectWallet = async (connector: Connector) => {
 		if (isConnected && account.data?.address) {
-			setWalletAddress(account.data?.address);
 			getNonce({ variables: { address: account.data?.address } });
 		} else {
 			await connectAsync(connector).then(({ account }) => {
-				setWalletAddress(account);
 				getNonce({ variables: { address: account } });
 			}).catch((err) => {
 				console.log(err);
@@ -115,15 +130,20 @@ const ConnectWalletButton = () => {
                                         {
                                             connectors.map((c, i) => (
                                                 <div key={i} className="flex w-full">
-                                                    {
-                                                        <button onClick={() => handleConnectWallet(c)} disabled={!c.ready} className={`w-full flex items-center gap-2 ${c.ready ? 'button-s': 'button-s-d'}`}>
-                                                            {getIcon(c)}
-                                                            <p className="text-sm font-Lexend text-[#c6c6c6]">{c.id === "injected" ? "Injected" : c.name}</p>
-                                                        </button>
-                                                    }    
+                                                    <button onClick={() => handleConnectWallet(c)} disabled={!c.ready} className={`w-full flex items-center gap-2 ${c.ready ? 'button-s': 'button-s-d'}`}>
+                                                        {getIcon(c)}
+                                                        <p className="text-sm font-Lexend text-[#c6c6c6]">{c.id === "injected" ? "Injected" : c.name}</p>
+                                                    </button>
                                                 </div>
                                             ))
                                         }
+
+                                        <div className="flex w-full">
+                                            <button onClick={handleUnstoppableLogin} className={`w-full flex items-center gap-2 ${true ? 'button-s': 'button-s-d'}`}>
+                                                <UnstoppableIcon />
+                                                <p className="text-sm font-Lexend text-[#c6c6c6]">Unstoppable</p>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </Popover.Panel>
