@@ -1,8 +1,8 @@
 import UAuth from '@uauth/js'
 
 const uauth = new UAuth({
-  clientID: "e481d54e-4645-4595-ae2a-f4cc09de6261",
-  redirectUri: "https://discourses.agorasquare.xyz",
+  clientID: process.env.NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID as string,
+  redirectUri: process.env.NEXT_PUBLIC_CLIENT_URL as string,
   scope: "openid wallet"
 })
 
