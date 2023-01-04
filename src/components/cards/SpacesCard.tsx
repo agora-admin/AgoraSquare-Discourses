@@ -28,6 +28,8 @@ const TwitterCard = ({ spaceUrl }: { spaceUrl: string }) => {
 
                 <div className="flex flex-col">
                     <h4 className="text-[#498CD6] mobile:text-center font-bold text-[13px]">Twitter Spaces Scheduled</h4>
+                    {/*<small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold"><span className="font-semibold underline">{formatDate(new Date(data[0]["scheduled_start"]))} • {getTimeFromDate(new Date(data[0]["scheduled_start"]))}</span></small>
+                    */}
                 </div>
             </div>
             
