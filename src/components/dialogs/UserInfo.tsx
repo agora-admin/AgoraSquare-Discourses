@@ -95,6 +95,7 @@ const UserInfo = () => {
                         <div className="hidden xs2:flex flex-col gap-[2px] items-start">
                             <p className='text-[#D2B4FC] text-[11px] font-Lexend'>{unstoppableUser?.sub}</p>
                             {unstoppableLoggedIn && <p className='text-[#E5F7FF] text-[10px] font-Lexend'>{shortAddress(unstoppableUser?.wallet_address === "" ? '' : unstoppableUser?.wallet_address as string)}</p>}
+                            {!unstoppableLoggedIn && <p className='text-[#E5F7FF] text-[10px] font-Lexend'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>}
                             {!unstoppableLoggedIn && <p className='text-[#84B9D1] font-semibold text-[8px] sm:text-[10px]'>{getBalance()}</p>}
                         </div>
                     </Popover.Button>
