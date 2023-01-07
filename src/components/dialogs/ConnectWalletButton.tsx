@@ -165,6 +165,7 @@ const ConnectWalletButton = () => {
                 connectors={connectors} 
                 getIcon={getIcon} 
                 handleConnectWallet={handleConnectWallet} 
+                handleUnstoppableLogin={handleUnstoppableLogin}
             />
         </>
     );
