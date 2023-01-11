@@ -14,7 +14,6 @@ import { TwitterIcon } from "../utils/SvgHub";
 
 const TwitterCard = ({ spaceUrl }: { spaceUrl: string }) => {
     const [loading] = useState(false);
-    
     return (
         <div className="mobile:fixed mobile:bottom-[60px] mobile:inset-x-0 mobile:max-h-[220px] flex flex-col sm:flex-row items-center mobile:gap-4 sm:justify-between py-6 sm:py-3 px-6 bg-[#141414] sm:border-[0.1px] sm:border-[#498CD6] rounded-t-[30px] sm:rounded-3xl">
             <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
@@ -33,12 +32,13 @@ const TwitterCard = ({ spaceUrl }: { spaceUrl: string }) => {
                 </div>
             </div>
             
-            <button disabled={loading} onClick={() => { window.location.href = spaceUrl; } } className="flex items-center gap-2 bg-[#498CD6] rounded-2xl p-3 cursor-pointer">
-                <span className="text-white text-xs font-Lexend font-medium">spaces link</span>
+            <button disabled={loading} onClick={() => { navigator.clipboard.writeText(spaceUrl)} } className="flex items-center gap-2 bg-[#498CD6] rounded-2xl p-3 cursor-pointer">
+                <span className="text-white text-xs font-Lexend font-medium">copy link</span>
                 <ArrowCircleRight color="#FFFFFF" variant="Bulk" fill="#000"/>
             </button>
         </div>
     );
+   
 }
 
 export default TwitterCard;

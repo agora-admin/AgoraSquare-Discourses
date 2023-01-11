@@ -32,6 +32,7 @@ export const GET_DISCOURSES = gql`
             endTS
             irl
             yt_link
+            link
             disable
             funds {
                 address
@@ -82,6 +83,7 @@ export const GET_DISCOURSES_BY_CHAIN = gql`
             endTS
             irl
             yt_link
+            link
             disable
             funds {
                 address
@@ -134,6 +136,7 @@ export const GET_DISCOURSE_BY_ID = gql`
             topics
             irl
             yt_link
+            link
             disable
             funds {
                 address
@@ -149,6 +152,7 @@ export const GET_DISCOURSE_BY_ID = gql`
                 withdrawn
             }
             txnHash
+            link
             discourse {
                 room_id
                 ended

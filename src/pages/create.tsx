@@ -49,6 +49,7 @@ let mockD: CreateObj = {
     initialFunding: "1",
     fundingPeriod: 0,
     yt_link: "",
+    link: "",
     disable: false,
     irl: false
 }
@@ -161,6 +162,7 @@ const CreateDiscoursePage = () => {
             initialFunding: "1",
             fundingPeriod: fundingPeriod,
             yt_link: "",
+            link: "",
             disable: false,
             irl: false
         }

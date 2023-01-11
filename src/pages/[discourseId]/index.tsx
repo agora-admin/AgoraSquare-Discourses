@@ -31,6 +31,7 @@ import SpacesCard from "../../components/cards/SpacesCard";
 import YoutubeTag from "../../components/utils/YoutubeTag";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
+import validator from 'validator'
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -169,8 +170,12 @@ const DiscoursePage = () => {
                     {!loading && data && !error &&
                     <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
                         <DiscourseState data={data} slotConfirmed={slotConfirmed} />
-                        <SpacesCard spaceUrl="placeholder"></SpacesCard>
+                        {/* Only display if the url is valid*/}
+                        {validator.isURL(data.getDiscourseById.link) ? <SpacesCard spaceUrl={data.getDiscourseById.link}></SpacesCard> : ''}
+
+                    
                         <div className="flex flex-col gap-5">
+
                             {/* Top Section */}
                             <div className="w-full flex items-center justify-between sm:px-8">
                                 <div className="flex items-center">

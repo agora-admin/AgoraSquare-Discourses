@@ -13,6 +13,7 @@ export type CreateObj = {
     initialFunding: string;
     fundingPeriod: number;
     yt_link: string;
+    link: string;
     disable: boolean;
     irl: boolean;
 }
