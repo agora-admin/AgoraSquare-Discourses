@@ -5,19 +5,19 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { useContext, useState } from "react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { formatDate, isPast } from "../../helper/TimeHelper";
-import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
-import { contractData } from "../../helper/ContractHelper";
+import { useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import AppContext from "../utils/AppContext";
 import { v4 as uuid } from "uuid";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
-
+import { getContractAddressByChainId } from "../../helper/ContractHelper";
+import abi from "../../web3/abi/DiscourseHub.json";
 
 const FundClaimCardC = ({ data }: { data: any }) => {
 
     const [loading, setLoading] = useState(false);
     const { loggedIn, walletAddress, addToast } = useContext(AppContext);
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
 
     const [fundWithdrawn] = useMutation(FUND_WITHDRAWN, {
         variables: {
@@ -44,68 +44,73 @@ const FundClaimCardC = ({ data }: { data: any }) => {
         }
     })
 
-
-    const withdrawPro = useContractWrite(
-        contractData(activeChain?.id!),
-        'proposerWithdraw',
-        {
-            args: [data.propId],
-            overrides: {
-                from: walletAddress
-            },
-            onSettled: (txn) => {
-                console.log('submitted', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                setLoading(false);
-                addToast({
-                    title: "Something went wrong",
-                    body: error.message,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            }
+    const {config: withdrawProConfig} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'proposerWithdraw',
+        args: [data.propId],
+        overrides: {
+            from: walletAddress as any,
         }
-    )
+    })
 
-    const withdrawSpeaker = useContractWrite(
-        contractData(activeChain?.id!),
-        'speakerWithdraw',
-        {
-            args: [data.propId],
-            overrides: {
-                from: walletAddress
-            },
-            onSettled: (txn) => {
-                console.log('submitted', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                setLoading(false);
-                addToast({
-                    title: "Something went wrong",
-                    body: error.message,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            }
+    const withdrawPro = useContractWrite({
+        ...withdrawProConfig,
+        onSettled: (txn) => {
+            console.log('submitted', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            setLoading(false);
+            addToast({
+                title: "Something went wrong",
+                body: error.message,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
         }
-    )
+    })
+
+    const {config:withdrawSpeakerConfig} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'speakerWithdraw',
+        args: [data.propId],
+        overrides: {
+            from: walletAddress as any,
+        }
+    })
+
+    const withdrawSpeaker = useContractWrite({
+        ...withdrawSpeakerConfig,
+        onSettled: (txn) => {
+            console.log('submitted', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            setLoading(false);
+            addToast({
+                title: "Something went wrong",
+                body: error.message,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        }
+    })
 
     const waitForTx1 = useWaitForTransaction({
         hash: withdrawPro.data?.hash,
@@ -124,7 +129,7 @@ const FundClaimCardC = ({ data }: { data: any }) => {
     })
 
     const handleClaim = async () => {
-        if (activeChain?.id === data.chainId) {
+        if (chain?.id === data.chainId) {
             setLoading(true);
             addToast({
                 title: "Waiting for confirmation",
@@ -134,9 +139,9 @@ const FundClaimCardC = ({ data }: { data: any }) => {
                 id: uuid()
             })
             if (walletAddress === data.prop_starter) {
-                withdrawPro.write();
+                withdrawPro.write?.();
             } else {
-                withdrawSpeaker.write();
+                withdrawSpeaker.write?.();
             }
         } else {
             addToast({

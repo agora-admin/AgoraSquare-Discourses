@@ -1,12 +1,13 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type {AppProps} from 'next/app'
 import { ApolloProvider } from '@apollo/client'
 import { useApollo } from '../lib/apollo'
 import { SessionProvider } from 'next-auth/react'
 import { HMSRoomProvider } from '@100mslive/react-sdk';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { polygon,polygonMumbai } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { infuraProvider } from 'wagmi/providers/infura';
+import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
@@ -16,16 +17,16 @@ import ContextWrapper from '../components/utils/ContextWrapper'
 import { rpcUrl } from '../Constants'
 import Script from 'next/script'
 
-const { provider, chains } = configureChains(
-  [ chain.polygonMumbai,chain.polygon ],
+const { provider, chains, webSocketProvider } = configureChains(
+  [ polygonMumbai,polygon ],
   [
-    alchemyProvider({ alchemyId: 'Gqd71GlllOjZhCCq1FjqzKofdLig5Tww' }),
-    infuraProvider({ infuraId: 'a4d6ff8d0a7c4b93a9a4ac41adc048c8' }),
+    alchemyProvider({ apiKey: 'Gqd71GlllOjZhCCq1FjqzKofdLig5Tww' }),
     jsonRpcProvider({
       rpc: (chain) => {
         return rpcUrl(chain.id)
       }
-    })
+    }),
+    publicProvider()
   ]
 )
 
@@ -37,22 +38,22 @@ const connectors = () => {
         qrcode: true,
       }
     }),
-    new MetaMaskConnector({
-      chains,
-      options: {
-        shimDisconnect: true
-      }
-    }),
+    new MetaMaskConnector({ chains }),
     new InjectedConnector({
       chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      }
     })
   ]
 }
 
 const wagmiClient = createClient({
   autoConnect: true,
+  connectors,
   provider,
-  connectors
+  webSocketProvider
 })
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {

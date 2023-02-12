@@ -8,10 +8,11 @@ import AppContext from "../../components/utils/AppContext"
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries"
 import LoadingSpinner from "../../components/utils/LoadingSpinner"
 import ClaimMessageDialogBox from "../../components/dialogs/ClaimMessageDialogBox"
-import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi"
-import { contractData } from "../../helper/ContractHelper"
+import { useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi"
+import { getContractAddressByChainId } from "../../helper/ContractHelper"
 import { ToastTypes } from "../../lib/Types"
 import {v4 as uuid} from "uuid"
+import abi from '../../web3/abi/DiscourseHub.json';
 
 const NFTClaimPage = () => {
     const router = useRouter();
@@ -21,8 +22,8 @@ const NFTClaimPage = () => {
     const [claiming,setClaiming] = useState(false);
 
     const { discourseId } = router.query;
-    const { loggedIn,walletAddress,addToast } = useContext(AppContext);
-    const { activeChain } = useNetwork();
+    const { walletAddress,addToast } = useContext(AppContext);
+    const { chain } = useNetwork();
 
     const { loading: Dloading, error, data } = useQuery(GET_DISCOURSE_BY_ID, {
         variables: {
@@ -31,34 +32,37 @@ const NFTClaimPage = () => {
         nextFetchPolicy: 'network-only'
     })
 
-    const claim = useContractWrite(
-        contractData(activeChain?.id!),
-        'mintSpeakerNFT',
-        {
-            overrides: { from: walletAddress },
-            onSettled: (txn) => {
-                console.log('submitted:', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                console.log('error:', error);
-                addToast({
-                    title: "Error Occured",
-                    body: error.message,
-                    type: ToastTypes.error,
-                    duration: 5000,
-                    id: uuid()
-                })
-                setClaiming(false);
-            }
+    const {config:claimConfig} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'mintSpeakerNFT',
+        overrides: { from: walletAddress as any },
+        args: [+data.getDiscourseById.propId]
+    })
+    const claim = useContractWrite({
+        ...claimConfig,
+        onSettled: (txn) => {
+            console.log('submitted:', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            console.log('error:', error);
+            addToast({
+                title: "Error Occured",
+                body: error.message,
+                type: ToastTypes.error,
+                duration: 5000,
+                id: uuid()
+            })
+            setClaiming(false);
         }
-    )
+    })
 
     const waitForTxn = useWaitForTransaction({
         hash: claim.data?.hash,
@@ -73,9 +77,7 @@ const NFTClaimPage = () => {
     const handleClaim = () => {
         setClaiming(true);
         setOpenClaimMessageBox(true);
-        claim.write({
-            args: [+data.getDiscourseById.propId],
-        });
+        claim.write?.();
     }
 
     useEffect(() => {

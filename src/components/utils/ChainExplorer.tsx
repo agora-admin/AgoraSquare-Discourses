@@ -1,9 +1,9 @@
-import { chain } from "wagmi";
+import { polygon } from "wagmi/chains";
 import { ArrowNE,Polygon16 } from "./SvgHub";
 
 const ChainExplorer = ({data} : {data:any}) => {
     const handlePolyscan = () => {
-        window.open(`${chain.polygon.blockExplorers?.default.url}/tx/${data.txnHash}`, '_blank');
+        window.open(`${polygon.blockExplorers?.default.url}/tx/${data.txnHash}`, '_blank');
     }
 
     return (

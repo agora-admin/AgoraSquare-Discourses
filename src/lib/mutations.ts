@@ -264,3 +264,22 @@ export const UPDATE_NAME = gql`
         }
     }
 `
+
+export const CREATE_EVENT = gql`
+    mutation CreateEvent($eventInput: EventInput!) {
+        createEvent(eventInput: $eventInput) {
+            discourseId
+            propId
+            chainId
+            eventTimestamp
+            venue{
+                name
+                address
+                city
+                state
+                zip
+                country
+            }
+        }
+    }
+`

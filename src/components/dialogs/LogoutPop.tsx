@@ -1,28 +1,28 @@
-import { Popover, Transition } from "@headlessui/react";
-import { Wallet1, ArrowRight2, Logout, Refresh, I3DRotate, Repeat } from "iconsax-react";
+import { Popover } from "@headlessui/react";
+import { Logout, Repeat } from "iconsax-react";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useBalance, useDisconnect, useFeeData, useNetwork } from "wagmi";
-import { getSwitchNetwork, supportedChainIds } from "../../Constants";
+import { useBalance, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { supportedChainIds } from "../../Constants";
 import { shortAddress } from "../../helper/StringHelper";
 import { ToastTypes } from "../../lib/Types";
-import ChainBar from "../actions/ChainBar";
 import AppContext from "../utils/AppContext";
-import ChainTag, { ChainIcon, IChainTag, SChainTag } from "../utils/ChainTag";
-import { Twitter_x10, Twitter_x16 } from "../utils/SvgHub";
+import { ChainIcon, IChainTag } from "../utils/ChainTag";
+import { Twitter_x16 } from "../utils/SvgHub";
 
 const LogoutPop = () => {
 
     const { disconnectAsync } = useDisconnect();
     const { t_connected, walletAddress, t_handle, t_img, addToast } = useContext(AppContext);
     const { refresh } = useContext(AppContext);
-    const { activeChain, switchNetworkAsync } = useNetwork();
+    const { chain } = useNetwork();
+    const {switchNetworkAsync} = useSwitchNetwork();
     const [switching, setSwitching] = useState(false);
     const bal = useBalance({
-        addressOrName: walletAddress,
-        chainId: activeChain?.id,
+        address: walletAddress as any,
+        chainId: chain?.id,
         watch: true
     });
 
@@ -61,7 +61,7 @@ const LogoutPop = () => {
     }
 
     const getBalance = () => {
-        if (bal && activeChain && supportedChainIds.includes(activeChain?.id)) {
+        if (bal && chain && supportedChainIds.includes(chain?.id)) {
             let val = Number(bal.data?.formatted);
             if (bal.data?.symbol === "ETH") {
                 return val > 999999 ? 999999 + "+" : val.toFixed(3) + " " + bal.data?.symbol;
@@ -87,7 +87,7 @@ const LogoutPop = () => {
                     <Popover.Button className={`t-all outline-none text-white text-xs ${open ? 'bg-[#212427]' : ''} hover:bg-white/10 group rounded-xl font-Lexend px-4 py-2 flex items-center gap-2`}>
                         <div className='hidden relative sm:flex items-center  w-6 h-6 ' >
                             <div className={`absolute flex bottom-0 right-0 inset-y-0 h-max my-auto  ${open ? '-translate-x-[25%]' : '-translate-x-[70%]'} group-hover:-translate-x-[25%] rounded-xl t-all`}>
-                                <IChainTag chainId={activeChain?.id!} />
+                                <IChainTag chainId={chain?.id!} />
                             </div>
                             <img className="w-6 h-6 z-10 object-cover rounded-lg object-center" src={t_connected ? t_img :`https://avatar.tobi.sh/${walletAddress}`} alt="Profile image" />
                         </div>
@@ -99,17 +99,17 @@ const LogoutPop = () => {
                 
                     <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 -right-2 mt-2 bg-card bg-[#141515] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
-                            {activeChain?.id !== supportedChainIds[0] &&
+                            {chain?.id !== supportedChainIds[0] &&
                                 <button onClick={() => handleSwitch(supportedChainIds[0])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                     {!switching && <Repeat size={16} color="#c6c6c6" />}
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
                                 </button>}
 
                             {
-                            activeChain?.id === supportedChainIds[0] &&
+                            chain?.id === supportedChainIds[0] &&
                                 <div className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 `}>
-                                    {!switching && <ChainIcon chainId={activeChain?.id!} />}
-                                    <p className="text-[10px] text-[#7B3FE4] font-bold">{activeChain?.name}</p>
+                                    {!switching && <ChainIcon chainId={chain?.id!} />}
+                                    <p className="text-[10px] text-[#7B3FE4] font-bold">{chain?.name}</p>
                                 </div>
                             }
                             {

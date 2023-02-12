@@ -11,7 +11,6 @@ import { MetamaskIcon, NullWalletIcon, UnstoppableIcon, WalletConnectIcon, Walle
 
 const ConnectWalletButton = () => {
     const { refresh, loggedIn,setUnstoppableLoggedIn,setUnstoppableUser } = useContext(AppContext);
-
     // Unstoppable domain Connector
     async function handleUnstoppableLogin() {
         try {
@@ -30,9 +29,9 @@ const ConnectWalletButton = () => {
     }
       
     // Wagmi Connect 
-    const { connectors, connectAsync, isConnected } = useConnect();
+    const { connectors, connectAsync } = useConnect();
+    const {isConnected,address} = useAccount();
     const { data: smData, signMessageAsync } = useSignMessage();
-	const account = useAccount();
 
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
 
@@ -83,7 +82,7 @@ const ConnectWalletButton = () => {
 			
 			return {
 				signature,
-				address: account?.data?.address
+				address
 			}
 		} catch (error) {
 			console.log(error);
@@ -100,11 +99,11 @@ const ConnectWalletButton = () => {
         }
     }
 
-    const handleConnectWallet = async (connector: Connector) => {
-		if (isConnected && account.data?.address) {
-			getNonce({ variables: { address: account.data?.address } });
+    const handleConnectWallet = async (connector:Connector) => {
+		if (isConnected && address) {
+			getNonce({ variables: { address } });
 		} else {
-			await connectAsync(connector).then(({ account }) => {
+			await connectAsync({connector}).then(({ account }) => {
 				getNonce({ variables: { address: account } });
 			}).catch((err) => {
 				console.log(err);
@@ -128,11 +127,11 @@ const ConnectWalletButton = () => {
                                     <h3 className="text-white text-xs font-medium">Choose a provider</h3>
                                     <div className="flex gap-2 items-center flex-col">
                                         {
-                                            connectors.map((c, i) => (
+                                            connectors.map((connector, i) => (
                                                 <div key={i} className="flex w-full">
-                                                    <button onClick={() => handleConnectWallet(c)} disabled={!c.ready} className={`w-full flex items-center gap-2 ${c.ready ? 'button-s': 'button-s-d'}`}>
-                                                        {getIcon(c)}
-                                                        <p className="text-sm font-Lexend text-[#c6c6c6]">{c.id === "injected" ? "Injected" : c.name}</p>
+                                                    <button onClick={() => handleConnectWallet(connector)} disabled={!connector.ready} className={`w-full flex items-center gap-2 ${connector.ready ? 'button-s': 'button-s-d'}`}>
+                                                        {getIcon(connector)}
+                                                        <p className="text-sm font-Lexend text-[#c6c6c6]">{connector.id === "injected" ? "Injected" : connector.name}</p>
                                                     </button>
                                                 </div>
                                             ))

@@ -92,8 +92,8 @@ export const getEndDate = (endTS: number) => {
     return getTime(endTS + (1209600));
 }
 
-export const getAgo = (initTS: number) => {
-    return moment(getTime(initTS)).fromNow();
+export const getAgo = (initTS: string) => {
+    return moment(getTime(+initTS)).fromNow();
 }
 export const getAgoT = (timestamp: string) => {
     return moment(timestamp).fromNow();

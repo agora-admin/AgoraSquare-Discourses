@@ -3,20 +3,21 @@ import { formatDate, getTime, getTimeFromDate } from "../../helper/TimeHelper";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { SET_WALLETADDRESS, SPEAKER_CONFIRMATION } from "../../lib/mutations";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
-import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
-import { contractData } from "../../helper/ContractHelper";
+import { useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { getContractAddressByChainId } from "../../helper/ContractHelper";
 import AppContext from "../utils/AppContext";
 import { v4 as uuid } from "uuid";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
+import abi from '../../web3/abi/DiscourseHub.json';
 
-const SpeakerConfirmationCard = ({ data }: { data: any }) => {
+const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
     const [loading, setLoading] = useState(false);
     const { walletAddress, t_handle, addToast } = useContext(AppContext);
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
 
-    const speakerAddressSet = (speakers: any) => {
+    const isSpeakerAddressSet = (speakers: any) => {
         if (speakers.length >= 2) {
             const speaker = speakers.find((s: any) => s.username === t_handle);
             
@@ -29,89 +30,89 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {
         variables: {
-            id: data.id
+            id: discourseData.id
         }
     });
 
     const [setWalletAddress] = useMutation(SET_WALLETADDRESS)
-
     const [speakerConfirmation] = useMutation(SPEAKER_CONFIRMATION)
 
-    const confirmSpeaker = useContractWrite(
-        contractData(activeChain?.id!),
-        'speakerConfirmation',
-        {
-            args: [data.propId],
-            overrides: { from: walletAddress },
-            onSettled: (txn) => {
-                console.log('submitted:', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                setLoading(false);
-                addToast({
-                    title: "Error Occured",
-                    body: error.message,
-                    type: ToastTypes.error,
-                    duration: 5000,
-                    id: uuid()
-                })
-            }
-        }
-    )
+    const {config} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'speakerConfirmation',
+        args: [discourseData.propId],
+        overrides: { from: walletAddress as any },
+    })
 
-    const waitForTxn = useWaitForTransaction(
-        {
-            hash: confirmSpeaker.data?.hash,
-            confirmations: 5,
-            onSettled: (txn) => {
-                console.log('settled:', txn);
-                if (txn) {
-                    speakerConfirmation({
-                        variables: {
-                            propId: data.propId,
-                            chainId: data.chainId
-                        },
-                        onCompleted: () => {
-                            setLoading(false);
-                            addToast({
-                                title: "Confirmation successful",
-                                body: `You have confirmed your participation in the discussion.`,
-                                type: ToastTypes.success,
-                                duration: 5000,
-                                id: uuid()
-                            })
-                            refetch();
-                        },
-                        onError: (error) => {
-                            setLoading(false);
-                            addToast({
-                                title: "Something went wrong",
-                                body: `Please try again later. If the problem persists, please contact us.`,
-                                type: ToastTypes.error,
-                                duration: 5000,
-                                id: uuid()
-                            })
-                            console.log('Something went wrong', error);
-                        }
-                    })
-                }
+    const confirmSpeaker = useContractWrite({
+        ...config,
+        onSettled: (txn) => {
+            console.log('submitted:', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            setLoading(false);
+            addToast({
+                title: "Error Occured",
+                body: error.message,
+                type: ToastTypes.error,
+                duration: 5000,
+                id: uuid()
+            })
+        }
+    })
+
+    const waitForTxn = useWaitForTransaction({
+        hash: confirmSpeaker.data?.hash,
+        confirmations: 5,
+        onSettled: (txn) => {
+            console.log('settled:', txn);
+            if (txn) {
+                speakerConfirmation({
+                    variables: {
+                        propId: discourseData.propId,
+                        chainId: discourseData.chainId
+                    },
+                    onCompleted: () => {
+                        setLoading(false);
+                        addToast({
+                            title: "Confirmation successful",
+                            body: `You have confirmed your participation in the discussion.`,
+                            type: ToastTypes.success,
+                            duration: 5000,
+                            id: uuid()
+                        })
+                        refetch();
+                    },
+                    onError: (error) => {
+                        setLoading(false);
+                        addToast({
+                            title: "Something went wrong",
+                            body: `Please try again later. If the problem persists, please contact us.`,
+                            type: ToastTypes.error,
+                            duration: 5000,
+                            id: uuid()
+                        })
+                        console.log('Something went wrong', error);
+                    }
+                })
             }
         }
-    )
+    })
 
     const handleConfirmation = async () => {
-        confirmSpeaker.write();
+        confirmSpeaker.write?.();
     }
 
     const handleClick = async () => {
-        if (activeChain?.id === data.chainId) {
+        if (chain?.id === discourseData.chainId) {
             setLoading(true);
             addToast({
                 title: "Waiting for confirmation",
@@ -120,16 +121,18 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
                 duration: 5000,
                 id: uuid()
             })
-            if (speakerAddressSet(data.speakers)) {
+            
+            if (isSpeakerAddressSet(discourseData.speakers)) {
                 handleConfirmation();
             } else {
                 setWalletAddress({
                     variables: {
-                        propId: data.propId,
-                        chainId: data.chainId
+                        propId: discourseData.propId,
+                        chainId: discourseData.chainId
                     },
                     onCompleted: (data) => {
-                        handleConfirmation();
+                        console.log("setWalletAddress Completed: ",data);
+                        handleConfirmation();   
                     },
                     onError: (error) => {
                         console.log('Something went wrong', error);
@@ -147,13 +150,12 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
         } else {
             addToast({
                 title: "Chain Error",
-                body: `This discourse is on [${getChainName(data.chainId)}]. Please use the correct chain.`,
+                body: `This discourse is on [${getChainName(discourseData.chainId)}]. Please use the correct chain.`,
                 type: ToastTypes.error,
                 duration: 5000,
                 id: uuid()
             })
         }
-
     }
 
     return (
@@ -169,7 +171,7 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
 
                 <div className="flex flex-col">
                     <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation</h4>
-                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">Connect your wallet with your twitter account and confirm your participation before <span className="font-semibold underline">{formatDate(getTime(data.endTS))} • {getTimeFromDate(getTime(data.endTS))}</span></small>
+                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">Connect your wallet with your twitter account and confirm your participation before <span className="font-semibold underline">{formatDate(getTime(discourseData.endTS))} • {getTimeFromDate(getTime(discourseData.endTS))}</span></small>
                 </div>
             </div>
             

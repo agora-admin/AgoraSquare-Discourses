@@ -7,37 +7,36 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import UseAnimations from 'react-useanimations';
 import loading from 'react-useanimations/lib/loading';
 import { DiscourseIcon, FundDiscourseIcon2 } from '../utils/SvgHub';
-import { CREATE_DISCOURSE } from '../../lib/mutations';
+import { CREATE_DISCOURSE, CREATE_EVENT } from '../../lib/mutations';
 import { getSecNow } from '../../helper/TimeHelper';
 import { GET_DISCOURSES } from '../../lib/queries';
-import { useContractRead, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
-import { contractData } from '../../helper/ContractHelper';
+import { useContractRead, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { getContractAddressByChainId } from '../../helper/ContractHelper';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
 import { getCurrencyName, supportedChainIds } from '../../Constants';
 import { CreateObj, ToastTypes } from '../../lib/Types';
 import { v4 as uuid } from 'uuid';
 import { CloseCircle, TickSquare } from 'iconsax-react';
+import abi from '../../web3/abi/DiscourseHub.json'
 
 interface Props {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-    data: CreateObj;
+    discourseData: CreateObj;
 }
 
-const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
+const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {    
     let buttonRef = useRef(null);
+    
     const { walletAddress, addToast } = useContext(AppContext);
-
     const [acceptTerms,setAcceptTerms] = useState(false);
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
-    const [error, setError] = useState({});
-    const [amount, setAmount] = useState('1.0');
+    const [amount, setAmount] = useState('0.01');
     const [discourseId, setDiscourseId] = useState('');
-    const { activeChain } = useNetwork();
-
+    const { chain } = useNetwork();
     const route = useRouter();
 
     const [refetch] = useLazyQuery(GET_DISCOURSES);
@@ -46,9 +45,13 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
             refetch();
         }
     })
+    const [createEvent] = useMutation(CREATE_EVENT)
 
     const handleClose = () => {
-        setOpen(false);
+        if(!minting){
+            setOpen(false);
+            setFunded(false);
+        }
     }
 
     useEffect(() => {
@@ -58,51 +61,53 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
         }
     }, [cData])
 
-    // console.log(BigNumber.from(txData).toString());
+    const { refetch: getCount } = useContractRead({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'getTotalProposals',
+    })
 
-    const { refetch: getCount } = useContractRead(
-        contractData(activeChain?.id!),
-        'getTotalProposals',
-        {
-            enabled: false
+    const { config } = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'createProposalNoAddresses',
+        args: [
+            discourseData?.speakers[0]?.username,
+            discourseData?.speakers[1]?.username,
+            discourseData?.title,
+            +discourseData?.charityPercent,
+            +discourseData?.confirmationPeriod
+        ],
+        overrides: {
+            from: walletAddress as `0x${string}`,
+            value: ethers.utils.parseEther(amount || '0.01')
         }
-    )
+    })
 
-    const fund = useContractWrite(
-        contractData(activeChain?.id!),
-        'createProposalNoAddresses',
-        {
-            args: [
-                data?.speakers[0]?.username,
-                data?.speakers[1]?.username,
-                data?.title,
-                +data?.charityPercent,
-                +data?.fundingPeriod
-            ],
-            overrides: { from: walletAddress, value: ethers.utils.parseEther(amount || '0.0') },
-            onSettled: (txn) => {
-                console.log('submitted:', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                console.log('error:', error);
-                addToast({
-                    title: "Error Occured",
-                    body: error.message,
-                    type: ToastTypes.error,
-                    duration: 5000,
-                    id: uuid()
-                })
-                setMinting(false);
-            }
+    const fund = useContractWrite({
+        ...config,
+        onSettled: (txn) => {
+            console.log('submitted:', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            console.log('error:', error);
+            addToast({
+                title: "Error Occured",
+                body: error.message,
+                type: ToastTypes.error,
+                duration: 5000,
+                id: uuid()
+            })
+            setMinting(false);
         }
-    )
+    })
 
     const waitForTxn = useWaitForTransaction({
         hash: fund.data?.hash,
@@ -123,36 +128,31 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
     const writeDiscourse = (txnD: TransactionReceipt) => {
         getCount().then((tData) => {
             console.log({tData});
-            const temp = BigNumber.from(tData.data);
-            console.log({temp});
-            console.log("To Number: ",temp.toNumber());
-            
-            let count = BigNumber.from(tData.data).toNumber();
+            const count = BigNumber.from(tData.data).toNumber();
+
             createDiscourse({
                 variables: {
                     discourseInput: {
-                        speakers: data.speakers,
-                        moderator: data.moderator,
+                        speakers: discourseData.speakers,
+                        moderator: discourseData.moderator,
                         propId: count,
-                        chainId: activeChain?.id,
-                        description: data.description,
-                        title: data.title,
-                        prop_description: data.title,
+                        chainId: chain?.id,
+                        description: discourseData.description,
+                        title: discourseData.title,
+                        prop_description: discourseData.title,
                         prop_starter: walletAddress,
-                        charityPercent: +data.charityPercent,
+                        charityPercent: +discourseData.charityPercent,
                         initTS: getSecNow(),
-                        endTS: getEndTS(data.fundingPeriod) + "",
-                        topics: data.topics,
+                        endTS: getEndTS(discourseData.confirmationPeriod) + "",
+                        topics: discourseData.topics,
                         initialFunding: ethers.utils.parseEther(amount) + "",
-                        txnHash: txnD.transactionHash
+                        txnHash: txnD.transactionHash,
+                        irl: discourseData.irl,
+                        disable: discourseData.disable
                     }
                 },
                 onError: (error) => {
                     console.log(error);
-                    setError({
-                        message: "Error in registering discourse. Please contact admin",
-                        error: true
-                    })
                     addToast({
                         title: "Error Occured",
                         body: "Error in registering discourse. Please contact admin",
@@ -163,17 +163,48 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                     setMinting(false);
                 },
                 onCompleted: (data) => {
-                    setMinting(false);
-                    setFunded(true);
+                    if(discourseData.irl){
+                        createEvent({
+                            variables: {
+                                eventInput: {
+                                    discourseId: data.createDiscourse.id,
+                                    eventTimestamp: discourseData.event?.timestamp,
+                                    venue: {
+                                        name: discourseData.event?.name,
+                                        address: discourseData.event?.address,
+                                        city: discourseData.event?.city,
+                                        state: discourseData.event?.state,
+                                        zip: discourseData.event?.zip,
+                                        country: discourseData.event?.country
+                                    }
+                                }
+                            },
+                            onCompleted: (data) => {
+                                setMinting(false);
+                                setFunded(true);
+                            },
+                            onError: (error) => {
+                                console.log(error);
+                                addToast({
+                                    title: "Error Occured",
+                                    body: "Error in registering event. Please contact admin",
+                                    type: ToastTypes.error,
+                                    duration: 6000,
+                                    id: uuid()
+                                })
+                                setMinting(false);
+                            }
+                        })
+                    }
                     setDiscourseId(data.createDiscourse.id);
                 }
             })
-        })
+        })       
     }
 
 
     const handleFundClick = async () => {
-        if (supportedChainIds.includes(activeChain?.id!)) {
+        if (supportedChainIds.includes(chain?.id!)) {
             if(acceptTerms){
                 addToast({
                     title: "Waiting for confirmation",
@@ -183,7 +214,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                     id: uuid()
                 })
                 setMinting(true);
-                fund.write();
+                fund.write?.();
             }else{
                 addToast({
                     title: "Accept Terms and Conditions",
@@ -224,7 +255,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                                 <h3 className="font-bold text-white text-sm">Fund Discourse</h3>
                             </header>
 
-                            <p className='text-[#E5F7FFE5] text-[13px]'>This is initial funding of the discourse required from creator. Need to fund min 1 {getCurrencyName(activeChain?.id!)}</p>
+                            <p className='text-[#E5F7FFE5] text-[13px]'>This is initial funding of the discourse required from creator. Need to fund min 1 {getCurrencyName(chain?.id!)}</p>
 
                             <input type="number" 
                             value={amount} 
@@ -249,7 +280,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                                 </div>
                             </div>
 
-                            <button onClick={handleFundClick} ref={buttonRef} className="mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-3 cursor-pointer flex justify-center text-xs font-Lexend text-black font-medium">
+                            <button disabled={!fund.write} onClick={handleFundClick} ref={buttonRef} className="mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-3 cursor-pointer flex justify-center text-xs font-Lexend text-black font-medium">
                                 Fund
                             </button>
                         </section>
@@ -266,7 +297,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                             <div className="flex flex-col w-full text-center gap-4">
                                     <div className="flex flex-col gap-1">
                                         <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>Approve the transaction from metamask.</p>
-                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>{amount} {getCurrencyName(activeChain?.id as number)} will be funded to the discourse.</p>
+                                        <p className='text-[#E5F7FFE5] text-medium text-xs w-full'>{amount} {getCurrencyName(chain?.id as number)} will be funded to the discourse.</p>
                                     </div>
                                     <div className='flex items-center justify-center gap-2'>
                                         <UseAnimations animation={loading} size={20} strokeColor="#ffffff" className='text-white' />
@@ -286,7 +317,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, data }) => {
                             <Dialog.Description className="flex flex-col  w-full items-center  gap-4 text-center justify-between mt-4">
                                 <p className='text-[#c6c6c6] text-medium text-xs max-w-[40ch] flex-[1] '>Discourse created! Click Discourse button below to go to the discourse page.</p>
                                 <div className='flex items-center justify-center w-full gap-10'>
-                                    <a href={`${activeChain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" className='text-xs text-green-300  ' rel="noreferrer" >Transaction ↗</a>
+                                    <a href={`${chain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" className='text-xs text-green-300  ' rel="noreferrer" >Transaction ↗</a>
                                     {discourseId !== "" && <button onClick={() => route.push(`/${discourseId}`)} className='text-xs font-bold  text-gradient' >Discourse &rarr;</button>}
                                 </div>
                             </Dialog.Description>

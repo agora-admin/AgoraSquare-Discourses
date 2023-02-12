@@ -1,3 +1,4 @@
+import { Discourse } from "../lib/Types";
 import { getTime, isPast } from "./TimeHelper";
 
 const getUsername = (user: string) => {
@@ -7,7 +8,7 @@ const getUsername = (user: string) => {
     return '@' + user.toLowerCase();
 }
 
-export const isSpeaker = (data : any, username: string) => {
+export const isSpeaker = (data: any, username: string) => {
     let s1_username = getUsername(data.speakers[0].username);
     let s2_username = getUsername(data.speakers[1].username); 
     return s1_username === getUsername(username) || s2_username === getUsername(username);
@@ -18,20 +19,19 @@ export const isSpeakerWallet = (data: any, walletAddress: string) => {
     let s2_address = data.getDiscourseById.speakers[1].address;
     return s1_address === walletAddress || s2_address === walletAddress;
 }
-export const speakerConfirmed = (data : any, username: string) => {   
+export const speakerConfirmed = (data : Discourse | undefined, username: string) => {   
     let i = 0;
-    if (data.speakers[1].username.replace('@','') === username.replace('@','')) {
+    if (data?.speakers[1].username.replace('@','') === username.replace('@','')) {
         i = 1;
     }
-    return data.speakers[i].confirmed;
+    return data?.speakers[i].confirmed;
 }
 
-export const discourseConfirmed = (data : any) => {
-    if( data.speakers[0].confirmed && data.speakers[1].confirmed ) {
+export const discourseConfirmed = (data : Discourse | undefined) => {
+    if( data?.speakers[0].confirmed && data.speakers[1].confirmed ) {
         return true;
     }
     return false;
-    
 }
 
 export const getSpeakerIndex = (speakers :any, address: string) => {
@@ -118,6 +118,12 @@ export const fundingDone = (data: any) => {
     var fDate = getTime(+data.endTS+1468800);
     var now = new Date();
     return now.getTime() > fDate.getTime();
+}
+
+export const confirmationPeriodDone = (data: Discourse) => {
+    const confirmationDate = getTime(+data.endTS);
+    const now = new Date();
+    return now.getTime() > confirmationDate.getTime();
 }
 
 export const slotProposed = (data : any) => {

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useBalance, useDisconnect, useNetwork } from "wagmi";
+import { useBalance, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 import { supportedChainIds } from "../../Constants";
 import { shortAddress } from "../../helper/StringHelper";
 import { ToastTypes } from "../../lib/Types";
@@ -16,11 +16,12 @@ const UserInfo = () => {
     const { disconnectAsync } = useDisconnect();
     const { t_connected, walletAddress, t_handle, t_img, addToast,unstoppableLoggedIn,setUnstoppableLoggedIn,unstoppableUser,setUnstoppableUser } = useContext(AppContext);
     const { refresh } = useContext(AppContext);
-    const { activeChain, switchNetworkAsync } = useNetwork();
+    const { chain } = useNetwork();
+    const {switchNetworkAsync} = useSwitchNetwork();
     const [switching, setSwitching] = useState(false);
     const bal = useBalance({
-        addressOrName: walletAddress,
-        chainId: activeChain?.id,
+        address: walletAddress as any,
+        chainId: chain?.id,
         watch: true
     });
 
@@ -66,7 +67,7 @@ const UserInfo = () => {
     }
 
     const getBalance = () => {    
-        if (bal && activeChain && supportedChainIds.includes(activeChain?.id)) {
+        if (bal && chain && supportedChainIds.includes(chain?.id)) {
             let val = Number(bal.data?.formatted);
             
             switch(bal.data?.symbol){
@@ -102,7 +103,7 @@ const UserInfo = () => {
                 
                     <Popover.Panel className={` ${open ? 'animate-dEnter' : 'animate-dExit'} shadow-2xl absolute z-20 mobile2:bottom-12 mobile:bottom-16  -right-2 mt-2 bg-card bg-[#0A0A0A] p-2 rounded-xl backdrop-blur-lg max-w-xs w-max`}>
                         <div className="flex flex-col">
-                            {activeChain?.id !== supportedChainIds[0] && !unstoppableLoggedIn &&
+                            {chain?.id !== supportedChainIds[0] && !unstoppableLoggedIn &&
                                 <button onClick={() => handleSwitch(supportedChainIds[0])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                     {!switching && <Repeat size={16} color="#c6c6c6" />}
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>

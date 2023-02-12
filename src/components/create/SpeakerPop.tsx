@@ -13,17 +13,15 @@ const SpeakerPop: FC<Props> = ({ setSpeakers,flag }) => {
     const [speakerInput, setSpeakerInput] = useState("");
     const [state, setState] = useState(0);
     const [val, setVal] = useState("");
-    const [focused, setFocused] = useState(false);
-    const onFocus = () => setFocused(true);
-    const onBlur = () => setFocused(false);
 
     const {profile:u, loading} = useTwitterProfile(speakerInput);
+
     const [, cancel] = useDebounce(
         () => {
             setState(0);
             setSpeakerInput(val);
         },
-        2000,
+        1000,
         [val]
     );
 
@@ -39,10 +37,17 @@ const SpeakerPop: FC<Props> = ({ setSpeakers,flag }) => {
         <Popover className="relative">
             {({ open }) => (
                 <>
-                    <input onFocus={onFocus} onKeyDown={handleKeyDown} onBlur={onBlur} type="text" className="input-s w-full" placeholder={flag ? "Speaker's twitter handle" : "Moderator's twitter handle"} value={val} onChange={(e) => {
-                        setState(1);
-                        setVal(e.target.value);
-                    }} />
+                    <input
+                        type="text" className="input-s w-full" 
+                        placeholder={flag ? "Speaker's twitter handle" : "Moderator's twitter handle"} 
+                        value={val} 
+                        onKeyDown={handleKeyDown} 
+                        onChange={(e) => {
+                            setState(1);
+                            setVal(e.target.value);
+                        }}
+                    />
+
                     {val &&
                         <div>
                             <Popover.Panel static className="absolute z-20 mt-2 w-full" >

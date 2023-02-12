@@ -18,7 +18,7 @@ interface TopBarProp{
 const TopBar:FC<TopBarProp> = ({onDiscoursePage,discourseData,handleFund}) => {
 	const { loggedIn,unstoppableLoggedIn } = useContext(AppContext);
 
-	const {activeChain} = useNetwork();
+	const {chain} = useNetwork();
 
 	return (
 		<nav className='flex items-center justify-between relative w-full mobile:px-3 lg:px-0 mobile:min-h-[60px] py-0 sm:py-3 sm:max-w-5xl mobile:fixed mobile:inset-x-0 mobile:bottom-0 mobile:z-50 bg-black'>
@@ -37,8 +37,8 @@ const TopBar:FC<TopBarProp> = ({onDiscoursePage,discourseData,handleFund}) => {
 						<div className="h-8 w-[1px] bg-white/20"/>
 
 						<div className="bg-[#0A0A0A] rounded-full mobile:p-2 px-4 py-2 flex gap-2 items-center">
-							<span className="mobile:hidden text-[#714FE0] text-[10px] font-Lexend font-semibold">on {activeChain?.name}</span>
-							<ChainIcon chainId={activeChain?.id as number} size={18} />
+							<span className="mobile:hidden text-[#714FE0] text-[10px] font-Lexend font-semibold">on {chain?.name}</span>
+							<ChainIcon chainId={chain?.id as number} size={18} />
 						</div>
 					</>
 				}

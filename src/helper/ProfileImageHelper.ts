@@ -3,7 +3,6 @@ export const fetchImage = async (twitterHandle: string) => {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         cache: 'force-cache',
         body: JSON.stringify({

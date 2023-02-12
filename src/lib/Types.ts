@@ -11,10 +11,21 @@ export type CreateObj = {
     endTS: string;
     topics: Array<any>;
     initialFunding: string;
-    fundingPeriod: number;
+    confirmationPeriod: number;
     yt_link: string;
     disable: boolean;
     irl: boolean;
+    event: Event | null;
+}
+
+export type Event = {
+    timestamp: string,
+    name: string,
+    address: string,
+    city: string,
+    state: string,
+    country: string,
+    zip: string
 }
 
 export enum ToastTypes {
@@ -34,10 +45,63 @@ export type Toast = {
     duration?: number;
 }
 
-export interface Speaker {
+export interface SpeakerInputType {
     screen_name: string;
     name: string;
     profile_image_url: string;
 }
 
-export interface Moderator extends Speaker{}
+export interface Moderator extends SpeakerInputType{}
+
+export interface Speaker{
+    name: string;
+    username: string;
+    address: string;
+    confirmed: boolean;
+    isTwitterHandle: boolean;
+    image_url: string;
+}
+
+export interface Fund{
+    address: string;
+    amount: number;
+    timestamp: string;
+    txnHash: string;
+}
+
+export interface DiscourseStatus{
+    disputed: boolean;
+    completed: boolean;
+    terminated: boolean;
+    speakersConfirmation: number;
+    withdrawn: string[];
+}
+
+export interface Discourse {
+    id: string;
+    title: string;
+    description: string;
+    speakers: Speaker[];
+    moderator: { name: string; username: string; image_url: string; }
+    propId: number;
+    chainId: number;
+    prop_description: string;
+    prop_starter: string;
+    charityPercent: number;
+    initTS: string;
+    endTS: string;
+    topics: string[];
+    irl: boolean;
+    yt_link: string;
+    disable: boolean;
+    funds: Fund[];
+    status: DiscourseStatus
+    txnHash: string;
+    discourse: {
+        room_id: string;
+        ended: boolean;
+        meet_date: string;
+        confirmation: string[];
+        c_timestamp: string;
+    }
+}

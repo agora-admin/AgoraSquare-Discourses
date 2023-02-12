@@ -14,29 +14,6 @@ import AppContext from "../utils/AppContext";
 const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any, propId: number, chainId: number, id: string}) => {
 
     const [ openDateDialog, setOpenDateDialog ] = useState(false);
-    const [ openTimeDialog, setOpenTimeDialog ] = useState(false);
-
-    const slots = [
-        {
-            "start_hr": 10,
-            "end_hr": 12,
-            "timestamp": "timestamp1",
-            "accepted": false
-        },
-        {
-            "start_hr": 12,
-            "end_hr": 14,
-            "timestamp": "timestamp1",
-            "accepted": true
-        },
-        {
-            "start_hr": 14,
-            "end_hr": 16,
-            "timestamp": "timestamp1",
-            "accepted": false
-        }
-    ]
-
     const [selectedSlot, setSelectedSlot] = useState(-1);
     const [ sSlots, setSSlots ] = useState([]);
     const [ dates, setDates ] = useState([]);
@@ -120,45 +97,40 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
 
     return (
         <>
-            <div className="bg-card rounded-xl flex flex-col p-4 w-[80%] max-w-xs md:max-w-[80%] mt-8 gap-2">
+            <div className="bg-card rounded-xl flex flex-col p-4 mt-8 gap-2">
                 <div className="flex items-center gap-2">
                     <SlotCalendarIcon />
                     { !slotConfirmed(data) && !data.proposed && <p className="text-sm text-gradient font-semibold">Schedule a date and time</p>}
                     { !slotConfirmed(data) && data.proposed && <p className="text-sm text-gradient font-semibold">Schedule a date and time</p>}
                     { slotConfirmed(data) && data.proposed && 
                         <div className="flex items-center justify-between w-full">
-                        <p className="text-sm text-gradient font-semibold">{formatDate(new Date(getSlotString(data)))} • {getTimeFromDate(new Date(getSlotString(data)))}
-                        </p>
-
-                        {/* <button className="button-o">Join</button> */}
+                            <p className="text-sm text-gradient font-semibold">{formatDate(new Date(getSlotString(data)))} • {getTimeFromDate(new Date(getSlotString(data)))}</p>
                         </div>
                     }
                 </div>
                 {/* when no proposals are there */}
                 { !data.proposed && <>
                     <p className="text-[10px] text-[#c6c6c6]">
-                        Pick 3 date and time options for the discoures before <span className="tracking-wide font-semibold">{formatDate(getEndDate(endTS))}</span>
+                        Pick a date and time options for the discoures before <span className="tracking-wide font-semibold">{formatDate(getEndDate(endTS))}</span>
                     </p>
 
-                    
+                    <div className="flex items-center gap-2">
                         <button onClick={() => setOpenDateDialog((prev) => !prev)} className="button-s w-max flex items-center gap-2">
-                            { sSlots.length !== 3 &&
+                            { sSlots.length < 1 &&
                                 <Calendar1 size='16' color='#c6c6c6' />}
-                            { sSlots.length === 3 &&
+                            { sSlots.length >= 1 &&
                                 <CalendarTick size='16' color='#c6c6c6' />}
                             <p className="text-xs text-[#c6c6c6] font-Lexend">{
-                                sSlots.length !== 3 ? "Select dates" : "Click to edit"
+                                sSlots.length < 1 ? "Select dates" : "Click to edit"
                             }</p>
                         </button>
-                    
 
-                    {/* <TimePickerDialog open={openTimeDialog} setOpen={setOpenTimeDialog} /> */}
+                        <DatePickerDialog dates={dates} setDates={setDates} slots={sSlots} setSlots={setSSlots} endTS={endTS} open={openDateDialog} setOpen={setOpenDateDialog} />
 
-                    <DatePickerDialog dates={dates} setDates={setDates} slots={sSlots} setSlots={setSSlots} endTS={endTS} open={openDateDialog} setOpen={setOpenDateDialog} />
-
-                    { sSlots.length === 3 && <button onClick={handleSubmit} className="button-s bg-gradient w-max mt-2">
-                        <p className="text-xs text-[#212427] font-Lexend">Submit &rarr;</p>
-                    </button>}
+                        { sSlots.length >= 1 && <button onClick={handleSubmit} className="button-s bg-gradient w-max">
+                            <p className="text-xs text-[#212427] font-Lexend">Submit &rarr;</p>
+                        </button>}
+                    </div>
                 </>}
 
                 { data.proposed && getSlotProposer(data) !== walletAddress && !slotConfirmed(data) && <>

@@ -70,7 +70,7 @@ const DatePickerDialog = ({ open, setOpen, endTS, slots, setSlots, dates, setDat
                                 <p className='text-sm text-white/60 font-Lexend '>Select 3 dates</p>
                                 <p className='text-xs font-Lexend '>Click on clock icon for time slot</p>
                             </div>
-                            { slots.length ==3 && <button onClick={handleClose} className='text-white/60 text-xs button-s'>Done</button>}
+                            { slots.length >= 1 && <button onClick={handleClose} className='text-white/60 text-xs button-s'>Done</button>}
                         </Dialog.Title>
                         <Dialog.Description as='div' className="flex flex-col w-full text-center justify-between flex-1 px-6 overflow-y-auto max-h-[70vh] ">
                             <div className='flex flex-col w-full items-center'>

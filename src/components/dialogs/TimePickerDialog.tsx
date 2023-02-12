@@ -131,7 +131,7 @@ const TimePickerDialog = ({ open, setOpen, index, dates, slots, setSlots }:
                     {/* Mint Post View */}
                     {<>
                         <Dialog.Title className="text-white/40 text-base  tracking-wide flex flex-col gap-2 w-max px-6">
-                            <p className='text-xs text-white/60 font-Lexend '>Select 3 slots for respective date</p>
+                            <p className='text-xs text-white/60 font-Lexend '>Select slots for respective date</p>
                             <p className='text-xs font-Lexend '>{getSpanishDate(dates[index])}</p>
                         </Dialog.Title>
                         <Dialog.Description as='div' className="flex mt-2 flex-col w-full text-center justify-between flex-1 px-6 overflow-y-auto max-h-[75vh] ">

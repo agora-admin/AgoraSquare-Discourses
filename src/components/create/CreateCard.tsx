@@ -1,14 +1,14 @@
 import { FC } from "react";
 import { useNetwork } from "wagmi";
-import { Speaker } from "../../lib/Types";
+import { SpeakerInputType } from "../../lib/Types";
 import { ChainIcon } from "../utils/ChainTag";
 
 interface Props {
-    speakers: Speaker[];
+    speakers: SpeakerInputType[];
     title: string;
 }
 
-const demoSpeaker: Speaker = {
+const demoSpeaker: SpeakerInputType = {
     screen_name: "speaker",
     name: "Speaker Name",
     profile_image_url: `https://avatar.tobi.sh/speaker`
@@ -19,7 +19,7 @@ const CreateCard: FC<Props> = ({ speakers, title }) => {
     const speaker1 = speakers?.length >= 1 ? speakers[0] : demoSpeaker;
     const speaker2 = speakers?.length >= 2 ? speakers[1] : demoSpeaker;
 
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
 
     return (
         <div className='relative sm:max-w-[350px] bg-[#0A0A0A] rounded-xl p-5 flex flex-col gap-4 justify-center'>
@@ -38,7 +38,7 @@ const CreateCard: FC<Props> = ({ speakers, title }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <ChainIcon chainId={activeChain?.id as number} size={24} />
+                    <ChainIcon chainId={chain?.id as number} size={24} />
                 </div>
             </div>
 

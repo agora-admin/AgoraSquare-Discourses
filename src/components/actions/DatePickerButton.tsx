@@ -162,16 +162,8 @@ const formatYearsMonthDay = (date: Date): string => {
 };
 
 const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<any>, setDates: Dispatch<SetStateAction<any>> }) => {
-    // const [state, dispatch] = React.useReducer<
-    //     React.Reducer<DatePickerReducerState, DatePickeReducerAction>
-    // >(datePickerReducer, initState);
-    const displayDateRef = React.useRef<HTMLInputElement>();
-    const daysDivRef = React.useRef<HTMLDivElement>();
-
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
-    const [dayNum, setDayNum] = useState(new Date().getDate());
-    // const [selectedDates, setSelectedDates] = useState<Array<number>>([]);
     const [monthCount, setMonthCount] = useState(0);
 
 
@@ -181,8 +173,6 @@ const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<a
 
     const handleClick = (dayN: number) => {
         const dateToFormat = new Date(year, month, dayN);
-        const date = formatYearsMonthDay(dateToFormat);
-        const displayDate = getSpanishDate(dateToFormat);
         if (dates.includes(dateToFormat) || disableDate(dayN)) {
             return;
         }
@@ -445,12 +435,7 @@ const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<a
                             className="px-1 mb-1"
                         >
                             <div
-                                onClick={() => {
-                                    handleClick(dayNumber);
-                                    // dispatch({ type: "SET_DATE", dayNumber });
-                                    // toggleDisplayDateFocus();
-                                }}
-                                // onMouseDown={event => event.preventDefault()}
+                                onClick={() => handleClick(dayNumber)}
                                 className={`cursor-pointer text-center text-sm leading-none rounded-lg leading-loose transition ease-in-out duration-100 
                                                 ${isSelectedDate(dayNumber)
                                         ? "bg-blue-500 text-white"
@@ -464,8 +449,6 @@ const DatePicker = ({ endTS, dates, setDates }: { endTS: number , dates: Array<a
                 </div>
             </div>
         </div>
-
-
     );
 };
 

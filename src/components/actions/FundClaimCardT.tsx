@@ -4,19 +4,20 @@ import { TERMINATE_PROPOSAL, FUND_WITHDRAWN } from "../../lib/mutations";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { useContext, useEffect, useState } from "react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
-import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
-import { contractData } from "../../helper/ContractHelper";
+import { useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import AppContext from "../utils/AppContext";
 import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { v4 as uuid } from "uuid";
+import { getContractAddressByChainId } from "../../helper/ContractHelper";
+import abi from '../../web3/abi/DiscourseHub.json';
 
 const FundClaimCardT = ({ data }: { data: any }) => {
 
     const [loading, setLoading] = useState(false);
     const [needTermination, setNeedTermination] = useState(false);
     const { loggedIn, walletAddress, addToast } = useContext(AppContext);
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
 
     const [terminateProposal] = useMutation(TERMINATE_PROPOSAL, {
         variables: {
@@ -71,35 +72,38 @@ const FundClaimCardT = ({ data }: { data: any }) => {
         }
     })
 
-    const withdrawP = useContractWrite(
-        contractData(activeChain?.id!),
-        'withdrawPledge',
-        {
-            args: [data.propId],
-            overrides: { from: walletAddress },
-            onSettled: (txn) => {
-                console.log('submitted:', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                setLoading(false);
-                console.log(error);
-                addToast({
-                    title: "Something went wrong",
-                    body: error.message,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            }
+    const {config:withdrawPConfig} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'withdrawPledge',
+        args: [data.propId],
+        overrides: { from: walletAddress as any }
+    })
+    
+    const withdrawP = useContractWrite({
+        ...withdrawPConfig,
+        onSettled: (txn) => {
+            console.log('submitted:', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            setLoading(false);
+            console.log(error);
+            addToast({
+                title: "Something went wrong",
+                body: error.message,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
         }
-    )
+    })
 
     const waitForWithdrawl = useWaitForTransaction({
         hash: withdrawP.data?.hash,
@@ -110,12 +114,12 @@ const FundClaimCardT = ({ data }: { data: any }) => {
 
     useEffect(() => {
         if (data.status.terminated && needTermination && withdrawP.status === 'idle') {
-            withdrawP.write();
+            withdrawP.write?.();
         }
     }, [data, needTermination, withdrawP])
 
     const handleClaim = async () => {
-        if (activeChain?.id === data.chainId) {         
+        if (chain?.id === data.chainId) {         
             setLoading(true);
             addToast({
                 title: "Waiting for confirmation",
@@ -128,7 +132,7 @@ const FundClaimCardT = ({ data }: { data: any }) => {
                 setNeedTermination(true);
                 terminateProposal();
             } else {
-                withdrawP.write();
+                withdrawP.write?.();
             }
         } else {
             addToast({

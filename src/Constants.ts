@@ -2,7 +2,7 @@ export const supportedChainIds = [
     137 // Polygon Mainnet
 ]
 
-export const getChainName = (chainId: number) => {
+export const getChainName = (chainId: number | undefined) => {
     switch (chainId) {
         case 80001:
             return 'Polygon Mumbai'

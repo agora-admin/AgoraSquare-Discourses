@@ -7,6 +7,7 @@ interface Props {
     chainId: number;
     propId: number;
 }
+
 const VenueCard: FC<Props> = ({ chainId, propId }) => {
     const { data, loading, error } = useQuery(GET_EVENT, {
         variables: { chainId, propId }

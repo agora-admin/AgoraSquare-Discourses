@@ -1,14 +1,4 @@
-import { WriteContractArgs } from '@wagmi/core'
-import abi from '../web3/abi/DiscourseHub.json'
-export const contractData = (chainId: number): WriteContractArgs => {
-    let data : WriteContractArgs = {
-        addressOrName: getContractAddressByChainId(chainId),
-        contractInterface: abi
-    }
-    return data
-}
-
-const getContractAddressByChainId = (chainId: number) => {
+export const getContractAddressByChainId = (chainId: number) => {
     switch (chainId) {
         case 80001:
             return '0xd05655443394E2600E47dFF79CF4D11376988c91'

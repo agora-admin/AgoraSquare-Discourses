@@ -1,11 +1,9 @@
 import { useQuery } from "@apollo/client";
-import { CloseCircle, Information, Verify, Warning2 } from "iconsax-react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
 import { UserInfo } from "@uauth/js";
 import { Dispatch, FC, ReactNode, useEffect, useState } from "react";
-import { v4 as uuid } from "uuid";
-import { useConnect, useDisconnect } from "wagmi";
+import { uuid } from "uuidv4";
+import { useAccount } from "wagmi";
 import { GET_USERDATA } from "../../lib/queries";
 import { Toast, ToastTypes } from "../../lib/Types";
 import ToastCard from "../cards/ToastCard";
@@ -28,16 +26,13 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     const [timeStamp, setTimeStamp] = useState("");
     const [toasts, setToasts] = useState<Toast[]>([]);
 
-    const { activeConnector, status, data: aData } = useConnect();
+    const {connector: activeConnector,status} = useAccount();
 
     useEffect(() => {
-        console.log('status:', status);
-        
         if (!activeConnector && status !== "reconnecting" && status !== "connecting") {
             Cookies.remove("jwt");
             setWalletAddress("");
             setLoggedIn(false);
-            console.log("no active connector");
         }
 
         if (status === "disconnected" && loggedIn) {
@@ -53,9 +48,6 @@ const ContextWrapper: FC<Props> = ({ children }) => {
             setLoggedIn(false);
         }
 
-        if (activeConnector) {
-            console.log("active connector");
-        }
         if (status === "connected") {
             refetch();
         }
@@ -98,17 +90,11 @@ const ContextWrapper: FC<Props> = ({ children }) => {
             nextFetchPolicy: 'network-only',
             notifyOnNetworkStatusChange: true,
             onCompleted: (data) => {
-                console.log('completed req');
-                
                 if (data) {
-                    console.log('got data');
-                    
                     if (data?.getUserData && status === "connected") {
-                        console.log('got getUserData');
                         setLoggedIn(true);
                         setWalletAddress(data.getUserData.walletAddress);
                     } else {
-                        console.log('getUserData undefined');
                         setLoggedIn(false);
                         setWalletAddress("");
                     }
@@ -131,15 +117,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
         }
     );
 
-    useEffect(() => {
-        if (data) {
-            console.log('data fetched');
-        }
-    }, [data])
-
     const name = data?.getUserData?.name + "";
-    console.log('From ContextWrapper: ',{name});
-    
     const username = data?.getUserData?.username + "";
     const bio = data?.getUserData?.bio + "";
     const t_connected = data?.getUserData?.twitterConnected;

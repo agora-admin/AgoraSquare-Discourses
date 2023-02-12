@@ -120,7 +120,7 @@ const LivePage = () => {
     const roomState = useHMSStore(selectRoomState);
 
     useEffect(() => {
-        if (token !== "" && token!== "undefined" && dData && isSpeakerWallet(dData, walletAddress) && !meetEnded) {
+        if (token !== "" && token!== "undefined" && dData && isSpeakerWallet(dData.getDiscourseById, walletAddress) && !meetEnded) {
             const config = {
                 userName: walletAddress,
                 authToken: token,
@@ -221,28 +221,7 @@ const LivePage = () => {
                         <div className="flex flex-col gap-4 mt-10 grow mx-20">
 
                             <div className="relative bg-card max-w-md mx-auto w-full flex flex-col items-center p-8 rounded-2xl">
-                                {/* <img className="absolute right-2 h-[80%] bottom-0 z-0" src="/link_bg.svg" alt="" /> */}
                                 <h3 className="text-white/70 text-center font-Lexend">Join Discourse</h3>
-                                {/* { !isSpeakerWallet(dData, user.walletAddress) && <div className="flex flex-col p-4 my-2 rounded-xl z-10 w-max border border-[#212427]">
-                                    <p className="font-Lexend text-[#c6c6c6] font-semibold">{dData.getDiscourseById.title}</p>
-                                    <div className='flex items-center gap-1 mt-2'>
-                                        
-                                        <div className='flex items-center w-16 h-8 relative'>
-                                            <div className='flex items-center w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                
-                                                <img className="scale-105 w-8 h-8 object-cover object-center" src={`https://avatar.tobi.sh/${dData.getDiscourseById.speakers[0].name}`} alt="" />
-                                            </div>
-                                            <div className='flex items-center absolute left-[35%] w-8 h-8 rounded-xl ring-[3px] ring-[#141515] overflow-clip'>
-                                                <img className="scale-105 w-8 h-8 object-cover object-center" src={`https://avatar.tobi.sh/${dData.getDiscourseById.speakers[1].name}`} alt="" />
-                                            </div>
-                                        </div>
-                                        <div className='flex flex-col'>
-                                            <a href="#" className='hover:text-white/60 text-[#c6c6c6] font-Lexend text-xs uppercase tracking-wide font-medium'>{dData.getDiscourseById.speakers[0].name}</a>
-                                            <a href="#" className='hover:text-white/60 text-[#c6c6c6] font-Lexend text-xs uppercase tracking-wide font-medium'>{dData.getDiscourseById.speakers[1].name}</a>
-                                        </div>
-                                    </div>
-                                </div> 
-                                } */}
 
                                 {/* Speaker */}
                                 {

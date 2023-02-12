@@ -1,19 +1,20 @@
 import { CloseCircle } from "iconsax-react";
 import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { Speaker, ToastTypes } from "../../lib/Types";
+import { SpeakerInputType, ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
 import SpeakerPop from "./SpeakerPop";
 
 interface Props {
-    speakers: Speaker[];
-    setSpeakers: Dispatch<SetStateAction<Speaker[]>>;
+    speakers: SpeakerInputType[];
+    setSpeakers: Dispatch<SetStateAction<SpeakerInputType[]>>;
 }
 
 const SpeakerInput: FC<Props> = ({ speakers, setSpeakers }) => {
     const { addToast } = useContext(AppContext);
     const [speakerInput, setSpeakerInput] = useState("");
-    const addSpeaker = (speaker: Speaker) => {
+
+    const addSpeaker = (speaker: SpeakerInputType) => {
         if(speakers.find(s => s.screen_name === speaker.screen_name)){
             addToast({
                 title: "Speaker already added",
@@ -28,7 +29,7 @@ const SpeakerInput: FC<Props> = ({ speakers, setSpeakers }) => {
         }
     }
 
-    const removeSpeaker = (speaker: Speaker) => {
+    const removeSpeaker = (speaker: SpeakerInputType) => {
         setSpeakers(speakers.filter(s => s.screen_name !== speaker.screen_name));
     }
     
@@ -39,14 +40,14 @@ const SpeakerInput: FC<Props> = ({ speakers, setSpeakers }) => {
                     <SpeakerCard key={index} speaker={speaker} removeSpeaker={removeSpeaker} />
                 ))
             }
-            { speakers.length < 2 && <SpeakerPop flag={true} setSpeakers={addSpeaker} />}
+            { speakers.length < 2 && <SpeakerPop flag={true} setSpeakers={addSpeaker} /> }
         </div>
     );
 }
 
 interface CardProps {
-    speaker: Speaker;
-    removeSpeaker: (speaker: Speaker) => void;
+    speaker: SpeakerInputType;
+    removeSpeaker: (speaker: SpeakerInputType) => void;
 }
 
 export const SpeakerCard: FC<CardProps> = ({ speaker, removeSpeaker }) => {

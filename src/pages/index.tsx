@@ -10,6 +10,10 @@ import { supportedChainIds } from '../Constants'
 import HeroCard from '../components/actions/HeroCard'
 import DiscourseCard from '../components/cards/DiscourseCard'
 
+// Schedule Period = max 3 days
+// Confirmation Period = max 30 days to 1hr
+// Scheduling Period + Confimation Period = 1 transaction
+
 const Home: NextPage = () => {
 	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
 		variables: {

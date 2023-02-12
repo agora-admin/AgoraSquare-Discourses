@@ -34,7 +34,7 @@ const TitleInput: FC<Props> = ({ setTitle }) => {
 
     return (
         <>
-            <input value={val} onChange={(e) => setVal(e.target.value)} className="max-w-[585px] input-s" id="title" type="text" placeholder="title" />
+            <input value={val} onChange={(e) => setVal(e.target.value)} className="max-w-[585px] input-s" id="title" type="text" placeholder="Title" />
             {error && <p className="text-xs font-Lexend text-red-400">{error}</p>}
         </>
 

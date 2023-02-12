@@ -13,11 +13,11 @@ const HeroCard = () => {
     const route = useRouter();
     const { loggedIn, addToast } = useContext(AppContext);
     const [openConnectWallet, setOpenConnectWallet] = useState(false);
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
     
     const handleCreate = () => {
         if (loggedIn) {
-            if (supportedChainIds.includes(activeChain?.id!)) {
+            if (supportedChainIds.includes(chain?.id!)) {
                 route.push('/create');
             } else {
                 addToast({

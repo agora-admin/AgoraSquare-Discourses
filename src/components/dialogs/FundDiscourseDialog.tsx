@@ -5,18 +5,18 @@ import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import UseAnimations from 'react-useanimations';
 import loading from 'react-useanimations/lib/loading';
-import { DiscourseIcon, FundDiscourseIcon, FundDiscourseIcon2 } from '../utils/SvgHub';
+import { FundDiscourseIcon2 } from '../utils/SvgHub';
 import { FUND_UPDATE } from '../../lib/mutations';
 import { GET_DISCOURSE_BY_ID } from '../../lib/queries';
-import { chain, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
-import { contractData } from '../../helper/ContractHelper';
+import { useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { getContractAddressByChainId } from '../../helper/ContractHelper';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import AppContext from '../utils/AppContext';
 import { v4 as uuid } from 'uuid';
 import { ToastTypes } from '../../lib/Types';
 import { getChainName, getCurrencyName } from '../../Constants';
 import { ArrowCircleRight, CloseCircle, TickSquare } from 'iconsax-react';
-
+import abi from '../../web3/abi/DiscourseHub.json';
 
 const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, discourse: any }) => {
     let buttonRef = useRef(null);
@@ -27,41 +27,47 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     const [funded, setFunded] = useState(false);
     const [ amount, setAmount ] = useState('1.0');
     const [acceptTerms,setAcceptTerms] = useState(false);
-    const { activeChain } = useNetwork();
+    const { chain } = useNetwork();
     
     const [ updateFund ] = useMutation(FUND_UPDATE);
 
     const [ fetchD ] = useLazyQuery(GET_DISCOURSE_BY_ID, { variables: { id: discourse.id } });
 
-    const fund = useContractWrite(
-        contractData(activeChain?.id!),
-        'pledgeFunds',
-        {
-            args: [+discourse.propId],
-            overrides: { from: walletAddress,value: ethers.utils.parseEther(amount || '0.0')},
-            onSettled: (txn) => {
-                console.log('submitted:', txn);
-                addToast({
-                    title: "Transaction Submitted",
-                    body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
-                    type: ToastTypes.wait,
-                    duration: 5000,
-                    id: uuid()
-                })
-            },
-            onError: (error) => {
-                console.log('error:', error);
-                addToast({
-                    title: "Error Occured",
-                    body: error.message,
-                    type: ToastTypes.error,
-                    duration: 5000,
-                    id: uuid()
-                })
-                setMinting(false);
-            }
+    const {config:fundConfig} = usePrepareContractWrite({
+        address: getContractAddressByChainId(chain?.id as number),
+        abi,
+        functionName: 'pledgeFunds',
+        args: [+discourse.propId],
+        overrides: { 
+            from: walletAddress as any,
+            value: ethers.utils.parseEther(amount || '0.0')
         }
-    )
+    })
+
+    const fund = useContractWrite({
+        ...fundConfig,
+        onSettled: (txn) => {
+            console.log('submitted:', txn);
+            addToast({
+                title: "Transaction Submitted",
+                body: `Waiting for transaction to be mined. Hash: ${txn?.hash}`,
+                type: ToastTypes.wait,
+                duration: 5000,
+                id: uuid()
+            })
+        },
+        onError: (error) => {
+            console.log('error:', error);
+            addToast({
+                title: "Error Occured",
+                body: error.message,
+                type: ToastTypes.error,
+                duration: 5000,
+                id: uuid()
+            })
+            setMinting(false);
+        }
+    })
 
     const waitForTxn = useWaitForTransaction({
         hash: fund.data?.hash,
@@ -111,7 +117,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     }    
 
     const handleFundClick = async () => {
-        if (activeChain?.id === discourse.chainId) {
+        if (chain?.id === discourse.chainId) {
             if(acceptTerms){
                 addToast({
                     title: "Waiting for confirmation",
@@ -121,7 +127,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                     id: uuid()
                 })
                 setMinting(true);
-                fund.write();
+                fund.write?.();
             }else{
                 addToast({
                     title: "Accept Terms and Conditions",
@@ -134,7 +140,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
         } else {
             addToast({
                 title: "Different Chain",
-                body: `This discourse is on [${getChainName(activeChain?.id!)}]. Please use the correct chain.`,
+                body: `This discourse is on [${getChainName(chain?.id!)}]. Please use the correct chain.`,
                 type: ToastTypes.error,
                 duration: 5000,
                 id: uuid()
@@ -222,7 +228,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                             </header> 
                             <div className="flex flex-col w-full items-center gap-4 text-center justify-between">
                                 <p className='text-[#E5F7FFE5] text-semibold text-xs'>Thanks for funding the discourse. You&apos;ll get a Proof of Patron NFT if the Discourse is completed!</p>
-                                <a href={`${activeChain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" rel="noreferrer" className='mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-2 cursor-pointer flex items-center gap-2'>
+                                <a href={`${chain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" rel="noreferrer" className='mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-2 cursor-pointer flex items-center gap-2'>
                                     <span className='text-[11px] font-Lexend text-black font-medium'>View Transaction</span>
                                     <ArrowCircleRight color="#7E6C97" variant="Bold" />
                                 </a>  
