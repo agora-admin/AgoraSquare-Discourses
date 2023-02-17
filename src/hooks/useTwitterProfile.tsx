@@ -50,7 +50,7 @@ const useTwitterProfile = (twitterHandle: string) => {
                 profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
             })
         }
-    }, [twitterHandle]);
+    }, [profile.screen_name, twitterHandle]);
 
     return { profile, loading };
 }

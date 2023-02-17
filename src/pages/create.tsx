@@ -105,7 +105,7 @@ const CreateDiscoursePage = () => {
                 id: uuid()
             })
         }
-    }, [formError]);
+    }, [addToast, formError]);
 
     // Form values states
     const [speakers, setSpeakers] = useState<Array<SpeakerInputType>>([]);

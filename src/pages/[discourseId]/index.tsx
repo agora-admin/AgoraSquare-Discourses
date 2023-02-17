@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Layout from "../../components/layout/Layout";
 import { useRouter } from "next/router";
+import Image from 'next/image';
 import { ArrowCircleRight } from "iconsax-react";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import { useQuery } from "@apollo/client";
@@ -134,7 +135,7 @@ const DiscoursePage = () => {
                     {
                         error &&
                         <div className='w-full py-4 flex items-center justify-center mt-10'>
-                            <img className='w-48' src="/404_dis.png" alt="404 not found" />
+                            <Image className='w-48' src="/404_dis.png" alt="404 not found" />
                         </div>
                     }
 
@@ -147,8 +148,8 @@ const DiscoursePage = () => {
                             <div className="w-full flex items-center justify-between sm:px-8">
                                 <div className="flex items-center">
                                     <div className="relative flex items-center">
-                                        <img className="w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(discourseData?.getDiscourseById.speakers[0]?.image_url)} alt="user profile image" />
-                                        <img className="relative top-0 right-3 w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(discourseData?.getDiscourseById.speakers[1]?.image_url)} alt="user profile image" />
+                                        <Image className="w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(discourseData?.getDiscourseById.speakers[0]?.image_url)} alt="user profile image" />
+                                        <Image className="relative top-0 right-3 w-11 h-11 object-cover rounded-2xl" src={getProfileImageUrl(discourseData?.getDiscourseById.speakers[1]?.image_url)} alt="user profile image" />
                                     </div>
                                 
                                     <div className="flex flex-col gap-[6px]">
@@ -283,7 +284,7 @@ const DiscoursePage = () => {
                                             .sort((a: any, b: any) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
                                             .map((item: any, index: number) => (
                                                 <div key={uuid()} className="flex items-center gap-4">
-                                                    <img src={`https://avatar.tobi.sh/${item.address}`} alt="profile image" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl" />
+                                                    <Image src={`https://avatar.tobi.sh/${item.address}`} alt="profile image" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl" />
 
                                                     <div className="flex flex-col">
                                                         <div className="flex gap-2">
