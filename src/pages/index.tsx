@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import Image from 'next/image';
 import Head from 'next/head'
 import Layout from '../components/layout/Layout'
 import { useEffect } from 'react'
@@ -56,7 +55,7 @@ const Home: NextPage = () => {
 						{
 							dData && dData.getDiscoursesByChainID.length == 0 &&
 							<div className='absolute inset-0 top-10 w-full py-4 flex items-center justify-center mt-10'>
-								<Image className='w-36' src="/404_discourses.png" alt="" />
+								<img className='w-36' src="/404_discourses.png" alt="" />
 							</div>
 						}
 						{

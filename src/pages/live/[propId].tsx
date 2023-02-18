@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from 'next/image';
 import {
     useHMSActions, useHMSStore, selectIsConnectedToRoom,
     selectIsLocalAudioEnabled,
@@ -230,7 +229,7 @@ const LivePage = () => {
                                     <div className="flex flex-col items-center gap-2 py-4">
 
                                         <div className="w-[60%] aspect-square relative rounded-xl overflow-clip">
-                                            {!getLocalPeer() || !videoEnabled && <Image className="w-[600px] h-[600px] object-cover object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />}
+                                            {!getLocalPeer() || !videoEnabled && <img className="w-[600px] h-[600px] object-cover object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />}
                                             {getLocalPeer() && videoEnabled && <VideoTile peer={getLocalPeer()} />}
                                             <div className="z-10 absolute bg-[#141515] inset-x-2 p-2 bottom-2 rounded-xl flex items-center justify-between">
 
@@ -264,7 +263,7 @@ const LivePage = () => {
                                 {   !discourseLocked && <div className="flex flex-col items-center gap-2 py-4">
 
                                         <div className="w-10 h-10 aspect-square rounded-xl overflow-clip">
-                                            <Image className="w-full h-full object-cover object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />
+                                            <img className="w-full h-full object-cover object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />
                                         </div>
                                         <p className="text-white text-sm font-Lexend ">{shortAddress(walletAddress)}</p>
 

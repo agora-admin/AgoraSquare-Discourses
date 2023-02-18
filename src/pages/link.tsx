@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from 'next/image';
 import Layout from "../components/layout/Layout";
 import Branding from "../components/utils/Branding";
 import { useRouter } from "next/router";
@@ -106,7 +105,7 @@ const InvitePage = () => {
                             {walletAddress === "" && <WalletOptionsLink /> }
                             {loggedIn && <div className='cursor-default py-2 flex items-center w-max gap-2 text-[#616162] text-sm font-semibold'>
                                 <div className='flex items-center overflow-clip bg-gradient w-6 h-6 rounded-xl' >
-                                    <Image className="w-6 h-6 object-cover rounded-xl object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />
+                                    <img className="w-6 h-6 object-cover rounded-xl object-center" src={`https://avatar.tobi.sh/${walletAddress}`} alt="" />
                                 </div>
                                 <div className="flex flex-col justify-center">
                                     <p className='text-white text-xs'>{shortAddress(walletAddress === "" ? '' : walletAddress)}</p>
@@ -128,7 +127,7 @@ const InvitePage = () => {
                             {handle !== "" && alreadyLinked && <p className="text-xs font-medium tracking-wide text-[#6a6a6a] mt-4">Accounts already linked!</p>}
                             {handle !== "" && accountLinked && <p className="text-xs font-medium tracking-wide text-[#6a6a6a] mt-4">Accounts linked!</p>}
 
-                            <Image className="absolute right-2 bottom-0 hidden sm:flex" src="/link_bg.svg" alt="" />
+                            <img className="absolute right-2 bottom-0 hidden sm:flex" src="/link_bg.svg" alt="" />
                         </div>
                     </div>
 

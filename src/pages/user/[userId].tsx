@@ -1,6 +1,5 @@
 import { Popover } from "@headlessui/react";
 import { TickCircle } from "iconsax-react";
-import Image from 'next/image';
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useContext, useEffect } from "react";
@@ -63,7 +62,7 @@ const UserPage = () => {
                                 <div className="flex flex-col gap-8 sm:gap-14 relative">
                                     {/* User info section */}
                                     <section className="flex flex-col items-center xs2:items-start xs2:flex-row gap-2 xs2:gap-5 sm:gap-8">
-                                        <Image src={getProfileImageUrl(t_img)} alt="Person profile pic" className="w-24 h-24 sm:w-36 sm:h-36 object-cover rounded-[32px]"/>
+                                        <img src={getProfileImageUrl(t_img)} alt="Person profile pic" className="w-24 h-24 sm:w-36 sm:h-36 object-cover rounded-[32px]"/>
 
                                         {/* Bio Section */}
                                         <div className="w-full xs2:max-w-fit flex flex-col items-center xs2:items-start gap-2">

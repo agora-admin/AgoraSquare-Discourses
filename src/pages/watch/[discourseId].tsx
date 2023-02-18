@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import Image from 'next/image';
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
 import { useRouter } from "next/router";
@@ -67,7 +66,7 @@ const Watch: NextPage = () => {
 
                     {error &&
                         <div className="flex gap-4 flex-col w-full md:flex-[0.6] items-center pt-20">
-                            <Image className='w-48' src="/404_dis.png" alt="" />
+                            <img className='w-48' src="/404_dis.png" alt="" />
                         </div>
 
                     }

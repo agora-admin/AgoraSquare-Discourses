@@ -15,8 +15,8 @@ export const isSpeaker = (data: any, username: string) => {
 }
 
 export const isSpeakerWallet = (data: any, walletAddress: string) => {
-    let s1_address = data.getDiscourseById.speakers[0].address;
-    let s2_address = data.getDiscourseById.speakers[1].address;
+    let s1_address = data.getDiscourseById?.speakers[0].address;
+    let s2_address = data.getDiscourseById?.speakers[1].address;
     return s1_address === walletAddress || s2_address === walletAddress;
 }
 export const speakerConfirmed = (data : Discourse | undefined, username: string) => {   

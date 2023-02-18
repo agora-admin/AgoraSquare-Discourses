@@ -2,7 +2,6 @@ import {useState,useEffect,useContext} from "react"
 import { useQuery } from "@apollo/client"
 import Head from "next/head"
 import { useRouter } from "next/router"
-import Image from 'next/image';
 import Layout from "../../components/layout/Layout"
 import TopBar from "../../components/topbar/TopBar"
 import AppContext from "../../components/utils/AppContext"
@@ -107,7 +106,7 @@ const NFTClaimPage = () => {
                         {
                             error && 
                             <div className='w-full py-4 flex items-center justify-center mt-10'>
-                                <Image className='w-48' src="/404_dis.png" alt="404 not found" />
+                                <img className='w-48' src="/404_dis.png" alt="404 not found" />
                             </div>
                         }
 
@@ -122,7 +121,7 @@ const NFTClaimPage = () => {
 
                                 {/* NFT image */}
                                 <div className="w-[481px] h-[481px] nft-shadow bg-transparent rounded-[52px]">
-                                    <Image src="/discourse_nft1.png" className="" alt="404 not found" />
+                                    <img src="/discourse_nft1.png" className="" alt="404 not found" />
                                 </div>
 
                                 {/* Claim Button */}
