@@ -112,7 +112,7 @@ const UserInfo = () => {
 
                             {
                                 !t_connected &&
-                                <Link href="/link">
+                                <Link legacyBehavior href="/link">
                                     <a className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                         <Twitter_x16 />
                                         <p className="text-xs font-Lexend font-normal text-[#1DA1F2]">Link Twitter</p>
@@ -121,7 +121,7 @@ const UserInfo = () => {
                             }
                             {
                                 t_connected && 
-                                <Link href={`/user/${walletAddress}`} passHref>
+                                <Link legacyBehavior href={`/user/${walletAddress}`} passHref>
                                     <div className="cursor-pointer w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]">
                                         <Twitter_x16 />
                                         <p className="text-xs font-Lexend font-normal text-[#1DA1F2]">@{t_handle}</p>
