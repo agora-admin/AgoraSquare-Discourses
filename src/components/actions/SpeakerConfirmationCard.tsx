@@ -108,7 +108,7 @@ const SpeakerConfirmationCard = ({ data }: { data: any }) => {
     )
 
     const handleConfirmation = async () => {
-        confirmSpeaker.write();
+        confirmSpeaker.write?.();
     }
 
     const handleClick = async () => {
