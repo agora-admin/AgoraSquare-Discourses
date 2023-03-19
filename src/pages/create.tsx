@@ -294,7 +294,7 @@ const CreateDiscoursePage = () => {
                         <div className={optionContainerCSS}>
                             <label className={labelCSS}>type of event</label>
                             <div className="flex items-center gap-3">
-                                <button onClick={() => setIRL(false)} className={"cursor-pointer rounded-lg text-[#7D8B92] font-semibold text-[10px] sm:text-xs border-2 border-[#1E1E1E] px-3 py-2 "+(!irl && "bg-[#D2B4FC] !text-black !font-bold")}>VIRTUAL</button>
+                                <button onClick={() => setIRL(false)} className={"cursor-pointer rounded-lg text-[#7D8B92] font-semibold text-[10px] sm:text-xs border-2 border-[#1E1E1E] px-3 py-2 "+(!irl && "bg-[#D2B4FC] !text-black !font-bold")}>TWITTER SPACES</button>
                                 <button onClick={() => setIRL(true)} className={"cursor-pointer rounded-lg text-[#7D8B92] font-semibold text-[10px] sm:text-xs border-2 border-[#1E1E1E] px-3 py-2 " + (irl && "bg-[#D2B4FC] !text-black !font-bold")}>IRL</button>
                             </div>
 
@@ -334,6 +334,15 @@ const CreateDiscoursePage = () => {
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-zip" className={labelCSS}>Zip Code</label>
                                         <input type="text" ref={eventZipRef} id="event-zip" className="max-w-[585px] input-s" placeholder="Zip Code"/>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                !irl && 
+                                <div className="mt-4 flex flex-col relative max-w-[585px] gap-6">
+                                    <div className={optionContainerCSS}>
+                                        <label htmlFor="datetime-picker" className={labelCSS}>Event Time</label>
+                                        <input type="datetime-local" ref={eventTimeRef} id="datetime-picker" className="max-w-[585px] input-s" placeholder="TimeStamp"/>
                                     </div>
                                 </div>
                             }
