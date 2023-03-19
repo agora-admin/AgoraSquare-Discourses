@@ -20,6 +20,7 @@ import { Discourse, Fund, ToastTypes } from "../../lib/Types";
 import { v4 as uuid } from "uuid";
 import { getChainName, getCurrencyName } from "../../Constants";
 import VenueCard from "../../components/cards/VenueCard";
+import DateCardTwitter from "../../components/cards/DateCardTwitter";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
 
@@ -251,6 +252,23 @@ const DiscoursePage = () => {
                                             <div className="flex-[0.4] md2:flex-auto">
                                                 <VenueCard propId={+discourseData?.getDiscourseById.propId} chainId={+discourseData?.getDiscourseById.chainId} />
                                             </div>
+                                        </>
+                                    }
+                                    {
+                                        !discourseData?.getDiscourseById.irl &&
+                                        <> 
+                                            {/* Divider */}
+                                            <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
+                                            <div className="flex-[0.4] md2:flex-auto">
+                                                <DateCardTwitter propId={+discourseData?.getDiscourseById.propId} chainId={+discourseData?.getDiscourseById.chainId} />
+                                                
+                                            </div>
+                                            <a href="https://twitter.com/agora_square" target="_blank" rel="noreferrer">
+                                            <div className="flex items-center gap-2 max-w-fit md:max-w-none bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
+                                                    <small className="text-xs font-Lexend text-black font-medium">Agora Square Twitter</small>
+                                                    <ArrowCircleRight color="#4F6F7D" variant="Bold" fill="#000"/>
+                                                </div>
+                                            </a>
                                         </>
                                     }
                                 </div>

@@ -1,5 +1,6 @@
 export const supportedChainIds = [
-    137 // Polygon Mainnet
+    137, // Polygon Mainnet
+    80001 //Polygon Testnet
 ]
 
 export const getChainName = (chainId: number | undefined) => {
