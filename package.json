@@ -1,7 +1,7 @@
 {
   "name": "discourses",
   "version": "1.0.0",
-  "repository": "https://github.com/FightSquare/agoraSquare-discourses.git",
+  "repository": "https://github.com/agora-admin/agoraSquare-discourses.git",
   "license": "MIT",
   "private": true,
   "scripts": {
