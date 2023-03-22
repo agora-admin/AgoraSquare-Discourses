@@ -202,7 +202,7 @@ const LivePage = () => {
                         <div className="bg-card p-4 w-full max-w-sm rounded-xl flex flex-col items-center gap-2">
                             <CalendarDoneIcon />
                             <p className="text-white font-Lexend text-sm">Thanks for joining!</p>
-                            <Link href={`/`}>
+                            <Link legacyBehavior href={`/`}>
                                 <a className="text-gradient font-Lexend text-sm">&larr; back</a>
                             </Link>
                         </div>
