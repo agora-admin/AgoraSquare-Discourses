@@ -337,15 +337,6 @@ const CreateDiscoursePage = () => {
                                     </div>
                                 </div>
                             }
-                            {
-                                !irl && 
-                                <div className="mt-4 flex flex-col relative max-w-[585px] gap-6">
-                                    <div className={optionContainerCSS}>
-                                        <label htmlFor="datetime-picker" className={labelCSS}>Event Time</label>
-                                        <input type="datetime-local" ref={eventTimeRef} id="datetime-picker" className="max-w-[585px] input-s" placeholder="TimeStamp"/>
-                                    </div>
-                                </div>
-                            }
                         </div>
                     </div>
 

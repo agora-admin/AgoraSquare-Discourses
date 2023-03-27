@@ -259,10 +259,6 @@ const DiscoursePage = () => {
                                         <> 
                                             {/* Divider */}
                                             <div className="w-full h-[1.5px] sm:w-[3px] sm:h-28 bg-[#1E1E1E]" />
-                                            <div className="flex-[0.4] md2:flex-auto">
-                                                <DateCardTwitter propId={+discourseData?.getDiscourseById.propId} chainId={+discourseData?.getDiscourseById.chainId} />
-                                                
-                                            </div>
                                             <a href="https://twitter.com/agora_square" target="_blank" rel="noreferrer">
                                             <div className="flex items-center gap-2 max-w-fit md:max-w-none bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
                                                     <small className="text-xs font-Lexend text-black font-medium">Agora Square Twitter</small>
