@@ -10,13 +10,13 @@ const getUsername = (user: string) => {
 
 export const isSpeaker = (data: any, username: string) => {
     let s1_username = getUsername(data.speakers[0].username);
-    let s2_username = getUsername(data.speakers[1].username); 
+    let s2_username = getUsername(data.speakers[1].username);
     return s1_username === getUsername(username) || s2_username === getUsername(username);
 }
 
 export const isSpeakerWallet = (data: any, walletAddress: string) => {
-    let s1_address = data.getDiscourseById?.speakers[0].address;
-    let s2_address = data.getDiscourseById?.speakers[1].address;
+    let s1_address = data.speakers[0].address;
+    let s2_address = data.speakers[1].address;
     return s1_address === walletAddress || s2_address === walletAddress;
 }
 export const speakerConfirmed = (data : Discourse | undefined, username: string) => {   
