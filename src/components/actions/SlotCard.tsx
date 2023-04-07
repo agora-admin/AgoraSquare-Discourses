@@ -93,6 +93,7 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
                 slotInput: slotInput
             }
         })
+        location.reload();
     }
 
     return (

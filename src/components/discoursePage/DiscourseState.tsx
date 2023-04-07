@@ -24,10 +24,9 @@ const DiscourseState = ({ discourseData,slotConfirmed }: { discourseData:any,slo
 
         {/* For Scheduling The Discourse */}
         {   
-            discourseConfirmed(discourseData.getDiscourseById) && getStateTS(discourseData.getDiscourseById) === DiscourseStateEnum.SCHEDULING &&
+            discourseConfirmed(discourseData.getDiscourseById) &&  isSpeakerWallet(discourseData.getDiscourseById, walletAddress) && getStateTS(discourseData.getDiscourseById) === DiscourseStateEnum.SCHEDULING &&
             <SlotCard id={discourseData.getDiscourseById.id} propId={+discourseData.getDiscourseById.propId} chainId={+discourseData.getDiscourseById.chainId} endTS={+discourseData.getDiscourseById.endTS} data={discourseData.getSlotById} />
         }
-
         { getStateTS(discourseData.getDiscourseById) === DiscourseStateEnum.SCHEDULED && <JoinMeetStep data={discourseData} slotConfirmed={slotConfirmed}/> }
         <FundClaimStep data={discourseData} />
     </div>

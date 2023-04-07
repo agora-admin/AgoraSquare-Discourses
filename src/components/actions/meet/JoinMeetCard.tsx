@@ -310,7 +310,7 @@ const JoinMeetCard = ({ data }: { data: any }) => {
         </div>
         
         <button disabled={loading} onClick={handleJoinMeet} className="flex items-center gap-2 bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
-            <span className="text-black text-xs font-Lexend font-medium">{loading ? "Please wait..." : "Join"}</span>
+            <span className="text-black text-xs font-Lexend font-medium">{loading ? "Please wait..." : "Mark Attendance"}</span>
             <ArrowCircleRight color="#4F6F7D" variant="Bulk" fill="#000"/>
         </button>
     </div>
