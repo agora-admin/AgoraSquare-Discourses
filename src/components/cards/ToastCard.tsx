@@ -41,7 +41,7 @@ const ToastCard = ({ data, close }: { data: Toast, close: (id: string) => void }
                 { data.type === ToastTypes.wait && <Timer size={16} color="#c6c6c6" /> }
                 <p className={`text-xs font-Lexend ${getTextColor(data.type)}`}>{data.title !== "" ? data.title : getTitle(data.type)}</p>
             </div>
-            <p className="text-[10px] font-Lexend w-full text-[#c6c6c6]">{data.body}</p>
+            <p className="text-[10px] font-Lexend w-full break-words text-[#c6c6c6]">{data.body}</p>
         </div>
     );
 }
