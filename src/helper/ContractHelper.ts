@@ -1,7 +1,7 @@
 export const getContractAddressByChainId = (chainId: number) => {
     switch (chainId) {
         case 80001:
-            return '0xd05655443394E2600E47dFF79CF4D11376988c91'
+            return '0xEC8E35e9db6E0e6D014398c483CccDBcfC8B4904'
         // case 1313161555:
         //     return '0xDdeEa46a3b23Ef146dD9E6338Dd2136fF1a1C8cc'
         // case 4:

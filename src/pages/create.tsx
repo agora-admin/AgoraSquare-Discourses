@@ -45,7 +45,7 @@ let mockD: CreateObj = {
     initTS: "",
     endTS: "",
     topics: [],
-    initialFunding: "1",
+    initialFunding: "0.01",
     confirmationPeriod: 0,
     yt_link: "",
     disable: false,
