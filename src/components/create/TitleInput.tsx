@@ -18,7 +18,7 @@ const TitleInput: FC<Props> = ({ setTitle }) => {
                 setTitle(val);
                 setError("");
             } else if(val !== "") {
-                setError("Error: Discourse with same title exist");
+                setError("Error: A discourse with the same title already exists.");
                 setTitle("");
             }else setError("");
         },

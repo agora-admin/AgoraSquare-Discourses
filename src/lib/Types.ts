@@ -15,11 +15,11 @@ export type CreateObj = {
     yt_link: string;
     disable: boolean;
     irl: boolean;
-    event: Event | null;
+    // event: Event | null;
 }
 
 export type Event = {
-    timestamp: string,
+    // timestamp?: string,
     name: string,
     address: string,
     city: string,

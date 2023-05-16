@@ -163,39 +163,39 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
                     setMinting(false);
                 },
                 onCompleted: (data) => {
-                    if(discourseData.irl){
-                        createEvent({
-                            variables: {
-                                eventInput: {
-                                    discourseId: data.createDiscourse.id,
-                                    eventTimestamp: discourseData.event?.timestamp,
-                                    venue: {
-                                        name: discourseData.event?.name,
-                                        address: discourseData.event?.address,
-                                        city: discourseData.event?.city,
-                                        state: discourseData.event?.state,
-                                        zip: discourseData.event?.zip,
-                                        country: discourseData.event?.country
-                                    }
-                                }
-                            },
-                            onCompleted: (data) => {
-                                setMinting(false);
-                                setFunded(true);
-                            },
-                            onError: (error) => {
-                                console.log(error);
-                                addToast({
-                                    title: "Error Occured",
-                                    body: "Error in registering event. Please contact admin",
-                                    type: ToastTypes.error,
-                                    duration: 6000,
-                                    id: uuid()
-                                })
-                                setMinting(false);
-                            }
-                        })
-                    }
+                    // if(discourseData.irl){
+                    //     createEvent({
+                    //         variables: {
+                    //             eventInput: {
+                    //                 discourseId: data.createDiscourse.id,
+                    //                 // eventTimestamp: discourseData.event?.timestamp,
+                    //                 venue: {
+                    //                     name: discourseData.event?.name,
+                    //                     address: discourseData.event?.address,
+                    //                     city: discourseData.event?.city,
+                    //                     state: discourseData.event?.state,
+                    //                     zip: discourseData.event?.zip,
+                    //                     country: discourseData.event?.country
+                    //                 }
+                    //             }
+                    //         },
+                    //         onCompleted: (data) => {
+                    //             setMinting(false);
+                    //             setFunded(true);
+                    //         },
+                    //         onError: (error) => {
+                    //             console.log(error);
+                    //             addToast({
+                    //                 title: "Error Occured",
+                    //                 body: "Error in registering event. Please contact admin",
+                    //                 type: ToastTypes.error,
+                    //                 duration: 6000,
+                    //                 id: uuid()
+                    //             })
+                    //             setMinting(false);
+                    //         }
+                    //     })
+                    // }
                     setDiscourseId(data.createDiscourse.id);
                 }
             })

@@ -15,12 +15,12 @@ const VenueCard: FC<Props> = ({ chainId, propId }) => {
 
     return (
         <div className="flex flex-col gap-2">
-            <small className="text-[#7D8B92] font-Lexend font-semibold">venue & date</small> 
+            <small className="text-[#7D8B92] font-Lexend font-semibold">venue</small> 
             {data && !loading && !error && <>
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                     <p className="text-xs text-[#fff]">{formatDate(new Date(data.getEvent?.eventTimestamp))} , {getDayFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
                     <p className="text-xs text-[#fff]">{getTimeFromDate(new Date(data.getEvent?.eventTimestamp))}</p>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col">
                     <p className="text-xs text-[#fff]">{data.getEvent?.venue.name}</p>

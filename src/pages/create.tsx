@@ -50,7 +50,7 @@ let mockD: CreateObj = {
     yt_link: "",
     disable: false,
     irl: false,
-    event: null,
+    // event: null,
 }
 
 const labelCSS = "text-[14px] text-[#E5F7FFE5] font-semibold capitalize";
@@ -171,15 +171,15 @@ const CreateDiscoursePage = () => {
             yt_link: "",
             disable: false,
             irl,
-            event: {
-                timestamp: eventTimeRef.current?.value as string,
-                name: eventNameRef.current?.value as string,
-                address: eventAddressRef.current?.value as string,
-                city: eventCityRef.current?.value as string,
-                state: eventStateRef.current?.value as string,
-                country: eventCountryRef.current?.value as string,
-                zip: eventZipRef.current?.value as string
-            }
+            // event: {
+            //     // timestamp: eventTimeRef.current?.value as string,
+            //     name: eventNameRef.current?.value as string,
+            //     address: eventAddressRef.current?.value as string,
+            //     city: eventCityRef.current?.value as string,
+            //     state: eventStateRef.current?.value as string,
+            //     country: eventCountryRef.current?.value as string,
+            //     zip: eventZipRef.current?.value as string
+            // }
         }
         return data;
     }
@@ -298,45 +298,45 @@ const CreateDiscoursePage = () => {
                                 <button onClick={() => setIRL(true)} className={"cursor-pointer rounded-lg text-[#7D8B92] font-semibold text-[10px] sm:text-xs border-2 border-[#1E1E1E] px-3 py-2 " + (irl && "bg-[#D2B4FC] !text-black !font-bold")}>IRL</button>
                             </div>
 
-                            {
-                                irl && 
+                            {/* {
+                                irl &&
                                 <div className="mt-4 flex flex-col relative max-w-[585px] gap-6">
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="datetime-picker" className={labelCSS}>Event Time</label>
-                                        <input type="datetime-local" ref={eventTimeRef} id="datetime-picker" className="max-w-[585px] input-s" placeholder="TimeStamp"/>
+                                        <input type="datetime-local" ref={eventTimeRef} id="datetime-picker" className="max-w-[585px] input-s" placeholder="TimeStamp" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-name" className={labelCSS}>Event Name</label>
-                                        <input type="text" ref={eventNameRef} id="event-name" className="max-w-[585px] input-s" placeholder="Event Name"/>
+                                        <input type="text" ref={eventNameRef} id="event-name" className="max-w-[585px] input-s" placeholder="Event Name" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-address" className={labelCSS}>Address</label>
-                                        <input type="text" ref={eventAddressRef} id="event-address" className="max-w-[585px] input-s" placeholder="Event Address"/>
+                                        <input type="text" ref={eventAddressRef} id="event-address" className="max-w-[585px] input-s" placeholder="Event Address" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-city" className={labelCSS}>City</label>
-                                        <input type="text" ref={eventCityRef} id="event-city" className="max-w-[585px] input-s" placeholder="City"/>
+                                        <input type="text" ref={eventCityRef} id="event-city" className="max-w-[585px] input-s" placeholder="City" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-state" className={labelCSS}>State</label>
-                                        <input type="text" ref={eventStateRef} id="event-state" className="max-w-[585px] input-s" placeholder="State"/>
+                                        <input type="text" ref={eventStateRef} id="event-state" className="max-w-[585px] input-s" placeholder="State" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-country" className={labelCSS}>Country</label>
-                                        <input type="text" ref={eventCountryRef} id="event-country" className="max-w-[585px] input-s" placeholder="Country"/>
+                                        <input type="text" ref={eventCountryRef} id="event-country" className="max-w-[585px] input-s" placeholder="Country" />
                                     </div>
 
                                     <div className={optionContainerCSS}>
                                         <label htmlFor="event-zip" className={labelCSS}>Zip Code</label>
-                                        <input type="text" ref={eventZipRef} id="event-zip" className="max-w-[585px] input-s" placeholder="Zip Code"/>
+                                        <input type="text" ref={eventZipRef} id="event-zip" className="max-w-[585px] input-s" placeholder="Zip Code" />
                                     </div>
                                 </div>
-                            }
+                            } */}
                         </div>
                     </div>
 

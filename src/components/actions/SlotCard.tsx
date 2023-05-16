@@ -61,6 +61,9 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
                     chainId: chainId,
                     slots: slotsData
                 }
+            },
+            onCompleted: () => {
+                location.reload();
             }
         })
         
@@ -91,9 +94,12 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
         proposeSlots({
             variables: {
                 slotInput: slotInput
+            },
+            onCompleted: () => {
+
+                location.reload();
             }
         })
-        location.reload();
     }
 
     return (

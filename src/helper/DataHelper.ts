@@ -69,7 +69,7 @@ export const getStateTS = (data: any) => {
     }
 
     if(discourseConfirmed(data)){
-        if(data.discourse.room_id) {
+        if(data.discourse.meet_date) {
             if (isPast(getMeetDateTS(data))) {
                 return DiscourseStateEnum.ONGOING
             } else {
