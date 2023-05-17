@@ -21,7 +21,7 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
         if (speakers.length >= 2) {
             const speaker = speakers.find((s: any) => s.username === t_handle);
             
-            if (speaker && (speaker.address === walletAddress)) {
+            if (speaker && (speaker.address === walletAddress)) {                
                 return true;
             }
         }
@@ -133,7 +133,6 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
                     onCompleted: (data) => {
                         console.log("setWalletAddress Completed: ",data);
                         location.reload();
-                        handleConfirmation();   
                     },
                     onError: (error) => {
                         console.log('Something went wrong', error);
@@ -170,16 +169,32 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
                     <ProfileCircle size="50" color="#84B9D1" variant="Bulk" />
                 </div>
 
+                { !isSpeakerAddressSet(discourseData.speakers) &&
                 <div className="flex flex-col">
-                    <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation</h4>
+                    <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation Step 1 of 2</h4>
                     <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">Connect your wallet with your twitter account and confirm your participation before <span className="font-semibold underline">{formatDate(getTime(discourseData.endTS))} • {getTimeFromDate(getTime(discourseData.endTS))}</span></small>
                 </div>
+                }
+                { isSpeakerAddressSet(discourseData.speakers) &&
+                <div className="flex flex-col">
+                    <h4 className="text-[#84B9D1] mobile:text-center font-bold text-[13px]">Speaker Confirmation Step 2 of 2</h4>
+                    <small className="text-[11px] text-[#E5F7FFE5] mobile:text-center font-semibold">Please confirm transaction from your wallet to complete speaker confirmation</small>
+                </div>
+                }
             </div>
             
+            { !isSpeakerAddressSet(discourseData.speakers) &&
             <button disabled={loading} onClick={handleClick} className="flex items-center gap-2 bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
                 <span className="text-black text-xs font-Lexend font-medium">{loading ? "Please wait..." : "Confirm"}</span>
                 <ArrowCircleRight color="#4F6F7D" variant="Bulk" fill="#000"/>
             </button>
+            }
+            { isSpeakerAddressSet(discourseData.speakers) &&
+            <button disabled={loading} onClick={handleClick} className="flex items-center gap-2 bg-[#84B9D1] rounded-2xl p-3 cursor-pointer">
+                <span className="text-black text-xs font-Lexend font-medium">{loading ? "Please wait..." : "Confirm Transaction"}</span>
+                <ArrowCircleRight color="#4F6F7D" variant="Bulk" fill="#000"/>
+            </button>
+            }
         </div>
     );
 }
