@@ -75,6 +75,13 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
 
     const handleEventSubmitScheduler = () => {
         if (eventNameRef.current?.value != "" && eventAddressRef.current?.value != "" && eventCityRef.current?.value != "" && eventStateRef.current?.value != "" && eventCountryRef.current?.value != "" && eventZipRef.current?.value != "") {
+            addToast({
+                title: "Please Wait",
+                body: "Waiting for form to submit.",
+                type: ToastTypes.wait,
+                duration: 6000,
+                id: uuid()
+            })
             createNewEvent({
                 variables: {
                     eventInput: {
@@ -91,13 +98,6 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                     }
                 },
                 onCompleted: () => {
-                    addToast({
-                        title: "Please Wait",
-                        body: "Waiting for form to submit.",
-                        type: ToastTypes.wait,
-                        duration: 6000,
-                        id: uuid()
-                    })
                     location.reload();
                 }
             })
@@ -108,6 +108,13 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
     }
 
     const handleVirtualScheduled = () => {
+        addToast({
+            title: "Please Wait",
+            body: "Waiting for form to submit.",
+            type: ToastTypes.wait,
+            duration: 6000,
+            id: uuid()
+        })
         const dateString = eventTimeRef.current?.value as any;
         const date = new Date(dateString);
         console.log(date);
@@ -140,13 +147,6 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                         }
                     },
                     onCompleted: () => {
-                        addToast({
-                            title: "Please Wait",
-                            body: "Waiting for form to submit.",
-                            type: ToastTypes.wait,
-                            duration: 6000,
-                            id: uuid()
-                        })
                         location.reload();
                     }
                 })
@@ -157,6 +157,13 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
     const handleEventSubmit = () => {
         // setNewEvent(getData());
         if (eventTimeRef.current?.value != "" && eventNameRef.current?.value != "" && eventAddressRef.current?.value != "" && eventCityRef.current?.value != "" && eventStateRef.current?.value != "" && eventCountryRef.current?.value != "" && eventZipRef.current?.value != "") {
+            addToast({
+                title: "Please Wait",
+                body: "Waiting for form to submit.",
+                type: ToastTypes.wait,
+                duration: 6000,
+                id: uuid()
+            })
             const dateString = eventTimeRef.current?.value as any;
             const date = new Date(dateString);
             console.log(date);
@@ -205,13 +212,6 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                                     }
                                 },
                                 onCompleted: () => {
-                                    addToast({
-                                        title: "Please Wait",
-                                        body: "Waiting for form to submit.",
-                                        type: ToastTypes.wait,
-                                        duration: 6000,
-                                        id: uuid()
-                                    })
                                     location.reload();
                                 }
                             })

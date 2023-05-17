@@ -132,6 +132,7 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
                     },
                     onCompleted: (data) => {
                         console.log("setWalletAddress Completed: ",data);
+                        location.reload();
                         handleConfirmation();   
                     },
                     onError: (error) => {
