@@ -31,7 +31,8 @@
     "twitter-lite": "^1.1.0",
     "uuidv4": "^6.2.13",
     "wagmi": "^0.10.10",
-    "web3": "^1.8.1"
+    "web3": "^1.8.1",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.2",

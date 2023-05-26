@@ -67,7 +67,7 @@ const Home: NextPage = () => {
 						{
 							dError &&
 							<div className='absolute inset-0 top-10 w-full py-4 flex items-center justify-center'>
-								<p className='text-white/30 text-sm'>Error gettting Discourses</p>
+								<p className='text-white/30 text-sm'>Error Getting Discourses...</p>
 							</div>
 						}
 					</div>
