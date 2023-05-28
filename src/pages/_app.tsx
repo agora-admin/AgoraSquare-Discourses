@@ -5,7 +5,7 @@ import { useApollo } from '../lib/apollo'
 import { SessionProvider } from 'next-auth/react'
 import { HMSRoomProvider } from '@100mslive/react-sdk';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { polygon,polygonMumbai } from 'wagmi/chains'
+import { polygon,polygonMumbai, bsc } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -18,7 +18,7 @@ import { rpcUrl } from '../Constants'
 import Script from 'next/script'
 
 const { provider, chains, webSocketProvider } = configureChains(
-  [ polygonMumbai,polygon ],
+  [ polygonMumbai,polygon, bsc ],
   [
     alchemyProvider({ apiKey: 'Gqd71GlllOjZhCCq1FjqzKofdLig5Tww' }),
     jsonRpcProvider({

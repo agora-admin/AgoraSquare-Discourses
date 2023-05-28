@@ -1,5 +1,7 @@
 export const supportedChainIds = [
-    137 // Polygon Mainnet
+    137, // Polygon Mainnet
+    56, //Binance Smart Chain
+    // 80001
 ]
 
 export const getChainName = (chainId: number | undefined) => {
@@ -10,6 +12,8 @@ export const getChainName = (chainId: number | undefined) => {
             return 'Polygon'
         case 71401:
             return 'Godwoken Testnet'
+        case 56:
+            return 'Binance Smart Chain'
         default:
             return 'Unknown'
     }
@@ -22,6 +26,8 @@ export const getCurrencyName = (chainId: number) => {
             return 'matic'
         case 71401:
             return 'pCKB'
+        case 56:
+            return 'BNB'
         default:
             return 'eth'
     }
@@ -35,6 +41,8 @@ export const rpcUrl = (chainId: number) => {
             return { http: "https://polygon-mumbai.g.alchemy.com/v2/ksqleRX25aRSLQ9uawfAwVTlQ8gKLULj" }
         case 71401:
             return { http: "https://godwoken-testnet-v1.ckbapp.dev" }
+        case 56:
+            return { http: "https://bsc-dataseed.binance.org" }
         default:
             return null;
 

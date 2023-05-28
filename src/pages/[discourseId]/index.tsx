@@ -92,6 +92,8 @@ const DiscoursePage = () => {
                 return "https://mumbai.polygonscan.com/tx/"+discourseData?.getDiscourseById.txnHash;
             case 71401:
                 return "https://v1.testnet.gwscan.com/tx/"+discourseData?.getDiscourseById.txnHash;
+            case 56:
+                return "https://bscscan.com/tx/"+discourseData?.getDiscourseById.txnHash;
             default:
                 return "https://etherscan.io/tx/"+discourseData?.getDiscourseById.txnHash;
         }
