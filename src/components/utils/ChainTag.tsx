@@ -1,5 +1,5 @@
 import { Box2 } from "iconsax-react";
-import { Polygon16 } from "./SvgHub";
+import { Polygon16, BNBSmartChain } from "./SvgHub";
 
 const ChainTag = ({ chainId, chainName }: { chainId: number, chainName? : string }) => {
     if (chainId === 137) {
@@ -10,6 +10,14 @@ const ChainTag = ({ chainId, chainName }: { chainId: number, chainName? : string
             </div>
         );
         
+    }
+    if(chainId === 56 ) {
+        return (
+            <div className="flex items-center bg-[#7B3FE4]/20 rounded-lg px-2 py-1 transition-all">
+                <BNBSmartChain />
+                <p className="text-[10px] font-medium text-[#7B3FE4] font-Lexend ml-2 mr-1">{chainName ? chainName : 'BNB Smart Chain'}</p>
+            </div>
+        );
     }
 
     return (
@@ -38,6 +46,14 @@ export const IChainTag = ({ chainId }: { chainId: number }) => {
         );
     }
 
+    if(chainId === 56 ) {
+        return (
+            <div className="relative h-max flex justify-center p-[4px] items-center border border-[#212427] bg-[#141515] rounded-lg transition-all">
+                <BNBSmartChain />
+            </div>
+        );
+    }
+
     return (
         <div className="relative h-max flex justify-center p-[4px] items-center border border-[#212427] bg-[#141515] rounded-lg transition-all">
             <Box2 size={16} color="#c6c6c6" />
@@ -50,6 +66,8 @@ export const ChainIcon = ({chainId,size}:{chainId: number,size?: number}) => {
         case 80001:
         case 137:
             return <Polygon16 size={size} />
+        case 56:
+            return <BNBSmartChain size={size} />
         default:
             return <Box2 size={16} color="#c6c6c6" />
     }
