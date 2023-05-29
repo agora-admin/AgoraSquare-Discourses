@@ -1,7 +1,7 @@
 export const supportedChainIds = [
     137, // Polygon Mainnet
     56, //BNB Smart Chain
-    80001
+    // 80001
 ]
 
 export const getChainName = (chainId: number | undefined) => {
