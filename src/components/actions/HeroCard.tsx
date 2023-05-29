@@ -34,7 +34,7 @@ const HeroCard = () => {
     }
 
     const getChainVersion = () => {
-        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401) || supportedChainIds.includes(56)){
+        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401)){
             return "mainnet"
         }else {
             return "testnet"
@@ -42,7 +42,7 @@ const HeroCard = () => {
     }
 
     const getChainVersionLink = () => {
-        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401) || supportedChainIds.includes(56)){
+        if(supportedChainIds.includes(80001) || supportedChainIds.includes(71401)){
             return "https://discourses.agorasquare.xyz"
         }else {
             return "https://testnet.discourses.agorasquare.xyz"

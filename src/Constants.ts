@@ -1,7 +1,7 @@
 export const supportedChainIds = [
     137, // Polygon Mainnet
-    56, //Binance Smart Chain
-    // 80001
+    56, //BNB Smart Chain
+    80001
 ]
 
 export const getChainName = (chainId: number | undefined) => {
@@ -13,7 +13,7 @@ export const getChainName = (chainId: number | undefined) => {
         case 71401:
             return 'Godwoken Testnet'
         case 56:
-            return 'Binance Smart Chain'
+            return 'BNB Smart Chain'
         default:
             return 'Unknown'
     }
