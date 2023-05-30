@@ -9,6 +9,7 @@ import { Toast, ToastTypes } from "../../lib/Types";
 import ToastCard from "../cards/ToastCard";
 import LoadingScreen from "../screens/LoadingScreen";
 import AppContext from "./AppContext";
+import { usePersistedTokenStore } from "../../userToken";
 
 interface Props {
     children: ReactNode;
@@ -25,6 +26,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     const [propId, setPropId] = useState(0);
     const [timeStamp, setTimeStamp] = useState("");
     const [toasts, setToasts] = useState<Toast[]>([]);
+    const token = usePersistedTokenStore(state => state.token);
 
     const {connector: activeConnector,status} = useAccount();
 
@@ -105,6 +107,11 @@ const ContextWrapper: FC<Props> = ({ children }) => {
                 } else {
                     console.log('data undefined');
                 }
+            },
+            context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
             },
             onError: (error) => {
                 setLoggedIn(false);

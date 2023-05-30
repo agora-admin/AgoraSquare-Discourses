@@ -8,6 +8,7 @@ import uauth from "../../web3/Connectors";
 import MobileConnectWallet from "../topbar/MobileConnectWallet";
 import AppContext from "../utils/AppContext";
 import { MetamaskIcon, NullWalletIcon, UnstoppableIcon, WalletConnectIcon, WalletIcon } from "../utils/SvgHub";
+import { usePersistedTokenStore } from "../../userToken";
 
 const ConnectWalletButton = () => {
     const { refresh, loggedIn,setUnstoppableLoggedIn,setUnstoppableUser } = useContext(AppContext);
@@ -35,6 +36,8 @@ const ConnectWalletButton = () => {
 
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
 
+    const setToken = usePersistedTokenStore(state => state.setToken);
+
 	const { refetch } = useQuery(GET_USERDATA);
     const [getNonce] = useLazyQuery(GET_NONCE, {
         fetchPolicy: "no-cache",
@@ -46,7 +49,8 @@ const ConnectWalletButton = () => {
     });
 	const [verifySig] = useMutation(VERIFY_SIG, {
 		fetchPolicy: 'no-cache',
-		onCompleted: () => {
+		onCompleted: (data: any) => {
+            setToken(data.verifySignature.token);
             refresh();
 		},
 		onError: (error) => {
