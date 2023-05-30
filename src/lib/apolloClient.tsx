@@ -10,6 +10,7 @@ export default function createApolloClient() {
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': 'https://discourses.agorasquare.xyz/',
             'Authorization': 'Bearer ' + Cookies.get('jwt')
         }
     });
