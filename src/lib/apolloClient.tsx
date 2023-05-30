@@ -9,7 +9,6 @@ export default function createApolloClient() {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': 'true',
             'Authorization': 'Bearer ' + Cookies.get('jwt')
         }
     });
