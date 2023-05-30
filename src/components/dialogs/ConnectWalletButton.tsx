@@ -36,7 +36,7 @@ const ConnectWalletButton = () => {
 
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
 
-    const setToken = usePersistedTokenStore(state => state.setToken);
+    const { token, setToken } = usePersistedTokenStore(state => ({token: state.token, setToken: state.setToken}));
 
 	const { refetch } = useQuery(GET_USERDATA);
     const [getNonce] = useLazyQuery(GET_NONCE, {
@@ -53,6 +53,11 @@ const ConnectWalletButton = () => {
             setToken(data.verifySignature.token);
             refresh();
 		},
+        context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
+            },
 		onError: (error) => {
 			console.log(error);
             refresh();
