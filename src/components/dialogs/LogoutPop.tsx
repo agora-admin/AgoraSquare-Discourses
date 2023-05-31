@@ -11,6 +11,7 @@ import { ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
 import { ChainIcon, IChainTag } from "../utils/ChainTag";
 import { Twitter_x16 } from "../utils/SvgHub";
+import { usePersistedTokenStore } from "../../userToken";
 
 const LogoutPop = () => {
 
@@ -26,9 +27,11 @@ const LogoutPop = () => {
         watch: true
     });
 
+    const setToken = usePersistedTokenStore(state => state.setToken);
+
     const handleLogout = async () => {
         disconnectAsync().then(() => {
-            Cookies.remove('jwt');
+            setToken("");
             refresh();
         }).catch(err => {
             console.log(err);

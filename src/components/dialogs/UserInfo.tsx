@@ -11,6 +11,7 @@ import { ToastTypes } from "../../lib/Types";
 import AppContext from "../utils/AppContext";
 import { Twitter_x16 } from "../utils/SvgHub";
 import uauth from "../../web3/Connectors";
+import { usePersistedTokenStore } from "../../userToken";
 
 const UserInfo = () => {
     const { disconnectAsync } = useDisconnect();
@@ -25,6 +26,8 @@ const UserInfo = () => {
         watch: true
     });
 
+    const setToken = usePersistedTokenStore(state => state.setToken);
+
     const handleLogout = async () => {
         if(unstoppableLoggedIn){
             await uauth.logout()
@@ -33,7 +36,7 @@ const UserInfo = () => {
             console.log('Logged out with Unstoppable')
         }else{
             disconnectAsync().then(() => {
-                Cookies.remove('jwt');
+                setToken("");
                 refresh();
             }).catch(err => {
                 console.log(err);

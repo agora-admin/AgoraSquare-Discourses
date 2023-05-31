@@ -27,12 +27,13 @@ const ContextWrapper: FC<Props> = ({ children }) => {
     const [timeStamp, setTimeStamp] = useState("");
     const [toasts, setToasts] = useState<Toast[]>([]);
     const token = usePersistedTokenStore(state => state.token);
+    const setToken = usePersistedTokenStore(state => state.setToken);
 
     const {connector: activeConnector,status} = useAccount();
 
     useEffect(() => {
         if (!activeConnector && status !== "reconnecting" && status !== "connecting") {
-            Cookies.remove("jwt");
+            setToken("");
             setWalletAddress("");
             setLoggedIn(false);
         }
@@ -45,7 +46,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
                 duration: 5000,
                 id: uuid()
             })
-            Cookies.remove("jwt");
+            setToken("");
             setWalletAddress("");
             setLoggedIn(false);
         }

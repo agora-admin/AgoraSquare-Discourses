@@ -11,6 +11,7 @@ import { LINK_TWITTER } from "../lib/mutations";;
 import { shortAddress } from "../helper/StringHelper";
 import WalletOptionsLink from "../components/dialogs/WalletOptionsLink";
 import AppContext from "../components/utils/AppContext";
+import { usePersistedTokenStore } from "../userToken";
 
 const InvitePage = () => {
     const route = useRouter();
@@ -19,13 +20,30 @@ const InvitePage = () => {
     const [duplicateHandle, setDuplicateHandle] = useState(false);
     const [alreadyLinked, setAlreadyLinked] = useState(false);
     const [accountLinked, setAccountLinked] = useState(false);
+    const token = usePersistedTokenStore(state => state.token);
     const [checkTwitterLink, { data: tData, loading: tLoading, error: tError }] = useLazyQuery(CHECK_HANDLE, {
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
     const [ linkTwitter, { data: linkData, loading: linkLoading, error: linkError }] = useMutation(LINK_TWITTER, {
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
-    const [getUserData, { data: uData }] = useLazyQuery(GET_USERDATA);
+    const [getUserData, { data: uData }] = useLazyQuery(GET_USERDATA, {
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
+    });
 
     const { data: session } = useSession();
 

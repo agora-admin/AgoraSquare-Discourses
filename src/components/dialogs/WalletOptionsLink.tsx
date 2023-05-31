@@ -45,12 +45,7 @@ const WalletOptionsLink = () => {
             if (data && !loggedIn) {
                 signAndVerify(data.getNonce.nonce);
             }
-        },
-        context: { 
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            } 
-        },
+        }
     });
 	const [verifySig] = useMutation(VERIFY_SIG, {
 		fetchPolicy: 'no-cache',
