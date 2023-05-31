@@ -5,10 +5,12 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { PARTICIPATE } from "../../lib/mutations";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import AppContext from "../utils/AppContext";
+import { usePersistedTokenStore } from "../../userToken";
 
 const ParticipateCard = ({ data }: {data : any}) => {
     const [ email, setEmail ] = useState('');
     const { loggedIn, walletAddress } = useContext(AppContext);
+    const token = usePersistedTokenStore(state => state.token);
 
     const [participate, { data: participateData, loading: participateLoading, error: participateError }] = useMutation(PARTICIPATE);
 
@@ -46,7 +48,12 @@ const ParticipateCard = ({ data }: {data : any}) => {
                     onCompleted: (data) => {
                         setEdit(false);
                         refetch();
-                    }
+                    },
+                    context: { 
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        } 
+                    },
                 })
                 //participate
             } else {

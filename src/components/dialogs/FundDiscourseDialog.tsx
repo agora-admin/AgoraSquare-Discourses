@@ -17,6 +17,7 @@ import { ToastTypes } from '../../lib/Types';
 import { getChainName, getCurrencyName } from '../../Constants';
 import { ArrowCircleRight, CloseCircle, TickSquare } from 'iconsax-react';
 import abi from '../../web3/abi/DiscourseHub.json';
+import { usePersistedTokenStore } from '../../userToken';
 
 const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, discourse: any }) => {
     let buttonRef = useRef(null);
@@ -28,6 +29,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
     const [ amount, setAmount ] = useState('1.0');
     const [acceptTerms,setAcceptTerms] = useState(false);
     const { chain } = useNetwork();
+    const token = usePersistedTokenStore(state => state.token);
     
     const [ updateFund ] = useMutation(FUND_UPDATE);
 
@@ -93,6 +95,11 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                 setFunded(true);
                 fetchD();
                 fund.reset();
+            },
+            context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
             },
             onError: (error) => {
                 console.log(error);

@@ -18,7 +18,8 @@ import { getCurrencyName, supportedChainIds } from '../../Constants';
 import { CreateObj, ToastTypes } from '../../lib/Types';
 import { v4 as uuid } from 'uuid';
 import { CloseCircle, TickSquare } from 'iconsax-react';
-import abi from '../../web3/abi/DiscourseHub.json'
+import abi from '../../web3/abi/DiscourseHub.json';
+import { usePersistedTokenStore } from '../../userToken';
 
 interface Props {
     open: boolean;
@@ -40,10 +41,16 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
     const route = useRouter();
 
     const [refetch] = useLazyQuery(GET_DISCOURSES);
+    const token = usePersistedTokenStore(state => state.token);
     const [createDiscourse, { data: cData }] = useMutation(CREATE_DISCOURSE, {
         onCompleted: (data) => {
             refetch();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
     const [createEvent] = useMutation(CREATE_EVENT)
 

@@ -11,11 +11,13 @@ import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { ArrowCircleRight, ProfileCircle } from "iconsax-react";
 import abi from '../../web3/abi/DiscourseHub.json';
+import { usePersistedTokenStore } from "../../userToken";
 
 const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
     const [loading, setLoading] = useState(false);
     const { walletAddress, t_handle, addToast } = useContext(AppContext);
     const { chain } = useNetwork();
+    const token = usePersistedTokenStore(state => state.token);
 
     const isSpeakerAddressSet = (speakers: any) => {
         if (speakers.length >= 2) {
@@ -91,6 +93,11 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
                         })
                         refetch();
                     },
+                    context: { 
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        } 
+                    },
                     onError: (error) => {
                         setLoading(false);
                         addToast({
@@ -133,6 +140,11 @@ const SpeakerConfirmationCard = ({ discourseData }: { discourseData: any }) => {
                     onCompleted: (data) => {
                         console.log("setWalletAddress Completed: ",data);
                         location.reload();
+                    },
+                    context: { 
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        } 
                     },
                     onError: (error) => {
                         console.log('Something went wrong', error);

@@ -8,6 +8,7 @@ import uauth from "../../web3/Connectors";
 import MobileConnectWallet from "../topbar/MobileConnectWallet";
 import AppContext from "../utils/AppContext";
 import { AgoraBtnIcon, MetamaskIcon, NullWalletIcon, UnstoppableIcon, WalletConnectIcon, WalletIcon } from "../utils/SvgHub";
+import { usePersistedTokenStore } from "../../userToken";
 
 const WalletOptionsLink = () => {
     const { refresh, loggedIn,setUnstoppableLoggedIn,setUnstoppableUser } = useContext(AppContext);
@@ -34,6 +35,8 @@ const WalletOptionsLink = () => {
     const { data: smData, signMessageAsync } = useSignMessage();
 
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
+    
+    const token = usePersistedTokenStore(state => state.token);
 
 	const { refetch } = useQuery(GET_USERDATA);
     const [getNonce] = useLazyQuery(GET_NONCE, {
@@ -42,7 +45,12 @@ const WalletOptionsLink = () => {
             if (data && !loggedIn) {
                 signAndVerify(data.getNonce.nonce);
             }
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     });
 	const [verifySig] = useMutation(VERIFY_SIG, {
 		fetchPolicy: 'no-cache',

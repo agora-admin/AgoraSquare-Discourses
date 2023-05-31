@@ -13,6 +13,7 @@ import { getChainName } from "../../../Constants";
 import { ToastTypes } from "../../../lib/Types";
 import abi from '../../../web3/abi/DiscourseHub.json';
 import { isPast } from "../../../helper/TimeHelper";
+import { usePersistedTokenStore } from "../../../userToken";
 
 const JoinMeetCardIrl = ({ data }: { data: any }) => {
     const route = useRouter();
@@ -20,6 +21,7 @@ const JoinMeetCardIrl = ({ data }: { data: any }) => {
     const { addToast, walletAddress, setMPropId, setMTimeStamp, timeStamp, propId } = useContext(AppContext);
     const [loading, setLoading] = useState(false);
     const { chain } = useNetwork();
+    const tokenJWT = usePersistedTokenStore(state => state.token);
 
     var d = data.discourse
     const isMeetHappening = () => {
@@ -38,7 +40,12 @@ const JoinMeetCardIrl = ({ data }: { data: any }) => {
                 const token = Cookies.get('meetToken') + "";
                 setToken(token);
             }
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + tokenJWT,
+            } 
+        },
     })
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {
@@ -55,7 +62,12 @@ const JoinMeetCardIrl = ({ data }: { data: any }) => {
         onCompleted: () => {
             refetch();
             joinMeet();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + tokenJWT,
+            } 
+        },
     })
 
     const [raiseD] = useMutation(RAISE_DISPUTE, {
@@ -72,7 +84,12 @@ const JoinMeetCardIrl = ({ data }: { data: any }) => {
                 duration: 5000,
                 id: uuid()
             })
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + tokenJWT,
+            } 
+        },
     })
 
     const speakerEntered = () => {

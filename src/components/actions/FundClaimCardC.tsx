@@ -12,12 +12,14 @@ import { getChainName } from "../../Constants";
 import { ToastTypes } from "../../lib/Types";
 import { getContractAddressByChainId } from "../../helper/ContractHelper";
 import abi from "../../web3/abi/DiscourseHub.json";
+import { usePersistedTokenStore } from "../../userToken";
 
 const FundClaimCardC = ({ data }: { data: any }) => {
 
     const [loading, setLoading] = useState(false);
     const { loggedIn, walletAddress, addToast } = useContext(AppContext);
     const { chain } = useNetwork();
+    const token = usePersistedTokenStore(state => state.token);
 
     const [fundWithdrawn] = useMutation(FUND_WITHDRAWN, {
         variables: {
@@ -33,7 +35,12 @@ const FundClaimCardC = ({ data }: { data: any }) => {
                 duration: 5000,
                 id: uuid()
             })
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {

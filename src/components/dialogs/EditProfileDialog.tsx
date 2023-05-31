@@ -5,6 +5,7 @@ import {  useMutation } from "@apollo/client";
 import { UPDATE_BIO, UPDATE_NAME } from "../../lib/mutations";
 import AppContext from "../utils/AppContext";
 import {useContext} from 'react';
+import { usePersistedTokenStore } from "../../userToken";
 
 const EditProfileDialog = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     console.log("EditProfileDialog: Re Rendered");
@@ -14,6 +15,7 @@ const EditProfileDialog = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: 
     const nameInputRef = useRef<HTMLInputElement>(null)
 
     const { bio,name } = useContext(AppContext);
+    const token = usePersistedTokenStore(state => state.token);
 
     const {refresh} = useContext(AppContext)
     const [updateBio] = useMutation(UPDATE_BIO)
@@ -31,7 +33,12 @@ const EditProfileDialog = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: 
                 },
                 onCompleted(){
                     refresh()
-                }
+                },
+                context: { 
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    } 
+                },
             })
         
 
@@ -42,7 +49,12 @@ const EditProfileDialog = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: 
                 },
                 onCompleted(){
                     refresh()
-                }
+                },
+                context: { 
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    } 
+                },
             })
         }
         

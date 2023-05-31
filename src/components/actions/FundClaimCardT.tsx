@@ -11,6 +11,7 @@ import { ToastTypes } from "../../lib/Types";
 import { v4 as uuid } from "uuid";
 import { getContractAddressByChainId } from "../../helper/ContractHelper";
 import abi from '../../web3/abi/DiscourseHub.json';
+import { usePersistedTokenStore } from "../../userToken";
 
 const FundClaimCardT = ({ data }: { data: any }) => {
 
@@ -18,6 +19,7 @@ const FundClaimCardT = ({ data }: { data: any }) => {
     const [needTermination, setNeedTermination] = useState(false);
     const { loggedIn, walletAddress, addToast } = useContext(AppContext);
     const { chain } = useNetwork();
+    const token = usePersistedTokenStore(state => state.token);
 
     const [terminateProposal] = useMutation(TERMINATE_PROPOSAL, {
         variables: {
@@ -33,6 +35,11 @@ const FundClaimCardT = ({ data }: { data: any }) => {
                 duration: 5000,
                 id: uuid()
             })
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
         },
         onError: (error) => {
             console.log(error);
@@ -61,7 +68,12 @@ const FundClaimCardT = ({ data }: { data: any }) => {
                 duration: 5000,
                 id: uuid()
             })
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     const [refetch] = useLazyQuery(GET_DISCOURSE_BY_ID, {

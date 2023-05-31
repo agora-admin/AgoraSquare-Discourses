@@ -14,7 +14,7 @@ import { GET_EVENT, GET_DISCOURSE_BY_ID } from '../../lib/queries';
 import { v4 as uuid } from "uuid";
 import { formatDate, getTimeFromDate } from "../../helper/TimeHelper"
 import { SlotCalendarIcon } from "../utils/SvgHub";
-
+import { usePersistedTokenStore } from '../../userToken';
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 
 // let mockEvent: Event = {
@@ -32,6 +32,7 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
     const [scheduler, setScheduler] = useState(false);
     const [scheduled, setScheduled] = useState(false);
     const [formError, setFormError] = useState("");
+    const token = usePersistedTokenStore(state => state.token);
     // const [newEvent, setNewEvent] = useState<Event>(mockEvent);
 
     const eventNameRef = useRef<HTMLInputElement>(null);
@@ -56,13 +57,23 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
     const [ proposeSlotDynamic ] = useMutation(PROPOSE_SLOT, {
         onCompleted: (data) => {
             refetch();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     const [ acceptSlotDynamic ] = useMutation(ACCEPT_SLOT, {
         onCompleted: (data) => {
             refetch();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     const handleClick = () => {
@@ -148,9 +159,19 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                     },
                     onCompleted: () => {
                         location.reload();
-                    }
+                    },
+                    context: { 
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                        } 
+                    },
                 })
-            }
+            },
+            context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
+            },
         })
     }
 
@@ -215,9 +236,19 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                                     location.reload();
                                 }
                             })
-                        }
+                        },
+                        context: { 
+                            headers: {
+                                'Authorization': 'Bearer ' + token,
+                            } 
+                        },
                     })
-                }
+                },
+                context: { 
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    } 
+                },
             })
         }
         else{

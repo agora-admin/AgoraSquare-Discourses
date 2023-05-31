@@ -10,6 +10,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { ACCEPT_SLOT, PROPOSE_SLOT } from "../../lib/mutations";
 import { GET_DISCOURSE_BY_ID } from "../../lib/queries";
 import AppContext from "../utils/AppContext";
+import { usePersistedTokenStore } from "../../userToken";
 
 const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any, propId: number, chainId: number, id: string}) => {
 
@@ -18,6 +19,7 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
     const [ sSlots, setSSlots ] = useState([]);
     const [ dates, setDates ] = useState([]);
     const { loggedIn, walletAddress } = useContext(AppContext);
+    const token = usePersistedTokenStore(state => state.token);
 
     const [ refetch ] = useLazyQuery(GET_DISCOURSE_BY_ID, {
         variables: {
@@ -27,13 +29,23 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
     const [ proposeSlots ] = useMutation(PROPOSE_SLOT, {
         onCompleted: (data) => {
             refetch();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     const [ acceptSlot ] = useMutation(ACCEPT_SLOT, {
         onCompleted: (data) => {
             refetch();
-        }
+        },
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
     })
 
     useEffect(() => {
@@ -64,7 +76,12 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
             },
             onCompleted: () => {
                 location.reload();
-            }
+            },
+            context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
+            },
         })
         
     }
@@ -98,7 +115,12 @@ const SlotCard = ({endTS, data, propId, chainId, id } : {endTS: number, data:any
             onCompleted: () => {
 
                 location.reload();
-            }
+            },
+            context: { 
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                } 
+            },
         })
     }
 
