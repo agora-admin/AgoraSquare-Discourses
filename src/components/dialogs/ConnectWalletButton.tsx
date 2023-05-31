@@ -52,6 +52,7 @@ const ConnectWalletButton = () => {
 		onCompleted: (data: any) => {
             setToken(data.verifySignature.token);
             refresh();
+            location.reload();
 		},
         context: { 
                 headers: {
