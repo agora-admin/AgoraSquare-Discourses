@@ -112,12 +112,12 @@ const UserInfo = () => {
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
                                 </button>
                             }
-                            {chain?.id !== supportedChainIds[1] && !unstoppableLoggedIn &&
+                            {/* {chain?.id !== supportedChainIds[1] && !unstoppableLoggedIn &&
                                 <button onClick={() => handleSwitch(supportedChainIds[1])} className={`w-full flex items-center mt-[2px] gap-2 button-t py-2 hover:bg-[#212427]`}>
                                     {!switching && <Repeat size={16} color="#c6c6c6" />}
                                     <p className="text-[10px] text-[#c6c6c6]">{switching ? 'Switching..' : 'Switch Chain'}</p>
                                 </button>
-                            }
+                            } */}
 
                             {
                                 !t_connected &&
