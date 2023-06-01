@@ -306,7 +306,7 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
                         {/* tab for dynamic scheduling */}
                         {<>
                         {!data && !slotProposed(discourseData.getSlotById) && <p className="text-[10px] text-[#c6c6c6]">
-                            Has the discourse already been scheduled? <span className="tracking-wide font-semibold"></span>
+                            Has the discourse already been scheduled privately? <span className="tracking-wide font-semibold"></span>
                         </p>
                         }
 
