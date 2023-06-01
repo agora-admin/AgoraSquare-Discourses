@@ -8,6 +8,9 @@ export const getTime = (timeInSeconds: number) => {
 }
 
 export const diff_hours = (dt2:Date, dt1:Date) => {
+    if(dt2.getTime() - dt1.getTime() < 0){
+        return 0;
+    }
     let diff =(dt2.getTime() - dt1.getTime()) / 1000;
     diff /= (60 * 60);
     return Math.abs(Math.round(diff));
