@@ -1,6 +1,5 @@
 import { ApolloClient, from, HttpLink, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import Cookies from "js-cookie";
 import { setContext } from "@apollo/client/link/context";
 
 export default function createApolloClient() {
@@ -14,7 +13,6 @@ export default function createApolloClient() {
     });
 
     const authLink = setContext((_, { headers }) => {
-        const token = Cookies.get('jwt');
         return {
             headers: {
                 ...headers,
