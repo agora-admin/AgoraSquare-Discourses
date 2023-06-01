@@ -231,14 +231,14 @@ const CreateDiscoursePage = () => {
                         <div className={optionContainerCSS}>
                             <label className={labelCSS} htmlFor="description">Description for the discussion</label>
                             <div className="flex relative max-w-[585px]">
-                                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={6} maxLength={256} className="w-full input-s" id="description" placeholder="What is goal for the discussion?" />
+                                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={6} maxLength={256} className="w-full input-s" id="description" placeholder="What is the goal of the discussion?" />
                                 <p className="text-[10px] absolute bottom-2 right-3 text-[#c6c6c6]">{description.length} <span className="text-[#8e8e8e]"> / 256</span> </p>
                             </div>
                         </div>
 
                         {/* Topics */}
                         <div className={optionContainerCSS}>
-                            <label className={labelCSS}>To keep the conversation active, please enter atleast 3 sub-topic</label>
+                            <label className={labelCSS}>To keep the conversation active, please enter at least 3 sub-topics</label>
                             <TopicsInput topics={topics} addTopic={handleAddTopic} removeTopic={handleRemoveTopic} />
                         </div>
 
