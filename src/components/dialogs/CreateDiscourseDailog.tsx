@@ -211,7 +211,6 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
 
 
     const handleFundClick = async () => {
-        console.log("vishesh here")
         if (supportedChainIds.includes(chain?.id!)) {
             if(acceptTerms){
                 addToast({
