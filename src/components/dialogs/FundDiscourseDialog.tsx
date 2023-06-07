@@ -121,7 +121,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
         setMinting(false);
         setFunded(false);
         setTxn("");
-    }    
+    }
 
     const handleFundClick = async () => {
         if (chain?.id === discourse.chainId) {
@@ -174,7 +174,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                                 <h3 className="font-bold text-white text-sm">Fund Discourse</h3>
                             </header>
 
-                            <p className='text-[#E5F7FFE5] text-[13px]'>You are about to fund a discourse. Select the amount in MATIC</p>
+                            <p className='text-[#E5F7FFE5] text-[13px]'>You are about to fund a discourse. Select the amount in MATIC (no minimum value).</p>
 
                             <input type="number" 
                             value={amount} 
@@ -232,13 +232,17 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                             <header className="flex items-center gap-2">
                                 <FundDiscourseIcon2 />
                                 <h3 className="font-bold text-white text-sm">Funded Discourse</h3>
+                                <div className="absolute top-3 right-3 cursor-pointer" onClick={handleClose}>
+                            <CloseCircle size={23} color="#6C6C6C" variant='Bulk' />
+                        </div>
+                
                             </header> 
                             <div className="flex flex-col w-full items-center gap-4 text-center justify-between">
-                                <p className='text-[#E5F7FFE5] text-semibold text-xs'>Thanks for funding the discourse. You&apos;ll get a Proof of Patron NFT if the Discourse is completed!</p>
+                                <p className='text-[#E5F7FFE5] text-semibold text-xs'>Thanks for funding the discourse.</p>
                                 <a href={`${chain?.blockExplorers?.default.url}/tx/${txn}`} target="_blank" rel="noreferrer" className='mx-auto bg-[#D2B4FC] min-w-[112px] rounded-2xl p-2 cursor-pointer flex items-center gap-2'>
                                     <span className='text-[11px] font-Lexend text-black font-medium'>View Transaction</span>
                                     <ArrowCircleRight color="#7E6C97" variant="Bold" />
-                                </a>  
+                                </a>
                             </div>
                             </>
                         }

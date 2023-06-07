@@ -35,7 +35,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
     const [minting, setMinting] = useState(false);
     const [txn, setTxn] = useState("");
     const [funded, setFunded] = useState(false);
-    const [amount, setAmount] = useState('0.01');
+    const [amount, setAmount] = useState('1.0');
     const [discourseId, setDiscourseId] = useState('');
     const { chain } = useNetwork();
     const route = useRouter();
@@ -87,7 +87,7 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
         ],
         overrides: {
             from: walletAddress as `0x${string}`,
-            value: ethers.utils.parseEther(amount || '0.01')
+            value: ethers.utils.parseEther(amount || '1.0')
         }
     })
 
