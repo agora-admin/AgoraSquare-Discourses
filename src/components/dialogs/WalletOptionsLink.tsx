@@ -37,6 +37,7 @@ const WalletOptionsLink = () => {
     const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
     
     const token = usePersistedTokenStore(state => state.token);
+    const setToken = usePersistedTokenStore(state => state.setToken);
 
 	const { refetch } = useQuery(GET_USERDATA);
     const [getNonce] = useLazyQuery(GET_NONCE, {
@@ -49,9 +50,16 @@ const WalletOptionsLink = () => {
     });
 	const [verifySig] = useMutation(VERIFY_SIG, {
 		fetchPolicy: 'no-cache',
-		onCompleted: () => {
+		onCompleted: (data: any) => {
+            setToken(data.verifySignature.token);
             refresh();
+            location.reload();
 		},
+        context: { 
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            } 
+        },
 		onError: (error) => {
 			console.log(error);
             refresh();
