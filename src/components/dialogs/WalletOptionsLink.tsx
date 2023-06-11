@@ -161,22 +161,6 @@ const WalletOptionsLink = () => {
                     </>
                 )}
             </Popover>
-
-            {/* Mobile Btn */}
-            {/* <div onClick={() => {
-                setIsOpenMobileConnectMenu(prev => !prev);
-            }} className="block bg-[#141414] p-2 rounded-full sm:hidden">
-                <WalletIcon size={24}/>
-            </div>
-
-            <MobileConnectWallet 
-                isOpenMobileConnectMenu={isOpenMobileConnectMenu} 
-                setIsOpenMobileConnectMenu={setIsOpenMobileConnectMenu} 
-                connectors={connectors} 
-                getIcon={getIcon} 
-                handleConnectWallet={handleConnectWallet} 
-                handleUnstoppableLogin={handleUnstoppableLogin}
-            /> */}
         </>
     );
 }
