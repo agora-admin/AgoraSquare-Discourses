@@ -174,7 +174,7 @@ const FundDiscourseDialog = ({ open, setOpen, discourse }: { open: boolean, setO
                                 <h3 className="font-bold text-white text-sm">Fund Discourse</h3>
                             </header>
 
-                            <p className='text-[#E5F7FFE5] text-[13px]'>You are about to fund a discourse. Select the amount in MATIC (no minimum value).</p>
+                            <p className='text-[#E5F7FFE5] text-[13px]'>You are about to fund a discourse. Select the amount in {getCurrencyName(discourse.chainId)} (no minimum value).</p>
 
                             <input type="number" 
                             value={amount} 
