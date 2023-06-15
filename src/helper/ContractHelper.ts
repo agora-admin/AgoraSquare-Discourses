@@ -9,7 +9,7 @@ export const getContractAddressByChainId = (chainId: number) => {
         case 137:
             return '0xFf4921D89837a9098DE3E7CFeb789a059E12aCe3'
         case 56:
-            return '0xd7eC460C6515efc18a2882F4497b5E5FFF8fB3Ad'
+            return '0x1aaAc3eeB2e2D678Af8093bd4829202702e5c223'
         default:
             return '0x823443514C68d06811A395CA917a2B43bA9DcC64'
     }
