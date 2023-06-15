@@ -262,8 +262,12 @@ const CreateDiscourseDialog: FC<Props> = ({ open, setOpen, discourseData }) => {
                                 <h3 className="font-bold text-white text-sm">Fund Discourse</h3>
                             </header>
 
-                            <p className='text-[#E5F7FFE5] text-[13px]'>This is initial funding of the discourse required from creator. Need to fund min 1 {getCurrencyName(chain?.id!)}</p>
-
+                            { getCurrencyName(chain?.id!) === 'BNB' &&
+                                <p className='text-[#E5F7FFE5] text-[13px]'>This is initial funding of the discourse required from creator. Need to fund min 0.005 BNB</p>
+                            }
+                            { getCurrencyName(chain?.id!) != 'BNB' &&
+                                <p className='text-[#E5F7FFE5] text-[13px]'>This is initial funding of the discourse required from creator. Need to fund min 1 {getCurrencyName(chain?.id!)}</p>
+                            }
                             <input type="number" 
                             value={amount} 
                             onChange={(e) => setAmount(e.target.value)} 
