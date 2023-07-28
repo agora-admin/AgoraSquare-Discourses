@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import { fetchImage } from "../helper/ProfileImageHelper";
+import axios from "axios";
 
 interface TwitterProfile {
     screen_name: string;
@@ -15,25 +16,25 @@ const useTwitterProfile = (twitterHandle: string) => {
         profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
     });
 
+    const getUserData = useCallback(async (username) => {
+        let user = await axios.post('http://localhost:3000/api/twitter-user', {twitterHandle: username})
+        return user
+    }, [twitterHandle])
+
     useEffect(() => {
         if(twitterHandle && twitterHandle.length >= 4 && profile.screen_name !== twitterHandle) {
             setLoading(true);
-            fetchImage(twitterHandle).then(data => {
-                if(data.message) {
-                    setProfile({
-                        screen_name: twitterHandle,
-                        name: twitterHandle,
-                        profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
-                    });
-                } else {
-                    setProfile({
-                        screen_name: data.screen_name!,
-                        name: data.name!,
-                        profile_image_url: data.profile_image_url!
-                    });
-                }
+            getUserData(twitterHandle).then((data) => {
+                console.log(data)
+
+                setProfile({
+                    screen_name: twitterHandle,
+                    name: data.data.data.name,
+                    profile_image_url: data.data.data.profile_image_url
+                });
                 setLoading(false);
-            }).catch(err => {
+            }).catch((err) => {
+                console.log(err)
                 setLoading(false);
                 setProfile({
                     screen_name: twitterHandle,
@@ -41,6 +42,29 @@ const useTwitterProfile = (twitterHandle: string) => {
                     profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
                 })
             })
+            // fetchImage(twitterHandle).then(data => {
+            //     if(data.message) {
+            //         setProfile({
+            //             screen_name: twitterHandle,
+            //             name: twitterHandle,
+            //             profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
+            //         });
+            //     } else {
+            //         setProfile({
+            //             screen_name: data.screen_name!,
+            //             name: data.name!,
+            //             profile_image_url: data.profile_image_url!
+            //         });
+            //     }
+            //     setLoading(false);
+            // }).catch(err => {
+            //     setLoading(false);
+            //     setProfile({
+            //         screen_name: twitterHandle,
+            //         name: twitterHandle,
+            //         profile_image_url: `https://avatar.tobi.sh/${twitterHandle}`
+            //     })
+            // })
         }
 
         if (twitterHandle && twitterHandle.length < 4) {

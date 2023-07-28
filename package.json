@@ -28,6 +28,7 @@
     "react-hls-player": "^3.0.7",
     "react-use": "^17.4.0",
     "react-useanimations": "^2.10.0",
+    "twitter-api-sdk": "^1.2.1",
     "twitter-lite": "^1.1.0",
     "uuidv4": "^6.2.13",
     "wagmi": "^0.10.10",

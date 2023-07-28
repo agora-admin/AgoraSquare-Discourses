@@ -267,28 +267,28 @@ const CreateDiscoursePage = () => {
                         </div>
 
                         {/* Charity Percent Input */}
-                        <div className={optionContainerCSS}>
-                            <div className="flex items-center gap-1 relative">
-                                <label className={labelCSS}>charity percentage</label>
-                                <div className="cursor-pointer" onClick={() => {
-                                    setOpenCharityTip(prev => !prev);
-                                }}>
-                                    <InfoIcon size={19} />
-                                </div>
+                        {/*<div className={optionContainerCSS}>*/}
+                        {/*    <div className="flex items-center gap-1 relative">*/}
+                        {/*        <label className={labelCSS}>charity percentage</label>*/}
+                        {/*        <div className="cursor-pointer" onClick={() => {*/}
+                        {/*            setOpenCharityTip(prev => !prev);*/}
+                        {/*        }}>*/}
+                        {/*            <InfoIcon size={19} />*/}
+                        {/*        </div>*/}
 
-                                {/* Tip Box */}
-                                <div className={`absolute left-[16ch] mobile:top-4 mobile:left-0 ${!openCharityTip && "-z-30"} ${openCharityTip && "z-30"} flex flex-col sm:flex-row sm:items-center`}>
-                                    <div className={`${!openCharityTip && "scale-0 -translate-y-[50%] sm:-translate-x-[50%]"} ${openCharityTip && "scale-100"} mobile:relative left-[13.5ch] arrow_left mobile:arrow_up`}></div>
-                                    <div className={`${!openCharityTip && "scale-0 sm:-translate-x-[50%]"} ${openCharityTip && "scale-100"} bg-[#0A0A0A] text-[#E5F7FFE5] text-[11px] border-2 border-white/10 rounded-xl p-3 w-60 xs:w-80 max-w-xs shadow-2xl transition-all`}>
-                                        <p>Charity percentage is the percentage of the funding that will be donated to the charities of speaker&apos;s choice. Each speaker can select a charity of their choice. Leave this field empty for non-charity discourses.</p>
-                                    </div>
-                                </div>
+                        {/*        /!* Tip Box *!/*/}
+                        {/*        <div className={`absolute left-[16ch] mobile:top-4 mobile:left-0 ${!openCharityTip && "-z-30"} ${openCharityTip && "z-30"} flex flex-col sm:flex-row sm:items-center`}>*/}
+                        {/*            <div className={`${!openCharityTip && "scale-0 -translate-y-[50%] sm:-translate-x-[50%]"} ${openCharityTip && "scale-100"} mobile:relative left-[13.5ch] arrow_left mobile:arrow_up`}></div>*/}
+                        {/*            <div className={`${!openCharityTip && "scale-0 sm:-translate-x-[50%]"} ${openCharityTip && "scale-100"} bg-[#0A0A0A] text-[#E5F7FFE5] text-[11px] border-2 border-white/10 rounded-xl p-3 w-60 xs:w-80 max-w-xs shadow-2xl transition-all`}>*/}
+                        {/*                <p>Charity percentage is the percentage of the funding that will be donated to the charities of speaker&apos;s choice. Each speaker can select a charity of their choice. Leave this field empty for non-charity discourses.</p>*/}
+                        {/*            </div>*/}
+                        {/*        </div>*/}
 
-                                {/* Transparent overlay */}
-                                {openCharityTip && <div onClick={() => setOpenCharityTip(false)} className={`fixed inset-0 bg-transparent z-20`} />}
-                            </div>
-                            <CharityInput charityPercentage={charityPercent} setCharityPercentage={setCharityPercent} />
-                        </div>
+                        {/*        /!* Transparent overlay *!/*/}
+                        {/*        {openCharityTip && <div onClick={() => setOpenCharityTip(false)} className={`fixed inset-0 bg-transparent z-20`} />}*/}
+                        {/*    </div>*/}
+                        {/*    <CharityInput charityPercentage={charityPercent} setCharityPercentage={setCharityPercent} />*/}
+                        {/*</div>*/}
 
                         {/* Type of event */}
                         <div className={optionContainerCSS}>
