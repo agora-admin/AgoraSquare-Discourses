@@ -17,7 +17,7 @@ const useTwitterProfile = (twitterHandle: string) => {
     });
 
     const getUserData = useCallback(async (username) => {
-        let user = await axios.post('http://localhost:3000/api/twitter-user', {twitterHandle: username})
+        let user = await axios.post('/api/twitter-user', {twitterHandle: username})
         return user
     }, [twitterHandle])
 
