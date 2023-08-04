@@ -1,8 +1,7 @@
 import { Client, auth } from 'twitter-api-sdk';
 
 const fetchUser = async (req: any, res: any) => {
-    // const twitterClient = new Client(process.env.BEARER_TOKEN as string);
-    const twitterClient = new Client("AAAAAAAAAAAAAAAAAAAAAEIcbwEAAAAAMIIFcWEamrkBoCvIs%2BcWXYvfomg%3DvqBf5JTqSf1CAW9vtdsiVoYrdRIouRP6tnZGBOdC0mnqzMNMdy");
+    const twitterClient = new Client(process.env.BEARER_TOKEN);
     const twitterHandle = req.body.twitterHandle
 
     try {
