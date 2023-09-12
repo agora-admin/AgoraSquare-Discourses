@@ -7,177 +7,213 @@ import { GET_NONCE, GET_USERDATA } from "../../lib/queries";
 import uauth from "../../web3/Connectors";
 import MobileConnectWallet from "../topbar/MobileConnectWallet";
 import AppContext from "../utils/AppContext";
-import { MetamaskIcon, NullWalletIcon, UnstoppableIcon, WalletConnectIcon, WalletIcon } from "../utils/SvgHub";
+import {
+	MetamaskIcon,
+	NullWalletIcon,
+	UnstoppableIcon,
+	WalletConnectIcon,
+	WalletIcon,
+} from "../utils/SvgHub";
 import { usePersistedTokenStore } from "../../userToken";
 
 const ConnectWalletButton = () => {
-    const { refresh, loggedIn,setUnstoppableLoggedIn,setUnstoppableUser } = useContext(AppContext);
-    // Unstoppable domain Connector
-    async function handleUnstoppableLogin() {
-        try {
-            const authorization = await uauth.loginWithPopup()
-            
-            uauth.user().then(user => {
-                if(user){
-                    setUnstoppableUser(user);
-                    setUnstoppableLoggedIn(true);
-                }
-            })
+	const { refresh, loggedIn, setUnstoppableLoggedIn, setUnstoppableUser } =
+		useContext(AppContext);
+	// Unstoppable domain Connector
+	async function handleUnstoppableLogin() {
+		try {
+			const authorization = await uauth.loginWithPopup();
 
-          } catch (error) {
-            console.error(error)
-          }
-    }
-      
-    // Wagmi Connect 
-    const { connectors, connectAsync } = useConnect();
-    const {isConnected,address} = useAccount();
-    const { data: smData, signMessageAsync } = useSignMessage();
+			uauth.user().then((user) => {
+				if (user) {
+					setUnstoppableUser(user);
+					setUnstoppableLoggedIn(true);
+				}
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
-    const [isOpenMobileConnectMenu,setIsOpenMobileConnectMenu] = useState(false);
+	// Wagmi Connect
+	const { connectors, connectAsync } = useConnect();
+	const { isConnected, address } = useAccount();
+	const { data: smData, signMessageAsync } = useSignMessage();
 
-    const { token, setToken } = usePersistedTokenStore(state => ({token: state.token, setToken: state.setToken}));
+	const [isOpenMobileConnectMenu, setIsOpenMobileConnectMenu] = useState(false);
+
+	const { token, setToken } = usePersistedTokenStore((state) => ({
+		token: state.token,
+		setToken: state.setToken,
+	}));
 
 	const { refetch } = useQuery(GET_USERDATA);
-    const [getNonce] = useLazyQuery(GET_NONCE, {
-        fetchPolicy: "no-cache",
-        onCompleted: (data) => {
-            if (data && !loggedIn) {
-                signAndVerify(data.getNonce.nonce);
-            }
-        }
-    });
-	const [verifySig] = useMutation(VERIFY_SIG, {
-		fetchPolicy: 'no-cache',
-		onCompleted: (data: any) => {
-            setToken(data.verifySignature.token);
-            refresh();
-            location.reload();
+	const [getNonce] = useLazyQuery(GET_NONCE, {
+		fetchPolicy: "no-cache",
+		onCompleted: (data) => {
+			if (data && !loggedIn) {
+				signAndVerify(data.getNonce.nonce);
+			}
 		},
-        context: { 
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                } 
-            },
+	});
+	const [verifySig] = useMutation(VERIFY_SIG, {
+		fetchPolicy: "no-cache",
+		onCompleted: (data: any) => {
+			setToken(data.verifySignature.token);
+			setTimeout(() => {
+				refresh();
+			}, 1000);
+			// location.reload();
+		},
+		context: {
+			headers: {
+				Authorization: "Bearer " + token,
+			},
+		},
 		onError: (error) => {
 			console.log(error);
-            refresh();
-		}
+			refresh();
+		},
 	});
 
-    const signAndVerify = async (nonce: string) => {
-		const sigData = await signNonce(nonce)
-			.catch(err => {
-				console.log(err);
-				return;
-			});
+	const signAndVerify = async (nonce: string) => {
+		const sigData = await signNonce(nonce).catch((err) => {
+			console.log(err);
+			return;
+		});
 
 		if (sigData?.signature && !loggedIn) {
 			verifySig({
 				variables: {
 					signature: sigData.signature,
-					walletAddress: sigData.address
-				}
+					walletAddress: sigData.address,
+				},
 			});
 		}
-	}
+	};
 
-    const signNonce = async (nonce: string) => {
+	const signNonce = async (nonce: string) => {
 		try {
-            let signature = await signMessageAsync({ message: nonce }).then((data) => {
-                return data;
-            }).catch((err) => {
-                console.log(err);
-            })
-			
+			let signature = await signMessageAsync({ message: nonce })
+				.then((data) => {
+					return data;
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+
 			return {
 				signature,
-				address
-			}
+				address,
+			};
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
-    const getIcon = (connector: any) => {
-        if (connector.id === 'walletConnect') {
-            return <WalletConnectIcon />
-        } else if (connector.id === 'metaMask') {
-            return <MetamaskIcon />
-        } else {
-            return <NullWalletIcon />
-        }
-    }
+	const getIcon = (connector: any) => {
+		if (connector.id === "walletConnect") {
+			return <WalletConnectIcon />;
+		} else if (connector.id === "metaMask") {
+			return <MetamaskIcon />;
+		} else {
+			return <NullWalletIcon />;
+		}
+	};
 
-    const handleConnectWallet = async (connector:Connector) => {
+	const handleConnectWallet = async (connector: Connector) => {
 		if (isConnected && address) {
 			getNonce({ variables: { address } });
 		} else {
-			await connectAsync({connector}).then(({ account }) => {
-				getNonce({ variables: { address: account } });
-			}).catch((err) => {
-				console.log(err);
-			});
+			await connectAsync({ connector })
+				.then(({ account }) => {
+					getNonce({ variables: { address: account } });
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 		}
-    }
+	};
 
-    return (
-        <>
-            <Popover className="relative mobile:hidden">
-                {({ open }) => (
-                    <>
-                        <Popover.Button className="flex items-center gap-2 outline-none bg-[#141414] rounded-full px-3 py-2 cursor-pointer">
-                            <WalletIcon size={24}/>
-                            <span className="text-white font-Lexend text-xs">connect wallet</span>
-                        </Popover.Button>
+	return (
+		<>
+			<Popover className="relative mobile:hidden">
+				{({ open }) => (
+					<>
+						<Popover.Button className="flex items-center gap-2 outline-none bg-[#141414] rounded-full px-3 py-2 cursor-pointer">
+							<WalletIcon size={24} />
+							<span className="text-white font-Lexend text-xs">
+								connect wallet
+							</span>
+						</Popover.Button>
 
-                        {
-                            <Popover.Panel  className={`${open ? 'animate-dEnter': 'animate-dExit'} absolute z-20 right-0 mt-1 bg-card bg-[#141515] p-4 rounded-xl backdrop-blur-lg max-w-xs w-[200px]`}>
-                                <div className="flex flex-col gap-2 flex-[0.6]">
-                                    <h3 className="text-white text-xs font-medium">Choose a provider</h3>
-                                    <div className="flex gap-2 items-center flex-col">
-                                        {
-                                            connectors.map((connector, i) => (
-                                                <div key={i} className="flex w-full">
-                                                    <button onClick={() => handleConnectWallet(connector)} disabled={!connector.ready} className={`w-full flex items-center gap-2 ${connector.ready ? 'button-s': 'button-s-d'}`}>
-                                                        {getIcon(connector)}
-                                                        <p className="text-sm font-Lexend text-[#c6c6c6]">{connector.id === "injected" ? "Injected" : connector.name}</p>
-                                                    </button>
-                                                </div>
-                                            ))
-                                        }
+						{
+							<Popover.Panel
+								className={`${
+									open ? "animate-dEnter" : "animate-dExit"
+								} absolute z-20 right-0 mt-1 bg-card bg-[#141515] p-4 rounded-xl backdrop-blur-lg max-w-xs w-[200px]`}>
+								<div className="flex flex-col gap-2 flex-[0.6]">
+									<h3 className="text-white text-xs font-medium">
+										Choose a provider
+									</h3>
+									<div className="flex gap-2 items-center flex-col">
+										{connectors.map((connector, i) => (
+											<div key={i} className="flex w-full">
+												<button
+													onClick={() => handleConnectWallet(connector)}
+													disabled={!connector.ready}
+													className={`w-full flex items-center gap-2 ${
+														connector.ready ? "button-s" : "button-s-d"
+													}`}>
+													{getIcon(connector)}
+													<p className="text-sm font-Lexend text-[#c6c6c6]">
+														{connector.id === "injected"
+															? "Injected"
+															: connector.name}
+													</p>
+												</button>
+											</div>
+										))}
 
-                                        <div className="flex w-full">
-                                            <button onClick={handleUnstoppableLogin} className={`w-full flex items-center gap-2 ${true ? 'button-s': 'button-s-d'}`}>
-                                                <UnstoppableIcon />
-                                                <p className="text-sm font-Lexend text-[#c6c6c6]">Unstoppable</p>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Popover.Panel>
-                        }
-                    </>
-                )}
-            </Popover>
+										<div className="flex w-full">
+											<button
+												onClick={handleUnstoppableLogin}
+												className={`w-full flex items-center gap-2 ${
+													true ? "button-s" : "button-s-d"
+												}`}>
+												<UnstoppableIcon />
+												<p className="text-sm font-Lexend text-[#c6c6c6]">
+													Unstoppable
+												</p>
+											</button>
+										</div>
+									</div>
+								</div>
+							</Popover.Panel>
+						}
+					</>
+				)}
+			</Popover>
 
-            {/* Mobile Btn */}
-            <div onClick={() => {
-                setIsOpenMobileConnectMenu(prev => !prev);
-            }} className="block bg-[#141414] p-2 rounded-full sm:hidden">
-                <WalletIcon size={24}/>
-            </div>
+			{/* Mobile Btn */}
+			<div
+				onClick={() => {
+					setIsOpenMobileConnectMenu((prev) => !prev);
+				}}
+				className="block bg-[#141414] p-2 rounded-full sm:hidden">
+				<WalletIcon size={24} />
+			</div>
 
-            <MobileConnectWallet 
-                isOpenMobileConnectMenu={isOpenMobileConnectMenu} 
-                setIsOpenMobileConnectMenu={setIsOpenMobileConnectMenu} 
-                connectors={connectors} 
-                getIcon={getIcon} 
-                handleConnectWallet={handleConnectWallet} 
-                handleUnstoppableLogin={handleUnstoppableLogin}
-            />
-        </>
-    );
-}
+			<MobileConnectWallet
+				isOpenMobileConnectMenu={isOpenMobileConnectMenu}
+				setIsOpenMobileConnectMenu={setIsOpenMobileConnectMenu}
+				connectors={connectors}
+				getIcon={getIcon}
+				handleConnectWallet={handleConnectWallet}
+				handleUnstoppableLogin={handleUnstoppableLogin}
+			/>
+		</>
+	);
+};
 
 export default ConnectWalletButton;

@@ -1,32 +1,36 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Layout from '../components/layout/Layout'
-import { useEffect } from 'react'
-import { useLazyQuery, useQuery } from '@apollo/client'
-import { GET_DISCOURSES, GET_DISCOURSES_BY_CHAIN } from '../lib/queries'
-import LoadingSpinner from '../components/utils/LoadingSpinner'
-import TopBar from '../components/topbar/TopBar'
-import { supportedChainIds } from '../Constants'
-import HeroCard from '../components/actions/HeroCard'
-import DiscourseCard from '../components/cards/DiscourseCard'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Layout from "../components/layout/Layout";
+import { useEffect } from "react";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_DISCOURSES, GET_DISCOURSES_BY_CHAIN } from "../lib/queries";
+import LoadingSpinner from "../components/utils/LoadingSpinner";
+import TopBar from "../components/topbar/TopBar";
+import { supportedChainIds } from "../Constants";
+import HeroCard from "../components/actions/HeroCard";
+import DiscourseCard from "../components/cards/DiscourseCard";
 
 // Schedule Period = max 3 days
 // Confirmation Period = max 30 days to 1hr
 // Scheduling Period + Confimation Period = 1 transaction
 
 const Home: NextPage = () => {
-	const { loading: dLoading, error: dError, data: dData } = useQuery(GET_DISCOURSES_BY_CHAIN, {
+	const {
+		loading: dLoading,
+		error: dError,
+		data: dData,
+	} = useQuery(GET_DISCOURSES_BY_CHAIN, {
 		variables: {
-			chainId: supportedChainIds
-		}
+			chainId: supportedChainIds,
+		},
 	});
-	
+
 	const [refetch] = useLazyQuery(GET_DISCOURSES);
 
 	useEffect(() => {
 		refetch();
-	}, [refetch])
-	
+	}, [refetch]);
+
 	return (
 		<div className="w-full h-screen overflow-x-clip">
 			<Head>
@@ -36,45 +40,44 @@ const Home: NextPage = () => {
 			</Head>
 			<Layout>
 				<TopBar onDiscoursePage={false} />
-				<div className='w-full min-h-screen relative flex flex-col py-4 sm:py-5 mobile:pb-[80px] gap-3 sm:gap-4 z-10'>
+				<div className="w-full min-h-screen relative flex flex-col py-4 sm:py-5 mobile:pb-[80px] gap-3 sm:gap-4 z-10">
 					{/* Body */}
 					<HeroCard />
-					
-					{/* list */}
-					<div className='sm:mt-4 relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center gap-3 sm:gap-4'>
-						{
-							dData && dData.getDiscoursesByChainID.length > 0 &&
-							[].concat(dData.getDiscoursesByChainID)
-							.filter((e:any) => !e.disable)
-							.sort((a: any, b: any) => +b.initTS - +a.initTS)
-							.map((data: any) => (
-								<DiscourseCard key={data.id} data={data} />
-							))
-						}
 
-						{
-							dData && dData.getDiscoursesByChainID.length == 0 &&
-							<div className='absolute inset-0 top-10 w-full py-4 flex items-center justify-center mt-10'>
-								<img className='w-36' src="/404_discourses.png" alt="" />
+					{/* list */}
+					<div className="sm:mt-4 relative w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row items-center gap-3 sm:gap-4">
+						{dData &&
+							dData.getDiscoursesByChainID.length > 0 &&
+							[]
+								.concat(dData.getDiscoursesByChainID)
+								.filter((e: any) => !e.disable)
+								.sort((a: any, b: any) => +b.initTS - +a.initTS)
+								.map((data: any) => (
+									<DiscourseCard key={data.id} data={data} />
+								))}
+
+						{dData && dData.getDiscoursesByChainID.length == 0 && (
+							<div className="absolute inset-0 top-10 w-full py-4 flex items-center justify-center mt-10">
+								<img className="w-36" src="/404_discourses.png" alt="" />
 							</div>
-						}
-						{
-							dLoading &&
-							<div className='w-full absolute inset-0 top-10 py-4 flex items-center justify-center'>
-								<LoadingSpinner strokeColor='#ffffff' />
+						)}
+						{dLoading && (
+							<div className="w-full absolute inset-0 top-10 py-4 flex items-center justify-center">
+								<LoadingSpinner strokeColor="#ffffff" />
 							</div>
-						}
-						{
-							dError &&
-							<div className='absolute inset-0 top-10 w-full py-4 flex items-center justify-center'>
-								<p className='text-white/30 text-sm'>Error Getting Discourses...</p>
+						)}
+						{dError && (
+							<div className="absolute inset-0 top-10 w-full py-4 flex items-center justify-center">
+								<p className="text-white/30 text-sm">
+									Error Getting Discourses...
+								</p>
 							</div>
-						}
+						)}
 					</div>
 				</div>
 			</Layout>
 		</div>
-	)
-}
+	);
+};
 
-export default Home
+export default Home;
