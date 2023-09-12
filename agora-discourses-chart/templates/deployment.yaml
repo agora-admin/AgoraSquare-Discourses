@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "agora-discourses-chart.fullname" . }}
+  labels:
+    {{- include "agora-discourses-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "agora-discourses-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "agora-discourses-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "agora-discourses-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+            - name: CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CONSUMER_KEY
+            - name: CONSUMER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CONSUMER_SECRET
+            - name: CREATOR_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CREATOR_ID
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLIENT_ID
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLIENT_SECRET
+            - name: BEARER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: BEARER_TOKEN
+            - name: BEARER_TOKEN2
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: BEARER_TOKEN2
+            - name: BLOCK_EXPLORER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: BLOCK_EXPLORER
+            - name: SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SERVER_URL
+            - name: TWITTER_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: TWITTER_ACCESS_TOKEN
+            - name: TWITTER_ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: TWITTER_ACCESS_TOKEN_SECRET
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXTAUTH_SECRET
+            - name: NEXT_PUBLIC_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXT_PUBLIC_SERVER_URL
+            - name: NEXT_PUBLIC_CLIENT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXT_PUBLIC_CLIENT_URL
+            - name: NEXT_PUBLIC_CHAIN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXT_PUBLIC_CHAIN_ID
+            - name: MORALIS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MORALIS_API_KEY
+            - name: NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: API_KEY
+            - name: API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: API_SECRET
+            - name: BEARER_TOKEN_MY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: BEARER_TOKEN_MY
+            - name: CLIENT_ID_MY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLIENT_ID_MY
+            - name: CLIENT_SECRET_MY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLIENT_SECRET_MY
+              
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
