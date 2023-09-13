@@ -67,6 +67,7 @@ jobs:
             --from-literal=NEXT_PUBLIC_CLIENT_URL="${{ secrets.NEXT_PUBLIC_CLIENT_URL }}" \
             --from-literal=NEXT_PUBLIC_CHAIN_ID="${{ secrets.NEXT_PUBLIC_CHAIN_ID }}" \
             --from-literal=NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID="${{ secrets.NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID }}" \
+            --from-literal=MORALIS_API_KEY="${{ secrets.MORALIS_API_KEY }}" \
             --from-literal=API_KEY="${{ secrets.API_KEY }}" \
             --from-literal=API_SECRET="${{ secrets.API_SECRET }}" \
             --from-literal=BEARER_TOKEN_MY="${{ secrets.BEARER_TOKEN_MY }}" \
