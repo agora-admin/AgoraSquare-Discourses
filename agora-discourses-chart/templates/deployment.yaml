@@ -41,10 +41,18 @@ spec:
             httpGet:
               path: /
               port: http
+              httpHeaders:
+                - name: Accept
+                  value: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
           readinessProbe:
             httpGet:
               path: /
               port: http
+              httpHeaders:
+                - name: Accept
+                  value: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
           env:
             - name: CONSUMER_KEY
               valueFrom:
@@ -156,7 +164,6 @@ spec:
                 secretKeyRef:
                   name: discourses-secrets
                   key: CLIENT_SECRET_MY
-              
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
