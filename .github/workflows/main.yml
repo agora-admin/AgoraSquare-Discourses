@@ -1,0 +1,85 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          kubectl-version: 'latest'
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push Docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: agora-discourses
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Configure kubectl with EKS cluster
+        run: aws eks update-kubeconfig --name agora-dev-cluster --region us-east-2
+
+      - name: Delete Kubernetes Secret if it exists
+        run: |
+          kubectl delete secret discourses-secrets || true
+        continue-on-error: true
+      
+      - name: Create Kubernetes Secrets
+        run: |
+          kubectl create secret generic discourses-secrets \
+            --from-literal=CONSUMER_KEY="${{ secrets.CONSUMER_KEY }}" \
+            --from-literal=CONSUMER_SECRET="${{ secrets.CONSUMER_SECRET }}" \
+            --from-literal=CREATOR_ID="${{ secrets.CREATOR_ID }}" \
+            --from-literal=CLIENT_ID="${{ secrets.CLIENT_ID }}" \
+            --from-literal=CLIENT_SECRET="${{ secrets.CLIENT_SECRET }}" \
+            --from-literal=BEARER_TOKEN="${{ secrets.BEARER_TOKEN }}" \
+            --from-literal=BEARER_TOKEN2="${{ secrets.BEARER_TOKEN2 }}" \
+            --from-literal=BLOCK_EXPLORER="${{ secrets.BLOCK_EXPLORER }}" \
+            --from-literal=SERVER_URL="${{ secrets.SERVER_URL }}" \
+            --from-literal=TWITTER_ACCESS_TOKEN="${{ secrets.TWITTER_ACCESS_TOKEN }}" \
+            --from-literal=TWITTER_ACCESS_TOKEN_SECRET="${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}" \
+            --from-literal=NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
+            --from-literal=NEXT_PUBLIC_SERVER_URL="${{ secrets.NEXT_PUBLIC_SERVER_URL }}"\
+            --from-literal=NEXT_PUBLIC_CLIENT_URL="${{ secrets.NEXT_PUBLIC_CLIENT_URL }}" \
+            --from-literal=NEXT_PUBLIC_CHAIN_ID="${{ secrets.NEXT_PUBLIC_CHAIN_ID }}" \
+            --from-literal=NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID="${{ secrets.NEXT_PUBLIC_UNSTOPPABLE_CLIENT_ID }}" \
+            --from-literal=MORALIS_API_KEY="${{ secrets.MORALIS_API_KEY }}" \
+            --from-literal=API_KEY="${{ secrets.API_KEY }}" \
+            --from-literal=API_SECRET="${{ secrets.API_SECRET }}" \
+            --from-literal=BEARER_TOKEN_MY="${{ secrets.BEARER_TOKEN_MY }}" \
+            --from-literal=CLIENT_ID_MY="${{ secrets.CLIENT_ID_MY }}" \
+            --from-literal=CLIENT_SECRET_MY="${{ secrets.CLIENT_SECRET_MY }}"
+        continue-on-error: true
+
+      - name: Uninstall existing Helm release (if it exists)
+        run: |
+          helm uninstall agora-discourses-chart || true
+        continue-on-error: true
+
+      - name: Deploy nodejs Helm chart to EKS
+        run: |
+          helm install agora-discourses-chart ./agora-discourses-chart
