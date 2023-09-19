@@ -57,10 +57,15 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+    - host: www.agorasquare.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls: 
    - secretName: agorasquare-tls-secret
      hosts:
        - agorasquare.io
+       - www.agorasquare.io
 
 resources:
   {}
