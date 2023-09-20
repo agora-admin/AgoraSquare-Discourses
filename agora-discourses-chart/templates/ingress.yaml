@@ -14,7 +14,6 @@ metadata:
     {{- include "agora-discourses-chart.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -50,4 +49,9 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
+  {{- if .Values.ingress.className }}
+  {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- end }}
 {{- end }}
