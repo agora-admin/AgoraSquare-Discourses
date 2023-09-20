@@ -46,7 +46,7 @@ service:
   name: agora-discourses
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
