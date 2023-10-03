@@ -75,11 +75,11 @@ jobs:
             --from-literal=CLIENT_SECRET_MY="${{ secrets.CLIENT_SECRET_MY }}"
         continue-on-error: true
 
-      - name: Uninstall existing Helm release (if it exists)
-        run: |
-          helm uninstall agora-discourses-chart || true
-        continue-on-error: true
+      # - name: Uninstall existing Helm release (if it exists)
+      #   run: |
+      #     helm uninstall agora-discourses-chart || true
+      #   continue-on-error: true
 
-      - name: Deploy nodejs Helm chart to EKS
-        run: |
-          helm install agora-discourses-chart ./agora-discourses-chart
+      # - name: Deploy nodejs Helm chart to EKS
+      #   run: |
+      #     helm install agora-discourses-chart ./agora-discourses-chart

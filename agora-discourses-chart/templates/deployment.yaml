@@ -40,7 +40,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 3000
               httpHeaders:
                 - name: Accept
                   value: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
@@ -48,7 +48,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 3000
               httpHeaders:
                 - name: Accept
                   value: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
