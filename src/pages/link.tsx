@@ -157,7 +157,7 @@ const InvitePage = () => {
 
                         <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Terms & conditions</a>
                         <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Privacy policy</a>
-                        <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Whitepaper</a>
+                        {/* <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Whitepaper</a> */}
                         <a className="text-xs text-[#797979] hover:text-[#c6c6c6] t-all" href="#">Discord</a>
                     </footer>
                 </div>

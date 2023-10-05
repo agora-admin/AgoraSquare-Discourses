@@ -49,9 +49,9 @@ const HeroCard = () => {
 			supportedChainIds.includes(80001) ||
 			supportedChainIds.includes(71401)
 		) {
-			return "https://discourses.agorasquare.xyz";
+			return "https://discourses.agorasquare.io";
 		} else {
-			return "https://testnet.discourses.agorasquare.xyz";
+			return "https://testnet.discourses.agorasquare.io";
 		}
 	};
 
