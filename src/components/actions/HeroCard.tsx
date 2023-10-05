@@ -102,14 +102,14 @@ const HeroCard = () => {
 
 			<div className="relative group">
 				<div className="absolute inset-0.5 bg-gradient-to-r from-red-500 to-violet-500 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-300 group-hover:duration-200" />
-				<div
+				<button
 					onClick={handleCreate}
-					className="relative flex items-center gap-2 max-w-fit md:max-w-none bg-[#84B9D1] rounded-2xl p-3 cursor-pointer transition-transform duration-300 hover:scale-105 ring-1 ring-gray-900/5">
+					className="relative flex items-center gap-2 max-w-fit md:max-w-none bg-[#84B9D1] rounded-2xl p-3 transition-transform duration-300 hover:scale-105 ring-1 ring-gray-900/5">
 					<small className="text-xs font-Lexend text-black font-medium">
 						create discourse
 					</small>
 					<ArrowCircleRight color="#4F6F7D" variant="Bold" fill="#000" />
-				</div>
+				</button>
 			</div>
 		</div>
 	);
