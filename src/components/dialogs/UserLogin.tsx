@@ -1,25 +1,10 @@
 import React, { useContext } from "react";
 import Image from "next/image";
-
-import { Magic } from "magic-sdk";
-import { OAuthExtension } from "@magic-ext/oauth";
-import AppContext from "../utils/AppContext";
-
-import { BsTwitter } from "react-icons/bs";
 import logo from "../../../public/ag_logo_16.svg";
 
-export const UserSignUp = () => {
-	const { magic } = useContext(AppContext);
-
-	const handleCreateAccount = async () => {
-		if (!magic) {
-			throw new Error("Magic instance not found");
-		}
-		await (magic.oauth as any).loginWithRedirect({
-			provider: "google" /* 'google', 'facebook', 'apple', or 'github' */,
-			redirectURI: `${window.location.origin}/magic-callback`,
-			scope: ["user:email"] /* optional */,
-		});
+export const UserLogin = () => {
+	const handleLogin = async () => {
+		console.log("login");
 	};
 
 	return (
@@ -72,24 +57,12 @@ export const UserSignUp = () => {
 							className="!flex-[0_0_auto] !flex !w-[222px]"
 							placeholder="enter password"
 						/>
-						<Textbox
-							className="!flex-[0_0_auto] !flex !w-[222px]"
-							placeholder="re-enter password"
-						/>
 						<div className="flex flex-col gap-2 items-center w-full">
-							<div className="flex w-full h-[54px] items-center justify-center gap-[10px] p-[10px] relative bg-[#d2b4fc] rounded-[16px] overflow-hidden">
-								<button className="relative [font-family:'Lexend-Medium',Helvetica] font-medium text-black text-[12px] text-center tracking-[0] leading-[14.4px] whitespace-nowrap">
-									<span className="flex gap-1 items-center justify-center">
-										<BsTwitter className="text-blue-500" size={22} />
-										connect twitter
-									</span>
-								</button>
-							</div>
 							<button
-								onClick={handleCreateAccount}
+								onClick={handleLogin}
 								className="relative flex justify-center w-full items-center gap-2 md:max-w-none bg-[#d2b4fc] rounded-xl px-6 py-3 transition-transform duration-300 hover:scale-105 ring-1 ring-gray-900/5">
 								<span className="text-xs font-Lexend text-black font-medium">
-									create account
+									login
 								</span>
 							</button>
 						</div>
@@ -100,7 +73,7 @@ export const UserSignUp = () => {
 	);
 };
 
-export default UserSignUp;
+export default UserLogin;
 
 export const Textbox = ({ className, placeholder }) => {
 	return (

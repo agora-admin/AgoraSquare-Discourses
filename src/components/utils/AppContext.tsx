@@ -1,7 +1,7 @@
 import { UserInfo } from "@uauth/js";
 import { createContext, Dispatch } from "react";
 import { Toast } from "../../lib/Types";
-import { Magic } from "magic-sdk";
+import { Magic, MagicSDKExtensionsOption } from "magic-sdk";
 
 export interface ContextType {
 	unstoppableLoggedIn: boolean;
@@ -38,7 +38,7 @@ export interface ContextType {
 	addToast: (toast: Toast) => void;
 
 	// auth
-	magic: Magic;
+	magic: Magic<MagicSDKExtensionsOption<string>> | null;
 }
 
 const AppContext = createContext<ContextType>({

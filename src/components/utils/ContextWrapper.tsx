@@ -4,7 +4,7 @@ import { UserInfo } from "@uauth/js";
 import { Dispatch, FC, ReactNode, useEffect, useState } from "react";
 import { uuid } from "uuidv4";
 import { useAccount } from "wagmi";
-import { Magic } from "magic-sdk";
+import { Magic, MagicSDKExtensionsOption } from "magic-sdk";
 import { OAuthExtension } from "@magic-ext/oauth";
 import { GET_USERDATA } from "../../lib/queries";
 import { Toast, ToastTypes } from "../../lib/Types";
@@ -34,9 +34,15 @@ const ContextWrapper: FC<Props> = ({ children }) => {
 	if (!magicKey) {
 		throw new Error("Magic Link Key not found");
 	}
-	const magic = new Magic(magicKey, {
-		extensions: [new OAuthExtension()],
-	});
+
+	const createMagic = (): Magic<MagicSDKExtensionsOption<string>> | null => {
+		if (typeof window !== "undefined") {
+			return new Magic(magicKey);
+		}
+		return null;
+	};
+
+	const magic = createMagic();
 
 	const { connector: activeConnector, status } = useAccount();
 

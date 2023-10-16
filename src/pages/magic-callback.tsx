@@ -7,6 +7,10 @@ export const SignUpPage = () => {
 	const { magic } = useContext(AppContext);
 	let profile = {};
 
+	if (!magic) {
+		throw new Error("Magic instance not found");
+	}
+
 	useEffect(() => {
 		const fetchData = async () => {
 			const result = await (magic.oauth as any).getRedirectResult();
