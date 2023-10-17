@@ -15,6 +15,9 @@ export const UserSignUp = () => {
 		if (!magic) {
 			throw new Error("Magic instance not found");
 		}
+		console.log(magic);
+		console.log("***");
+		console.log(magic.oauth);
 		await (magic.oauth as any).loginWithRedirect({
 			provider: "google" /* 'google', 'facebook', 'apple', or 'github' */,
 			redirectURI: `${window.location.origin}/magic-callback`,

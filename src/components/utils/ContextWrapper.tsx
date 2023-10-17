@@ -35,9 +35,11 @@ const ContextWrapper: FC<Props> = ({ children }) => {
 		throw new Error("Magic Link Key not found");
 	}
 
-	const createMagic = (): Magic<MagicSDKExtensionsOption<string>> | null => {
+	const createMagic = (): Magic | null => {
 		if (typeof window !== "undefined") {
-			return new Magic(magicKey);
+			return new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY, {
+				extensions: [new OAuthExtension()],
+			}) as Magic;
 		}
 		return null;
 	};
