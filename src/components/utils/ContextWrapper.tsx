@@ -37,6 +37,7 @@ const ContextWrapper: FC<Props> = ({ children }) => {
 
 	const createMagic = (): Magic | null => {
 		if (typeof window !== "undefined") {
+			// @ts-ignore
 			return new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY, {
 				extensions: [new OAuthExtension()],
 			}) as Magic;
