@@ -21,7 +21,6 @@ export const UserSignUp = () => {
 		await (magic.oauth as any).loginWithRedirect({
 			provider: "google" /* 'google', 'facebook', 'apple', or 'github' */,
 			redirectURI: `${window.location.origin}/magic-callback`,
-			scope: ["user:email"] /* optional */,
 		});
 	};
 
