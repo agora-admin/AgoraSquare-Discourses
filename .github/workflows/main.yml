@@ -3,10 +3,10 @@ name: Deploy to EKS
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   deploy:
@@ -34,7 +34,7 @@ jobs:
       - name: Build, tag, and push Docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: agora-discourses
+          REPOSITORY: dev-agora-discourses
           IMAGE_TAG: latest
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
