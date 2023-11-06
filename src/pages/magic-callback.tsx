@@ -2,10 +2,21 @@ import React, { useContext, useEffect } from "react";
 import { BsTwitter } from "react-icons/bs";
 import UserSignUp from "../components/dialogs/UserSignup";
 import AppContext from "../../src/components/utils/AppContext";
+import { gql, useMutation } from "@apollo/client";
+
+const SAVE_USER_DATA = gql`
+	mutation SaveUserData($profile: UserProfileInput!) {
+		saveUserData(profile: $profile) {
+			id
+			name
+			email
+		}
+	}
+`;
 
 export const SignUpPage = () => {
 	const { magic } = useContext(AppContext);
-	let profile = {};
+	const [signUpWithMagic] = useMutation(SAVE_USER_DATA);
 
 	if (!magic) {
 		throw new Error("Magic instance not found");
@@ -14,9 +25,18 @@ export const SignUpPage = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const result = await (magic.oauth as any).getRedirectResult();
-			console.log(result);
-			const profile = JSON.stringify(result.oauth.userInfo, undefined, 2);
-			console.log(profile);
+			const profile = {
+				name: result.oauth.name,
+				email: result.oauth.email,
+				familyName: result.oauth.familyName,
+				givenName: result.oauth.givenName,
+				picture: result.oauth.picture,
+			};
+
+			// Send the profile data to the backend
+			await signUpWithMagic({
+				variables: { profile },
+			});
 		};
 		fetchData();
 	}, [magic.oauth]);
