@@ -19,5 +19,5 @@ COPY --from=builder /my-project/.next ./.next
 COPY --from=builder /my-project/node_modules ./node_modules
 COPY --from=builder /my-project/package.json ./package.json
 
-EXPOSE 3000
-CMD ["yarn", "start"]
+EXPOSE 80
+CMD ["yarn", "start","-p","80"]
