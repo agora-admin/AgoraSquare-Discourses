@@ -6,21 +6,19 @@
  * by hand and a signature change is one edit in one file.
  *
  * ─────────────────────────────────────────────────────────────────────────────
- * DELIVERY NOTE — `src/web3/abi/AgoraFacets.json` IS A PROVISIONAL SHIM.
- * The Agora facets are still being generated in the contracts repo, so this module imports a
- * hand-transcribed fragment set instead of the diamond's generated ABI. At delivery:
- *   1. `npx hardhat diamondABI` in the contracts repo,
- *   2. copy `diamondABI/diamond.json` over `src/web3/abi/DiscourseHub.json` (replacing it),
- *   3. delete `src/web3/abi/AgoraFacets.json` and change the import below to
- *      `import agoraAbi from "./abi/DiscourseHub.json"`.
- * Nothing else changes: the fragment names are the doc-of-record names.
+ * DELIVERY NOTE — the ABI is now the GENERATED one, not a shim.
+ * `src/web3/abi/AgoraFacets.json` is a verbatim copy of `diamondABI/diamond.json` from the
+ * contracts repo (`npx hardhat diamondABI`, 132 functions / 42 events), taken from the same
+ * commit that deployed the diamond to Ethereum Sepolia at
+ * `0x8FC47550FDD04D3CeF8CC87CBF05BeD2F197e704`. Regenerate it the same way whenever the
+ * facets change; never hand-edit it.
  *
- * PROVISIONAL DETAIL TO RE-VERIFY AT DELIVERY — `createDiscussion` ARGUMENT ORDER.
- * `docs/eng/03` §3.3 freezes seven arguments; `docs/PRD.md` §3.1 X2 adds `uint96 _goal` and
- * X3 adds `uint8 _venueKind` + `bytes32 _venueRefHash` without restating the order.
- * `buildCreateDiscussionArgs` appends the three PRD additions after the seven eng/03
- * arguments — the only order both documents can be read as agreeing on. If the shipped facet
- * uses a different order, that function is the single edit.
+ * This replaced a hand-transcribed fragment set whose names and signatures had drifted from
+ * what the contracts actually expose. The drift was not cosmetic: seven signatures disagreed
+ * (market ids are `bytes32`, not `uint256`; `createAgoraMarket` takes a `bytes32` rules hash,
+ * not a `string` URI; `getAgoraPosition` returns a tuple array and a bool) and nine functions
+ * the module called did not exist on chain at all. Anything still calling a name that is not
+ * in the generated ABI will fail to prepare a transaction.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -75,14 +73,20 @@ export interface AgoraAttestation {
 
 export interface AgoraOdds {
     pools: BigNumber[];
+    /** `getAgoraPool`'s second return value: the market's whole stake */
+    totalStaked: BigNumber;
+    /** pools[i] / totalStaked, in basis points; 0 for every outcome while the pool is empty */
     impliedProbBps: number[];
+    /** parimutuel payout per unit staked on outcome i, scaled by 10 000 */
     payoutPerEth: BigNumber[];
 }
 
 export interface AgoraPosition {
+    /** indexed by outcome; unset entries mean nothing staked on that outcome */
     stakePerOutcome: BigNumber[];
     stakedTotal: BigNumber;
-    firstStakeTS: number;
+    /** `getAgoraPosition`'s third return value — whether this account has staked at all */
+    hasPosition: boolean;
 }
 
 export const mapParticipants = (raw: any): AgoraParticipant[] =>
@@ -115,25 +119,39 @@ export const mapAttestation = (raw: any): AgoraAttestation => {
     };
 };
 
+/**
+ * `AgoraMarketFacet.getAgoraPool(marketId) -> (uint96[] pools, uint256 totalStaked)`.
+ * There is no on-chain odds view — the implied probability is a property of the pool, so it is
+ * derived here rather than read.
+ */
 export const mapOdds = (raw: any): AgoraOdds => {
-    const [pools, impliedProbBps, payoutPerEth] = (raw ?? []) as [BigNumber[], number[], BigNumber[]];
-    return {
-        pools: pools ?? [],
-        impliedProbBps: (impliedProbBps ?? []).map((n) => Number(n)),
-        payoutPerEth: payoutPerEth ?? [],
-    };
+    const [pools, totalStaked] = (raw ?? []) as [BigNumber[] | undefined, BigNumber | undefined];
+    const poolList = (pools ?? []).map((p) => BigNumber.from(p));
+    const total = BigNumber.from(totalStaked ?? 0);
+    const impliedProbBps = poolList.map((p) => (total.isZero() ? 0 : Number(p.mul(10000).div(total))));
+    // Parimutuel: if outcome i wins, every unit staked on i receives total / pools[i].
+    const payoutPerEth = poolList.map((p) => (p.isZero() ? BigNumber.from(0) : total.mul(10000).div(p)));
+    return { pools: poolList, totalStaked: total, impliedProbBps, payoutPerEth };
 };
 
+/**
+ * `AgoraMarketFacet.getAgoraPosition(marketId, account) -> (Position[] positions, uint256
+ * stakedTotal, bool hasPosition)`, where `Position` is `{ uint8 outcome, uint96 amount }`.
+ */
 export const mapPosition = (raw: any): AgoraPosition => {
-    const [stakePerOutcome, stakedTotal, firstStakeTS] = (raw ?? []) as [
-        BigNumber[],
-        BigNumber,
-        BigNumber | number
+    const [positions, stakedTotal, hasPosition] = (raw ?? []) as [
+        Array<{ outcome: BigNumber | number; amount: BigNumber }> | undefined,
+        BigNumber | undefined,
+        boolean | undefined
     ];
+    const stakePerOutcome: BigNumber[] = [];
+    for (const entry of positions ?? []) {
+        stakePerOutcome[Number(entry?.outcome ?? 0)] = BigNumber.from(entry?.amount ?? 0);
+    }
     return {
-        stakePerOutcome: stakePerOutcome ?? [],
-        stakedTotal: stakedTotal ?? BigNumber.from(0),
-        firstStakeTS: Number(firstStakeTS ?? 0),
+        stakePerOutcome,
+        stakedTotal: BigNumber.from(stakedTotal ?? 0),
+        hasPosition: Boolean(hasPosition),
     };
 };
 
@@ -174,8 +192,12 @@ export const buildCreateDiscussionArgs = (input: CreateDiscussionInput) =>
         input.description,
         input.discussionKind,
         input.charityPercent,
-        input.timeDurationSeconds,
+        // Order verified against the generated ABI (`AgoraDiscussionFacet.createDiscussion`):
+        // `uint96 _goal` comes before `uint256 _timeDuration`. The provisional shim had these two
+        // the other way round, which would have written the duration into the goal field and
+        // truncated it to 96 bits.
         input.goalWei,
+        input.timeDurationSeconds,
         input.venueKind,
         input.venueRefHash || ZERO_HASH,
     ] as const;
@@ -321,16 +343,18 @@ export const useAgoraMarketsByProposal = (
     const read = useContractRead({
         address,
         abi: agoraAbi as any,
-        functionName: "getAgoraMarketsByProposal",
+        functionName: "getMarketIdsByProp",
         args: [BigNumber.from(propId ?? 0)],
         enabled: active,
         watch: true,
     } as any);
 
+    // Market ids are `bytes32` question hashes, not integers — every market call takes one as its
+    // first argument, so keeping the hex string is what makes the id usable downstream.
     const marketIds = useMemo(
         () =>
             active && !read.isError && read.data
-                ? (read.data as any[]).map((id) => Number(id))
+                ? (read.data as unknown[]).map((id) => String(id))
                 : [],
         [active, read.data, read.isError]
     );
@@ -338,15 +362,15 @@ export const useAgoraMarketsByProposal = (
     return { marketIds, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
 };
 
-export const useAgoraOdds = (marketId: number | undefined, enabled = true) => {
+export const useAgoraOdds = (marketId: string | undefined, enabled = true) => {
     const address = useAgoraAddress();
-    const active = Boolean(address) && enabled && marketId !== undefined && marketId !== null;
+    const active = Boolean(address) && enabled && Boolean(marketId);
 
     const read = useContractRead({
         address,
         abi: agoraAbi as any,
-        functionName: "getAgoraOdds",
-        args: [BigNumber.from(marketId ?? 0)],
+        functionName: "getAgoraPool",
+        args: [marketId],
         enabled: active,
         watch: true,
     } as any);
@@ -360,18 +384,18 @@ export const useAgoraOdds = (marketId: number | undefined, enabled = true) => {
 };
 
 export const useAgoraPosition = (
-    marketId: number | undefined,
+    marketId: string | undefined,
     account: string | undefined,
     enabled = true
 ) => {
     const address = useAgoraAddress();
-    const active = Boolean(address) && enabled && Boolean(account) && marketId !== undefined;
+    const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
 
     const read = useContractRead({
         address,
         abi: agoraAbi as any,
         functionName: "getAgoraPosition",
-        args: [BigNumber.from(marketId ?? 0), account as `0x${string}`],
+        args: [marketId, account],
         enabled: active,
         watch: true,
     } as any);
@@ -623,16 +647,20 @@ export const useConfirmParticipant = (propId: number | string | undefined, enabl
 export const AGORA_WRITE_NAMES = [
     "setCampaignVenue",
     "markCampaignFailed",
+    "setParticipantCharity",
     "createAgoraMarket",
-    "stakeOnOutcome",
+    // "stakeOnOutcome" was not a real function; the facet's writer is `stake(bytes32,uint8)`.
+    "stake",
     "syncMarketLock",
     "submitResolution",
     "challengeResolution",
-    "resolveChallenge",
+    // `resolveChallenge` was a phantom: a challenge is finalised by `finalizeResolution`.
     "finalizeResolution",
-    "voidMarket",
-    "claimAgora",
-    "claimAgoraChallengeBond",
+    // `voidMarket` was a phantom: an unresolvable market is voided by `resolveVoid`.
+    "resolveVoid",
+    // `claimAgora` / `claimAgoraChallengeBond` were phantoms; these are the deployed names.
+    "claim",
+    "claimChallengeBond",
 ] as const;
 
 export type AgoraWriteName = (typeof AGORA_WRITE_NAMES)[number];
