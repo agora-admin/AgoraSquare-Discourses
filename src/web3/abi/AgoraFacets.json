@@ -1,0 +1,307 @@
+[
+  {
+    "type": "function",
+    "name": "createDiscussion",
+    "stateMutability": "payable",
+    "inputs": [
+      { "internalType": "string[]", "name": "_handles", "type": "string[]" },
+      { "internalType": "address[]", "name": "_addresses", "type": "address[]" },
+      { "internalType": "uint8[]", "name": "_roles", "type": "uint8[]" },
+      { "internalType": "string", "name": "_description", "type": "string" },
+      { "internalType": "uint8", "name": "_discussionKind", "type": "uint8" },
+      { "internalType": "uint8", "name": "_charityPercent", "type": "uint8" },
+      { "internalType": "uint256", "name": "_timeDuration", "type": "uint256" },
+      { "internalType": "uint96", "name": "_goal", "type": "uint96" },
+      { "internalType": "uint8", "name": "_venueKind", "type": "uint8" },
+      { "internalType": "bytes32", "name": "_venueRefHash", "type": "bytes32" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "setCampaignVenue",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_venueKind", "type": "uint8" },
+      { "internalType": "bytes32", "name": "_venueRefHash", "type": "bytes32" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "markCampaignFailed",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getDiscourseFormat",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }]
+  },
+  {
+    "type": "function",
+    "name": "getDiscussionKind",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }]
+  },
+  {
+    "type": "function",
+    "name": "getCampaignGoal",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }]
+  },
+  {
+    "type": "function",
+    "name": "getParticipantCount",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "getParticipants",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "struct ParticipantView[]",
+        "name": "",
+        "type": "tuple[]",
+        "components": [
+          { "internalType": "address", "name": "addr", "type": "address" },
+          { "internalType": "bytes32", "name": "handleHash", "type": "bytes32" },
+          { "internalType": "uint8", "name": "role", "type": "uint8" },
+          { "internalType": "bool", "name": "confirmed", "type": "bool" },
+          { "internalType": "address", "name": "charity", "type": "address" },
+          { "internalType": "bool", "name": "withdrawn", "type": "bool" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getParticipant",
+    "stateMutability": "view",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_index", "type": "uint256" }
+    ],
+    "outputs": [
+      {
+        "internalType": "struct ParticipantView",
+        "name": "",
+        "type": "tuple",
+        "components": [
+          { "internalType": "address", "name": "addr", "type": "address" },
+          { "internalType": "bytes32", "name": "handleHash", "type": "bytes32" },
+          { "internalType": "uint8", "name": "role", "type": "uint8" },
+          { "internalType": "bool", "name": "confirmed", "type": "bool" },
+          { "internalType": "address", "name": "charity", "type": "address" },
+          { "internalType": "bool", "name": "withdrawn", "type": "bool" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "confirmParticipant",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "participantWithdraw",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_index", "type": "uint256" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getParticipantWithdrawAmount",
+    "stateMutability": "view",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_index", "type": "uint256" }
+    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }]
+  },
+
+  {
+    "type": "function",
+    "name": "createAgoraMarket",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_classId", "type": "uint8" },
+      { "internalType": "uint8", "name": "_templateId", "type": "uint8" },
+      { "internalType": "bytes32[]", "name": "_params", "type": "bytes32[]" },
+      { "internalType": "uint8", "name": "_outcomeCount", "type": "uint8" },
+      { "internalType": "string", "name": "_rulesURI", "type": "string" }
+    ],
+    "outputs": [{ "internalType": "uint256", "name": "marketId", "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "stakeOnOutcome",
+    "stateMutability": "payable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_marketId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_outcome", "type": "uint8" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "syncMarketLock",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getAgoraMarketCount",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "getAgoraMarketsByProposal",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_propId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }]
+  },
+  {
+    "type": "function",
+    "name": "getAgoraOutcomePools",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint256[]", "name": "pools", "type": "uint256[]" }]
+  },
+  {
+    "type": "function",
+    "name": "getAgoraOdds",
+    "stateMutability": "view",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": [
+      { "internalType": "uint256[]", "name": "pools", "type": "uint256[]" },
+      { "internalType": "uint16[]", "name": "impliedProbBps", "type": "uint16[]" },
+      { "internalType": "uint256[]", "name": "payoutPerEth", "type": "uint256[]" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getAgoraPosition",
+    "stateMutability": "view",
+    "inputs": [
+      { "internalType": "uint256", "name": "_marketId", "type": "uint256" },
+      { "internalType": "address", "name": "_account", "type": "address" }
+    ],
+    "outputs": [
+      { "internalType": "uint256[]", "name": "stakePerOutcome", "type": "uint256[]" },
+      { "internalType": "uint256", "name": "stakedTotal", "type": "uint256" },
+      { "internalType": "uint64", "name": "firstStakeTS", "type": "uint64" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "submitResolution",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_marketId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_outcome", "type": "uint8" },
+      { "internalType": "string", "name": "_evidenceURI", "type": "string" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "challengeResolution",
+    "stateMutability": "payable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "resolveChallenge",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "internalType": "uint256", "name": "_marketId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_outcome", "type": "uint8" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "finalizeResolution",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "voidMarket",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "claimAgora",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "claimAgoraChallengeBond",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "uint256", "name": "_marketId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getAgoraClaimable",
+    "stateMutability": "view",
+    "inputs": [
+      { "internalType": "uint256", "name": "_marketId", "type": "uint256" },
+      { "internalType": "address", "name": "_account", "type": "address" }
+    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }]
+  },
+
+  {
+    "type": "function",
+    "name": "getAttestation",
+    "stateMutability": "view",
+    "inputs": [
+      { "internalType": "uint256", "name": "_propId", "type": "uint256" },
+      { "internalType": "uint8", "name": "_kind", "type": "uint8" }
+    ],
+    "outputs": [
+      {
+        "internalType": "struct Attestation",
+        "name": "",
+        "type": "tuple",
+        "components": [
+          { "internalType": "bytes32", "name": "contentHash", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "metaHash", "type": "bytes32" },
+          { "internalType": "address", "name": "attestor", "type": "address" },
+          { "internalType": "uint64", "name": "anchoredAt", "type": "uint64" },
+          { "internalType": "uint8", "name": "revision", "type": "uint8" },
+          { "internalType": "bool", "name": "revoked", "type": "bool" }
+        ]
+      }
+    ]
+  }
+]

@@ -23,6 +23,7 @@ import VenueCard from "../../components/cards/VenueCard";
 import DateCardTwitter from "../../components/cards/DateCardTwitter";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
+import RosterStrip from "../../components/campaign/RosterStrip";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -144,6 +145,13 @@ const DiscoursePage = () => {
                     {!loading && discourseData && !error &&
                     <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
                         <DiscourseState discourseData={discourseData} propId={discourseData?.getDiscourseById.propId} chainId={discourseData?.getDiscourseById.chainId} slotConfirmed={slotConfirmed} />
+
+                        {/* Additive: the roster strip for a multi-participant campaign. It renders
+                            nothing unless `getDiscourseFormat(propId) == 1`, so a legacy proposal's
+                            page is unchanged (docs/ux/01 §5.2). */}
+                        <div className="sm:px-8">
+                            <RosterStrip propId={discourseData?.getDiscourseById.propId} />
+                        </div>
 
                         <div className="flex flex-col gap-5">
                             {/* Top Section */}
