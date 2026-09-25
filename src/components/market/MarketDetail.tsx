@@ -99,7 +99,8 @@ export const MarketDetail = ({ marketId, chainId, discourse, onBack }: MarketDet
 
     const { market, refetch: refetchMarket } = useAgoraMarket(marketId);
     const { config } = useAgoraConfig();
-    const { odds, refetch: refetchOdds } = useAgoraOdds(marketId);
+    // The market's snapshotted fee must reach the payout maths, or the indicative return is gross.
+    const { odds, refetch: refetchOdds } = useAgoraOdds(marketId, true, market?.feeBpsSnapshot ?? 0);
     const { position, refetch: refetchPosition } = useAgoraPosition(marketId, walletAddress || undefined);
     const { resolution } = useAgoraResolution(marketId);
     const { challenge, refetch: refetchChallenge } = useAgoraChallenge(marketId);

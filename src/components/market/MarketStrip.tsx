@@ -228,7 +228,8 @@ const MarketCard = ({
     const { loggedIn, walletAddress } = useContext(AppContext);
 
     const { market } = useAgoraMarket(marketId);
-    const { odds } = useAgoraOdds(marketId);
+    // The market's snapshotted fee must reach the payout maths, or the indicative return is gross.
+    const { odds } = useAgoraOdds(marketId, true, market?.feeBpsSnapshot ?? 0);
     const { stakingOpen } = useAgoraStakingOpen(marketId);
     const { position } = useAgoraPosition(marketId, walletAddress || undefined);
     const { resolution } = useAgoraResolution(marketId);

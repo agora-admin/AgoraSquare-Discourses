@@ -124,13 +124,22 @@ export const mapAttestation = (raw: any): AgoraAttestation => {
  * There is no on-chain odds view — the implied probability is a property of the pool, so it is
  * derived here rather than read.
  */
-export const mapOdds = (raw: any): AgoraOdds => {
+export const mapOdds = (raw: any, feeBps = 0): AgoraOdds => {
     const [pools, totalStaked] = (raw ?? []) as [BigNumber[] | undefined, BigNumber | undefined];
     const poolList = (pools ?? []).map((p) => BigNumber.from(p));
     const total = BigNumber.from(totalStaked ?? 0);
     const impliedProbBps = poolList.map((p) => (total.isZero() ? 0 : Number(p.mul(10000).div(total))));
-    // Parimutuel: if outcome i wins, every unit staked on i receives total / pools[i].
-    const payoutPerEth = poolList.map((p) => (p.isZero() ? BigNumber.from(0) : total.mul(10000).div(p)));
+    // Parimutuel, matching `LibAgoraMarket.payoutShare` exactly: if outcome i wins, every unit
+    // staked on i receives `1 + (T - fee - W) / W`, i.e. `(T - fee) / W` where `W = pools[i]` and
+    // `fee = T * feeBps / 10000`. The fee must be subtracted before the division — computing plain
+    // `T / W` reports the gross return and overstates the payout by exactly the fee (on a 4 %
+    // market with a 4:1 pool, 4.00x instead of the 3.84x the chain actually pays). `feeBps` comes
+    // from `getAgoraMarket().feeBpsSnapshot`, which is snapshotted at creation.
+    const fee = total.mul(BigNumber.from(feeBps)).div(10000);
+    const distributable = total.sub(fee);
+    const payoutPerEth = poolList.map((p) =>
+        p.isZero() ? BigNumber.from(0) : distributable.mul(10000).div(p)
+    );
     return { pools: poolList, totalStaked: total, impliedProbBps, payoutPerEth };
 };
 
@@ -362,7 +371,11 @@ export const useAgoraMarketsByProposal = (
     return { marketIds, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
 };
 
-export const useAgoraOdds = (marketId: string | undefined, enabled = true) => {
+/**
+ * `feeBps` must be the market's `feeBpsSnapshot`. It defaults to 0 so a caller that has not read
+ * the market yet still gets a value, but the payout is then overstated by the fee — pass it.
+ */
+export const useAgoraOdds = (marketId: string | undefined, enabled = true, feeBps = 0) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
 
@@ -376,8 +389,8 @@ export const useAgoraOdds = (marketId: string | undefined, enabled = true) => {
     } as any);
 
     const odds = useMemo(
-        () => (active && !read.isError && read.data ? mapOdds(read.data) : null),
-        [active, read.data, read.isError]
+        () => (active && !read.isError && read.data ? mapOdds(read.data, feeBps) : null),
+        [active, read.data, read.isError, feeBps]
     );
 
     return { odds, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
