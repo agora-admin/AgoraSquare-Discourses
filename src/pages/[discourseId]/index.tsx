@@ -24,6 +24,7 @@ import DateCardTwitter from "../../components/cards/DateCardTwitter";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
 import RosterStrip from "../../components/campaign/RosterStrip";
+import MarketStrip from "../../components/market/MarketStrip";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -151,6 +152,17 @@ const DiscoursePage = () => {
                             page is unchanged (docs/ux/01 §5.2). */}
                         <div className="sm:px-8">
                             <RosterStrip propId={discourseData?.getDiscourseById.propId} />
+                        </div>
+
+                        {/* Additive: the forecasts section (docs/ux/03 §B.3). It renders nothing
+                            unless `getDiscourseFormat(propId) == 1`, and it reads no dispute flag
+                            from the discussion: a market's state is its own (H12). */}
+                        <div className="sm:px-8">
+                            <MarketStrip
+                                propId={discourseData?.getDiscourseById.propId}
+                                chainId={discourseData?.getDiscourseById.chainId}
+                                discourseData={discourseData?.getDiscourseById}
+                            />
                         </div>
 
                         <div className="flex flex-col gap-5">

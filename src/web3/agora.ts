@@ -427,6 +427,322 @@ export const useAgoraMarketCount = () => {
 };
 
 // ---------------------------------------------------------------------------
+// Market reads. Added for the markets surfaces (docs/ux/03 §B.3–§B.5): the four
+// hooks above cover markets-by-proposal, pools, positions and the market count, and these
+// add the market record, the module config, the resolution record, the challenge record,
+// the claimable amount and the chain's own staking-open predicate. Every one of them is a
+// read of the generated ABI, so no component builds a contract call by hand.
+// ---------------------------------------------------------------------------
+
+/** `MarketState` from `LibAgoraMarket.sol`. `LOCKED` is deliberately not a stored state. */
+export const MARKET_STATE = {
+    NONE: 0,
+    OPEN: 1,
+    RESOLVED: 2,
+    CHALLENGED: 3,
+    FINAL: 4,
+    VOID: 5,
+} as const;
+
+/** `MarketConfig` from `LibAgoraMarket.sol` — the module's live risk limits and switches. */
+export interface AgoraMarketConfig {
+    /** wei; 0 leaves only the `msg.value > 0` floor in place */
+    minStake: BigNumber;
+    /** wei; 0 = no per-account cap */
+    maxStakePerAccount: BigNumber;
+    /** wei; 0 = no cap at all (and therefore no computable liquidity fraction) */
+    poolCap: BigNumber;
+    /** wei; 0 makes challenging free */
+    challengeBond: BigNumber;
+    challengeWindow: number;
+    resolutionWindow: number;
+    challengeTimeout: number;
+    /** a market resolving with fewer distinct stakers must void */
+    minDistinctPositions: number;
+    /** the fee new markets snapshot; existing markets carry their own `feeBpsSnapshot` */
+    marketFeeBps: number;
+    /** gates `claim` only — never `refundVoid`, never `claimChallengeBond` */
+    claimEnabled: boolean;
+    /** blocks new stakes only — never claims, refunds or resolution */
+    stakingPaused: boolean;
+}
+
+export const mapMarketConfig = (raw: any): AgoraMarketConfig => {
+    const r = raw ?? {};
+    const amount = (v: any) => BigNumber.from(v ?? 0);
+    return {
+        minStake: amount(r.minStake ?? r[0]),
+        maxStakePerAccount: amount(r.maxStakePerAccount ?? r[1]),
+        poolCap: amount(r.poolCap ?? r[2]),
+        challengeBond: amount(r.challengeBond ?? r[3]),
+        challengeWindow: Number(r.challengeWindow ?? r[4] ?? 0),
+        resolutionWindow: Number(r.resolutionWindow ?? r[5] ?? 0),
+        challengeTimeout: Number(r.challengeTimeout ?? r[6] ?? 0),
+        minDistinctPositions: Number(r.minDistinctPositions ?? r[7] ?? 0),
+        marketFeeBps: Number(r.marketFeeBps ?? r[8] ?? 0),
+        claimEnabled: Boolean(r.claimEnabled ?? r[9] ?? false),
+        stakingPaused: Boolean(r.stakingPaused ?? r[10] ?? false),
+    };
+};
+
+export const useAgoraConfig = () => {
+    const address = useAgoraAddress();
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getAgoraConfig",
+        args: [],
+        enabled: Boolean(address),
+        watch: true,
+    } as any);
+
+    const config = useMemo(
+        () => (read.data && !read.isError ? mapMarketConfig(read.data) : null),
+        [read.data, read.isError]
+    );
+
+    return { config, isLoading: read.isLoading, isError: read.isError, refetch: read.refetch };
+};
+
+/**
+ * `getAgoraMarket(bytes32) -> AgoraMarket`. A market that does not exist returns a zeroed
+ * record whose `state` is `MARKET_STATE.NONE`, which is why `state` is checked before anything
+ * else is believed. There is no `winningOutcome` here: the submitted outcome lives in the
+ * resolution record and is only meaningful once `state == FINAL`.
+ */
+export interface AgoraMarketView {
+    propId: number;
+    classId: number;
+    templateId: number;
+    /** the derived question hash, i.e. the market id */
+    questionHash: string;
+    /** 2..8; the ordered labels live in the rules document, never on chain */
+    outcomeCount: number;
+    state: number;
+    createdAt: number;
+    /** staking closes here; only ever moves earlier */
+    lockTS: number;
+    resolutionDeadline: number;
+    /** the fee frozen at creation, in basis points */
+    feeBpsSnapshot: number;
+    totalStaked: BigNumber;
+    /** distinct accounts that have staked — the on-chain participant count */
+    distinctStakers: number;
+    /** keccak256 of the rules document URI; the URI itself is never stored */
+    rulesURIHash: string;
+}
+
+export const mapMarket = (raw: any): AgoraMarketView => {
+    const r = raw ?? {};
+    return {
+        propId: Number(r.propId ?? r[0] ?? 0),
+        classId: Number(r.classId ?? r[1] ?? 0),
+        templateId: Number(r.templateId ?? r[2] ?? 0),
+        questionHash: String(r.questionHash ?? r[3] ?? ZERO_HASH),
+        outcomeCount: Number(r.outcomeCount ?? r[4] ?? 0),
+        state: Number(r.state ?? r[5] ?? 0),
+        createdAt: Number(r.createdAt ?? r[6] ?? 0),
+        lockTS: Number(r.lockTS ?? r[7] ?? 0),
+        resolutionDeadline: Number(r.resolutionDeadline ?? r[8] ?? 0),
+        feeBpsSnapshot: Number(r.feeBpsSnapshot ?? r[9] ?? 0),
+        totalStaked: BigNumber.from(r.totalStaked ?? r[10] ?? 0),
+        distinctStakers: Number(r.distinctStakers ?? r[11] ?? 0),
+        rulesURIHash: String(r.rulesURIHash ?? r[12] ?? ZERO_HASH),
+    };
+};
+
+export const useAgoraMarket = (marketId: string | undefined, enabled = true) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getAgoraMarket",
+        args: [marketId],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    const market = useMemo(
+        () => (active && !read.isError && read.data ? mapMarket(read.data) : null),
+        [active, read.data, read.isError]
+    );
+
+    return { market, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
+};
+
+/** `getAgoraResolution(bytes32) -> Resolution`. `winningOutcome` is a submission until FINAL. */
+export interface AgoraResolutionView {
+    resolver: string;
+    winningOutcome: number;
+    submittedAt: number;
+    challengeDeadline: number;
+    /** keccak256 of the evidence URI; non-zero by construction once submitted */
+    evidenceURIHash: string;
+}
+
+export const mapResolution = (raw: any): AgoraResolutionView => {
+    const r = raw ?? {};
+    return {
+        resolver: String(r.resolver ?? r[0] ?? ZERO_ADDRESS),
+        winningOutcome: Number(r.winningOutcome ?? r[1] ?? 0),
+        submittedAt: Number(r.submittedAt ?? r[2] ?? 0),
+        challengeDeadline: Number(r.challengeDeadline ?? r[3] ?? 0),
+        evidenceURIHash: String(r.evidenceURIHash ?? r[4] ?? ZERO_HASH),
+    };
+};
+
+export const useAgoraResolution = (marketId: string | undefined, enabled = true) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getAgoraResolution",
+        args: [marketId],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    const resolution = useMemo(
+        () => (active && !read.isError && read.data ? mapResolution(read.data) : null),
+        [active, read.data, read.isError]
+    );
+
+    return {
+        resolution,
+        isLoading: active && read.isLoading,
+        isError: read.isError,
+        refetch: read.refetch,
+    };
+};
+
+/** `getAgoraChallenge(bytes32) -> (challenger, bond, challengeDeadline, refundable)`. */
+export interface AgoraChallengeView {
+    challenger: string;
+    bond: BigNumber;
+    challengeDeadline: number;
+    /** whether `claimChallengeBond` would succeed right now — only true on a VOID market */
+    refundable: boolean;
+}
+
+export const mapChallenge = (raw: any): AgoraChallengeView => {
+    const r = raw ?? [];
+    return {
+        challenger: String(r.challenger ?? r[0] ?? ZERO_ADDRESS),
+        bond: BigNumber.from(r.bond ?? r[1] ?? 0),
+        challengeDeadline: Number(r.challengeDeadline ?? r[2] ?? 0),
+        refundable: Boolean(r.refundable ?? r[3] ?? false),
+    };
+};
+
+export const useAgoraChallenge = (marketId: string | undefined, enabled = true) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getAgoraChallenge",
+        args: [marketId],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    const challenge = useMemo(
+        () => (active && !read.isError && read.data ? mapChallenge(read.data) : null),
+        [active, read.data, read.isError]
+    );
+
+    return {
+        challenge,
+        isLoading: active && read.isLoading,
+        isError: read.isError,
+        refetch: read.refetch,
+    };
+};
+
+/**
+ * `isStakingOpen(bytes32) -> bool` — the chain's own `state == OPEN && now < lockTS` predicate.
+ * Read rather than derived from the browser clock, so a skewed client clock cannot render a
+ * market as open after it has closed.
+ */
+export const useAgoraStakingOpen = (marketId: string | undefined, enabled = true) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "isStakingOpen",
+        args: [marketId],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    return {
+        stakingOpen: active && !read.isError && read.data !== undefined ? Boolean(read.data) : null,
+        isLoading: active && read.isLoading,
+        isError: read.isError,
+        refetch: read.refetch,
+    };
+};
+
+/** `getClaimableAmount(bytes32, address)` — 0 when nothing is due, already claimed, or unsettled. */
+export const useAgoraClaimable = (
+    marketId: string | undefined,
+    account: string | undefined,
+    enabled = true
+) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getClaimableAmount",
+        args: [marketId, account],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    return {
+        amount: active && !read.isError && read.data !== undefined ? BigNumber.from(read.data as any) : null,
+        isLoading: active && read.isLoading,
+        isError: read.isError,
+        refetch: read.refetch,
+    };
+};
+
+/** `hasClaimedMarket(bytes32, address)` — one claim per market per address, ever. */
+export const useAgoraHasClaimed = (
+    marketId: string | undefined,
+    account: string | undefined,
+    enabled = true
+) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "hasClaimedMarket",
+        args: [marketId, account],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    return {
+        claimed: active && !read.isError && read.data !== undefined ? Boolean(read.data) : null,
+        isLoading: active && read.isLoading,
+        isError: read.isError,
+        refetch: read.refetch,
+    };
+};
+
+// ---------------------------------------------------------------------------
 // Legacy envelope reads, needed by the create flow's post-signing check and by the record page.
 // They use the diamond's existing ABI; nothing here is an Agora fragment.
 // ---------------------------------------------------------------------------
@@ -659,7 +975,12 @@ export const AGORA_WRITE_NAMES = [
     // `voidMarket` was a phantom: an unresolvable market is voided by `resolveVoid`.
     "resolveVoid",
     // `claimAgora` / `claimAgoraChallengeBond` were phantoms; these are the deployed names.
+    // The deployed claim facet splits the two entitlements in two functions: `claim` pays a
+    // FINAL market's winners and is the only path gated by `claimEnabled`, while `refundVoid`
+    // returns a VOID market's principal and is never gated (docs/ux/03 §B.11.4). A refund
+    // therefore cannot be routed through `claim`, which reverts on a VOID market.
     "claim",
+    "refundVoid",
     "claimChallengeBond",
 ] as const;
 
