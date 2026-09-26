@@ -12,6 +12,7 @@
  */
 
 import { ApolloLink, Observable } from "@apollo/client";
+import type { Operation } from "@apollo/client";
 import {
     DEMO_DISCOURSE,
     DEMO_DISCOURSES,
@@ -19,46 +20,60 @@ import {
     DEMO_SESSIONS,
 } from "./demoMode";
 
-const resolveFor = (operationName: string, variables: Record<string, unknown>): unknown | undefined => {
-    switch (operationName) {
-        case "GetDiscourses":
-        case "GetDiscoursesByChainID":
-            return { getDiscourses: DEMO_DISCOURSES, getDiscoursesByChainID: DEMO_DISCOURSES };
-        case "GetDiscourseById":
-            // The `GET_DISCOURSE_BY_ID` document selects two root fields in one operation, so this
-            // response must carry both. Omitting `getSlotById` leaves Apollo waiting on a field that
-            // never arrives and the page stays on its loading screen.
-            return { getDiscourseById: DEMO_DISCOURSE, getSlotById: null };
-        case "GetDiscourseByProp":
-            return { getDiscourseByProp: DEMO_DISCOURSE };
-        case "GetSessions":
-            return { getSessions: DEMO_SESSIONS };
-        case "GetEvent":
-            // The scheduling query. Returning an empty event lets the page fall through to the
-            // shell rather than blocking on a request that will never answer.
-            return { getEvent: null };
-        case "Ping":
-            return { ping: "demo" };
-        default:
-            void variables;
-            return undefined;
+/**
+ * What the demo answers, matched on the **root fields the query selects** rather than on the
+ * operation name.
+ *
+ * Matching by name was the first attempt and it silently never fired, which left the page on its
+ * loading spinner: an operation whose `operationName` is absent or reshaped matches nothing, the
+ * link forwards to an endpoint that does not resolve, and the query stays pending forever. The
+ * selected fields are what the response actually has to satisfy, so they are the honest key.
+ */
+const FIXTURES = {
+    getDiscourses: DEMO_DISCOURSES,
+    getDiscoursesByChainID: DEMO_DISCOURSES,
+    getDiscourseById: DEMO_DISCOURSE,
+    getDiscourseByProp: DEMO_DISCOURSE,
+    getSlotById: null,
+    getSessions: DEMO_SESSIONS,
+    getEvent: null,
+    ping: "demo",
+} as const;
+
+const selectedRootFields = (operation: Operation): string[] =>
+    operation.query.definitions.flatMap((definition) => {
+        if (definition.kind !== "OperationDefinition") return [];
+        return definition.selectionSet.selections.flatMap((selection) =>
+            selection.kind === "Field" ? [selection.name.value] : []
+        );
+    });
+
+const resolveFor = (operation: Operation): Record<string, unknown> | undefined => {
+    const fields = selectedRootFields(operation);
+    const payload: Record<string, unknown> = {};
+    let matched = 0;
+    for (const field of fields) {
+        if (Object.prototype.hasOwnProperty.call(FIXTURES, field)) {
+            payload[field] = (FIXTURES as Record<string, unknown>)[field];
+            matched += 1;
+        }
     }
+    return matched > 0 ? payload : undefined;
 };
 
 export const demoLink = new ApolloLink((operation, forward) => {
-    const payload = resolveFor(operation.operationName, operation.variables ?? {});
+    const payload = resolveFor(operation);
     if (payload === undefined) {
         return forward(operation);
     }
 
-    operation.setContext({ demo: true });
     return new Observable((observer) => {
         // One tick, so the components exercise their real loading path before resolving. A fixture
         // that resolves synchronously would hide the loading states the design specifies.
         const timer = setTimeout(() => {
             observer.next({ data: payload });
             observer.complete();
-        }, 120);
+        }, 60);
         return () => clearTimeout(timer);
     });
 });
