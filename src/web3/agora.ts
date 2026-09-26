@@ -319,6 +319,7 @@ export const useAgoraParticipants = (
 ) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && propId !== undefined && propId !== null;
+    const demo = demoChainState(propId);
 
     const read = useContractRead({
         address,
@@ -329,15 +330,16 @@ export const useAgoraParticipants = (
         watch: true,
     } as any);
 
-    const participants = useMemo(
-        () => (active && !read.isError && read.data ? mapParticipants(read.data) : []),
-        [active, read.data, read.isError]
-    );
+    const participants = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return demo.participants as unknown as AgoraParticipant[];
+        return active && !read.isError && read.data ? mapParticipants(read.data) : [];
+    }, [demo, active, read.data, read.isError]);
 
     return {
         participants,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo ? false : read.isError,
         refetch: read.refetch,
     };
 };
