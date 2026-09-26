@@ -5,7 +5,7 @@ import { useApollo } from '../lib/apollo'
 import { SessionProvider } from 'next-auth/react'
 import { HMSRoomProvider } from '@100mslive/react-sdk';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { polygon,polygonMumbai, bsc } from 'wagmi/chains'
+import { polygon, bsc } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -17,8 +17,13 @@ import ContextWrapper from '../components/utils/ContextWrapper'
 import { rpcUrl } from '../Constants'
 import Script from 'next/script'
 
+// Polygon Mumbai is deliberately absent. Polygon retired the network and Alchemy stopped serving
+// `polygon-mumbai.g.alchemy.com`, so `alchemyProvider` derived a host that no longer resolves and
+// the WebSocket it opened during `next build` failed with an unhandled ENOTFOUND, killing
+// "Collecting page data". Mumbai was already excluded from `supportedChainIds` in `Constants.ts`,
+// so the app could never switch to it anyway — this only stops configuring a chain that is gone.
 const { provider, chains, webSocketProvider } = configureChains(
-  [ polygonMumbai,polygon, bsc ],
+  [ polygon, bsc ],
   [
     alchemyProvider({ apiKey: 'Gqd71GlllOjZhCCq1FjqzKofdLig5Tww' }),
     jsonRpcProvider({
