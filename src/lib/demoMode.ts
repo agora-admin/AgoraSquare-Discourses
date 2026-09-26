@@ -237,3 +237,135 @@ export const demoChainState = (propId: number | string | undefined) =>
     DEMO_MODE && propId !== undefined && propId !== null
         ? (DEMO_CHAIN_STATE as Record<number, (typeof DEMO_CHAIN_STATE)[42]>)[Number(propId)]
         : undefined;
+
+/**
+ * `getAgoraConfig() -> MarketConfig` — the module's live limits and switches.
+ *
+ * `poolCap` and `minDistinctPositions` are both load-bearing for the demo: the first is the
+ * denominator of the 20 %-of-cap floor, the second the participation floor, and a share is only
+ * rendered when both are met (`marketDisplay.forecastSuppressionReason`).
+ */
+export const DEMO_MARKET_CONFIG = {
+    minStake: "10000000000000000",
+    maxStakePerAccount: "500000000000000000",
+    poolCap: "2000000000000000000",
+    challengeBond: "50000000000000000",
+    challengeWindow: 172800,
+    resolutionWindow: 172800,
+    challengeTimeout: 259200,
+    minDistinctPositions: 2,
+    marketFeeBps: 400,
+    claimEnabled: true,
+    stakingPaused: false,
+};
+
+/**
+ * The market reads, per propId and in creation order.
+ *
+ * `MarketStrip` asks the chain for the market ids linked to a discussion, then one read per market
+ * for its record, its pools, the chain's own staking-open predicate, the viewer's position and —
+ * on the detail panel — the resolution, the challenge record and anything claimable. The diamonds
+ * this frontend is configured for revert every Agora function, so with no fixture the section
+ * renders "No forecasts on this discussion yet." on a discussion that plainly has forecasts.
+ *
+ * The amounts are sized so the honesty rules do not bite. `marketDisplay.forecastSuppressionReason`
+ * withholds the share below 20 % of `poolCap`, without a participant count, and without a cap, so
+ * the first market stakes 1.5 against a cap of 2 with 3 stated stakers: the floor is 0.4, the count
+ * clears `minDistinctPositions`, and the share renders. Both of its outcomes carry a stake, so the
+ * bar is two segments rather than one. The second market carries three outcomes, all staked, and
+ * has closed without a result yet.
+ *
+ * Every hash is a well-formed `bytes32` (the ids and rules hashes are keccak256 of a demo label),
+ * and each market record uses the struct's own field names from `LibAgoraMarket.sol`.
+ */
+export const DEMO_MARKETS = {
+    [DEMO_PROP_ID]: [
+        {
+            // `getAgoraMarket(bytes32) -> AgoraMarket`
+            market: {
+                propId: DEMO_PROP_ID,
+                classId: 0,
+                templateId: 1,
+                questionHash: "0x1bea3fb70b35f9a03fd10e10a983429fb2d39a5ae405a9d931250180c964caf7",
+                outcomeCount: 2,
+                // MARKET_STATE.OPEN
+                state: 1,
+                createdAt: nowSec - 86400 * 2,
+                lockTS: nowSec + 86400 * 3,
+                resolutionDeadline: nowSec + 86400 * 5,
+                feeBpsSnapshot: 400,
+                totalStaked: "1500000000000000000",
+                distinctStakers: 3,
+                rulesURIHash: "0x8f597f99b76417167e63a3e2d537858199dadc2ee71d0c77607ab6260926cdec",
+            },
+            // `getAgoraPool(bytes32) -> (uint96[] pools, uint256 totalStaked)`. Σ pools is the
+            // market record's own `totalStaked`, which is the accounting the contract keeps.
+            pools: ["1000000000000000000", "500000000000000000"],
+            // `isStakingOpen(bytes32) -> bool`
+            stakingOpen: true,
+            // `getAgoraPosition(bytes32, address) -> (Position[], uint256, bool)`. A position
+            // belongs to an account, so this only answers once a wallet is connected.
+            position: {
+                positions: [{ outcome: 0, amount: "400000000000000000" }],
+                stakedTotal: "400000000000000000",
+                hasPosition: true,
+            },
+            // `getAgoraResolution` / `getAgoraChallenge`: nothing is submitted while forecasting.
+            resolution: null,
+            challenge: null,
+            // `getClaimableAmount` / `hasClaimedMarket`: nothing is due before a market is final.
+            claimable: "0",
+            hasClaimed: false,
+        },
+        {
+            // `getAgoraMarket(bytes32) -> AgoraMarket`
+            market: {
+                propId: DEMO_PROP_ID,
+                classId: 0,
+                templateId: 2,
+                questionHash: "0xcf61efd9aebb21d3588e2785cb1edc42d1b6ac4e1730c6b4096f9eb602f9157a",
+                outcomeCount: 3,
+                // MARKET_STATE.OPEN, with `lockTS` in the past: closed, awaiting a result.
+                state: 1,
+                createdAt: nowSec - 86400 * 5,
+                lockTS: nowSec - 3600,
+                resolutionDeadline: nowSec + 86400,
+                feeBpsSnapshot: 400,
+                totalStaked: "1500000000000000000",
+                distinctStakers: 4,
+                rulesURIHash: "0xfba5b42443f500d83c8328e22c22674f9a02a36aa954d227be22ef7a03fc28fa",
+            },
+            pools: ["500000000000000000", "500000000000000000", "500000000000000000"],
+            stakingOpen: false,
+            position: {
+                positions: [],
+                stakedTotal: "0",
+                hasPosition: false,
+            },
+            resolution: null,
+            challenge: null,
+            claimable: "0",
+            hasClaimed: false,
+        },
+    ],
+};
+
+/** The market overrides for a propId, or `undefined` when the demo has none for it. */
+export const demoMarkets = (propId: number | string | undefined) =>
+    DEMO_MODE && propId !== undefined && propId !== null
+        ? (DEMO_MARKETS as Record<number, (typeof DEMO_MARKETS)[42]>)[Number(propId)]
+        : undefined;
+
+/**
+ * The market override for one market id.
+ *
+ * The market reads are keyed by the `bytes32` question hash — that is what the diamond keys a
+ * market by, and one discussion may carry several, which is why these hooks take an id rather than
+ * a propId — so this looks up the id the caller already holds.
+ */
+export const demoMarket = (marketId: string | undefined) =>
+    DEMO_MODE && marketId
+        ? Object.values(DEMO_MARKETS)
+              .flat()
+              .find((entry) => entry.market.questionHash.toLowerCase() === marketId.toLowerCase())
+        : undefined;

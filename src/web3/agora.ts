@@ -34,7 +34,7 @@ import {
 } from "wagmi";
 import { revertToSentence } from "../helper/AgoraHelper";
 import { getContractAddressByChainId } from "../helper/ContractHelper";
-import { demoChainState } from "../lib/demoMode";
+import { DEMO_MARKET_CONFIG, DEMO_MODE, demoChainState, demoMarket, demoMarkets } from "../lib/demoMode";
 import { useDemoVenuePoint } from "../hooks/useDemoVenuePoint";
 import legacyAbi from "./abi/DiscourseHub.json";
 import agoraAbi from "./abi/AgoraFacets.json";
@@ -409,6 +409,7 @@ export const useAgoraMarketsByProposal = (
 ) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && propId !== undefined && propId !== null;
+    const demo = demoMarkets(propId);
 
     const read = useContractRead({
         address,
@@ -421,15 +422,15 @@ export const useAgoraMarketsByProposal = (
 
     // Market ids are `bytes32` question hashes, not integers — every market call takes one as its
     // first argument, so keeping the hex string is what makes the id usable downstream.
-    const marketIds = useMemo(
-        () =>
-            active && !read.isError && read.data
-                ? (read.data as unknown[]).map((id) => String(id))
-                : [],
-        [active, read.data, read.isError]
-    );
+    const marketIds = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return demo.map((entry) => entry.market.questionHash);
+        return active && !read.isError && read.data
+            ? (read.data as unknown[]).map((id) => String(id))
+            : [];
+    }, [demo, active, read.data, read.isError]);
 
-    return { marketIds, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
+    return { marketIds, isLoading: active && read.isLoading, isError: demo ? false : read.isError, refetch: read.refetch };
 };
 
 /**
@@ -439,6 +440,7 @@ export const useAgoraMarketsByProposal = (
 export const useAgoraOdds = (marketId: string | undefined, enabled = true, feeBps = 0) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -449,12 +451,13 @@ export const useAgoraOdds = (marketId: string | undefined, enabled = true, feeBp
         watch: true,
     } as any);
 
-    const odds = useMemo(
-        () => (active && !read.isError && read.data ? mapOdds(read.data, feeBps) : null),
-        [active, read.data, read.isError, feeBps]
-    );
+    const odds = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return mapOdds([demo.pools, demo.market.totalStaked], feeBps);
+        return active && !read.isError && read.data ? mapOdds(read.data, feeBps) : null;
+    }, [demo, active, read.data, read.isError, feeBps]);
 
-    return { odds, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
+    return { odds, isLoading: active && read.isLoading, isError: demo ? false : read.isError, refetch: read.refetch };
 };
 
 export const useAgoraPosition = (
@@ -464,6 +467,7 @@ export const useAgoraPosition = (
 ) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -474,12 +478,20 @@ export const useAgoraPosition = (
         watch: true,
     } as any);
 
-    const position = useMemo(
-        () => (active && !read.isError && read.data ? mapPosition(read.data) : null),
-        [active, read.data, read.isError]
-    );
+    const position = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs. A position
+        // belongs to an account, so the fixture only answers when there is one to be asked about.
+        if (demo && account)
+            return mapPosition([demo.position.positions, demo.position.stakedTotal, demo.position.hasPosition]);
+        return active && !read.isError && read.data ? mapPosition(read.data) : null;
+    }, [demo, account, active, read.data, read.isError]);
 
-    return { position, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
+    return {
+        position,
+        isLoading: active && read.isLoading,
+        isError: demo && account ? false : read.isError,
+        refetch: read.refetch,
+    };
 };
 
 export const useAgoraMarketCount = () => {
@@ -570,12 +582,13 @@ export const useAgoraConfig = () => {
         watch: true,
     } as any);
 
-    const config = useMemo(
-        () => (read.data && !read.isError ? mapMarketConfig(read.data) : null),
-        [read.data, read.isError]
-    );
+    const config = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (DEMO_MODE) return mapMarketConfig(DEMO_MARKET_CONFIG);
+        return read.data && !read.isError ? mapMarketConfig(read.data) : null;
+    }, [read.data, read.isError]);
 
-    return { config, isLoading: read.isLoading, isError: read.isError, refetch: read.refetch };
+    return { config, isLoading: read.isLoading, isError: DEMO_MODE ? false : read.isError, refetch: read.refetch };
 };
 
 /**
@@ -628,6 +641,7 @@ export const mapMarket = (raw: any): AgoraMarketView => {
 export const useAgoraMarket = (marketId: string | undefined, enabled = true) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -638,12 +652,13 @@ export const useAgoraMarket = (marketId: string | undefined, enabled = true) => 
         watch: true,
     } as any);
 
-    const market = useMemo(
-        () => (active && !read.isError && read.data ? mapMarket(read.data) : null),
-        [active, read.data, read.isError]
-    );
+    const market = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return mapMarket(demo.market);
+        return active && !read.isError && read.data ? mapMarket(read.data) : null;
+    }, [demo, active, read.data, read.isError]);
 
-    return { market, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
+    return { market, isLoading: active && read.isLoading, isError: demo ? false : read.isError, refetch: read.refetch };
 };
 
 /** `getAgoraResolution(bytes32) -> Resolution`. `winningOutcome` is a submission until FINAL. */
@@ -670,6 +685,7 @@ export const mapResolution = (raw: any): AgoraResolutionView => {
 export const useAgoraResolution = (marketId: string | undefined, enabled = true) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -680,15 +696,16 @@ export const useAgoraResolution = (marketId: string | undefined, enabled = true)
         watch: true,
     } as any);
 
-    const resolution = useMemo(
-        () => (active && !read.isError && read.data ? mapResolution(read.data) : null),
-        [active, read.data, read.isError]
-    );
+    const resolution = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return demo.resolution ? mapResolution(demo.resolution) : null;
+        return active && !read.isError && read.data ? mapResolution(read.data) : null;
+    }, [demo, active, read.data, read.isError]);
 
     return {
         resolution,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo ? false : read.isError,
         refetch: read.refetch,
     };
 };
@@ -715,6 +732,7 @@ export const mapChallenge = (raw: any): AgoraChallengeView => {
 export const useAgoraChallenge = (marketId: string | undefined, enabled = true) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -725,15 +743,16 @@ export const useAgoraChallenge = (marketId: string | undefined, enabled = true) 
         watch: true,
     } as any);
 
-    const challenge = useMemo(
-        () => (active && !read.isError && read.data ? mapChallenge(read.data) : null),
-        [active, read.data, read.isError]
-    );
+    const challenge = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook above still runs.
+        if (demo) return demo.challenge ? mapChallenge(demo.challenge) : null;
+        return active && !read.isError && read.data ? mapChallenge(read.data) : null;
+    }, [demo, active, read.data, read.isError]);
 
     return {
         challenge,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo ? false : read.isError,
         refetch: read.refetch,
     };
 };
@@ -746,6 +765,7 @@ export const useAgoraChallenge = (marketId: string | undefined, enabled = true) 
 export const useAgoraStakingOpen = (marketId: string | undefined, enabled = true) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -757,9 +777,13 @@ export const useAgoraStakingOpen = (marketId: string | undefined, enabled = true
     } as any);
 
     return {
-        stakingOpen: active && !read.isError && read.data !== undefined ? Boolean(read.data) : null,
+        stakingOpen: demo
+            ? demo.stakingOpen
+            : active && !read.isError && read.data !== undefined
+            ? Boolean(read.data)
+            : null,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo ? false : read.isError,
         refetch: read.refetch,
     };
 };
@@ -772,6 +796,7 @@ export const useAgoraClaimable = (
 ) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -783,9 +808,16 @@ export const useAgoraClaimable = (
     } as any);
 
     return {
-        amount: active && !read.isError && read.data !== undefined ? BigNumber.from(read.data as any) : null,
+        amount:
+            // See `useDiscourseFormat`: the fixture answers, the hook above still runs. An amount is
+            // owed to an account, so the fixture only answers when there is one to be asked about.
+            demo && account
+                ? BigNumber.from(demo.claimable)
+                : active && !read.isError && read.data !== undefined
+                ? BigNumber.from(read.data as any)
+                : null,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo && account ? false : read.isError,
         refetch: read.refetch,
     };
 };
@@ -798,6 +830,7 @@ export const useAgoraHasClaimed = (
 ) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && Boolean(account) && Boolean(marketId);
+    const demo = demoMarket(marketId);
 
     const read = useContractRead({
         address,
@@ -809,9 +842,15 @@ export const useAgoraHasClaimed = (
     } as any);
 
     return {
-        claimed: active && !read.isError && read.data !== undefined ? Boolean(read.data) : null,
+        claimed:
+            // See `useAgoraClaimable`: a claim is per account, so the fixture needs one.
+            demo && account
+                ? demo.hasClaimed
+                : active && !read.isError && read.data !== undefined
+                ? Boolean(read.data)
+                : null,
         isLoading: active && read.isLoading,
-        isError: read.isError,
+        isError: demo && account ? false : read.isError,
         refetch: read.refetch,
     };
 };
