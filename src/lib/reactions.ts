@@ -32,8 +32,30 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import type { TaxonomyId } from "../helper/AgoraHelper";
+import {
+    VENUE_AGORA_ROOM,
+    VENUE_IRL,
+    VENUE_KICK,
+    VENUE_TWITCH,
+    VENUE_X_SPACES,
+    VENUE_YOUTUBE_LIVE,
+    type TaxonomyId,
+} from "../helper/AgoraHelper";
 import type { ReactionTimelineData } from "./agoraFixtures";
+
+/**
+ * The service's venue vocabulary, keyed by the numeric `VENUE_*` kind the app uses everywhere else.
+ * The two must agree; the pairing is asserted by a test in the reaction service's own suite
+ * (`services/agora-reactions/src/taxonomy.ts` lists the same six names).
+ */
+const VENUE_WIRE_NAMES: Record<number, string> = {
+    [VENUE_KICK]: "kick",
+    [VENUE_TWITCH]: "twitch",
+    [VENUE_YOUTUBE_LIVE]: "youtube",
+    [VENUE_X_SPACES]: "spaces",
+    [VENUE_IRL]: "irl",
+    [VENUE_AGORA_ROOM]: "agora",
+};
 
 export type ReactionSource = "service" | "local";
 
@@ -442,10 +464,24 @@ export const submitReactions = async (batch: ReactionBatch): Promise<ReactionSub
         };
     }
 
+    // The service's wire contract wants an ISO-8601 instant and a venue *name*; the internal batch
+    // carries epoch ms and the numeric `VENUE_*` kind. The conversion happens here and only here —
+    // the rest of the module reasons in numbers, and the boundary is the single place that has to
+    // know the service's vocabulary.
+    //
+    // Sending the internal shape was a real defect, not a hypothetical one: the service rejects
+    // *every event in the batch* with `INVALID_SESSION_STARTED_AT`, verified against the running
+    // service, so every tap was silently lost while the UI reported success.
     const response = await fetch(`${base}/v1/reactions`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(batch),
+        body: JSON.stringify({
+            chainId: batch.chainId,
+            propId: batch.propId,
+            sessionStartedAt: new Date(batch.sessionStartedAt).toISOString(),
+            venue: VENUE_WIRE_NAMES[batch.venue] ?? "agora",
+            events: batch.events,
+        }),
     });
 
     if (!response.ok) {
