@@ -156,6 +156,12 @@ export const GET_DISCOURSE_BY_ID = gql`
                 confirmation
                 c_timestamp
             }
+            # The off-chain venue reference. The diamond stores only the keccak256 hash of it via
+            # LibAgoraStorage.venueRefHash, so the string itself can only come from here — and
+            # without it VenueFrame has nothing to embed and every Twitch/Kick/YouTube session
+            # renders the "link has not been published" strip. LiveShell already reads this field;
+            # it simply was never requested.
+            venue_ref
         }
 
         getSlotById(id: $id) {
