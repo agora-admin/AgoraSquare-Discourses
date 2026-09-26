@@ -80,7 +80,14 @@ const UNCERTAINTY_MS = {
 export const TWITCH_MIN_WIDTH = 400;
 /** YouTube's documented floor, and the one venue the compact shell still mounts (§6.2). */
 export const YOUTUBE_MIN_WIDTH = 200;
-/** The width at which the compact shell stops mounting third-party frames altogether. */
+/**
+ * The width below which the shell is "compact" — a copy and layout decision, not a mount gate.
+ *
+ * It selects the strip's wording (and the shell's stacked layout), and it is deliberately **not**
+ * consulted by `frameWidthAllows`: that decides on the frame's measured width alone, because the
+ * measurement already answers the only question that matters — whether the platform's documented
+ * minimum is met.
+ */
 export const COMPACT_MAX_WIDTH = 639;
 
 const HOST_SEPARATOR = /[/?#]/;
