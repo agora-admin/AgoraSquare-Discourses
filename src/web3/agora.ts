@@ -34,6 +34,7 @@ import {
 } from "wagmi";
 import { revertToSentence } from "../helper/AgoraHelper";
 import { getContractAddressByChainId } from "../helper/ContractHelper";
+import { demoChainState } from "../lib/demoMode";
 import legacyAbi from "./abi/DiscourseHub.json";
 import agoraAbi from "./abi/AgoraFacets.json";
 
@@ -249,6 +250,7 @@ export const useAgoraAddress = (): string | undefined => {
 export const useDiscourseFormat = (propId: number | string | undefined) => {
     const address = useAgoraAddress();
     const enabled = Boolean(address) && propId !== undefined && propId !== null;
+    const demo = demoChainState(propId);
 
     const read = useContractRead({
         address,
@@ -260,11 +262,14 @@ export const useDiscourseFormat = (propId: number | string | undefined) => {
     } as any);
 
     const format = useMemo(() => {
+        // Demo mode answers this from the fixture. The hook above still runs, so the rules of hooks
+        // hold and a build without `NEXT_PUBLIC_DEMO` takes the identical production path.
+        if (demo) return demo.format;
         if (!enabled || read.data === undefined || read.data === null || read.isError) {
             return null;
         }
         return Number(read.data as any);
-    }, [enabled, read.data, read.isError]);
+    }, [demo, enabled, read.data, read.isError]);
 
     return {
         format,
@@ -283,6 +288,7 @@ export const useDiscourseFormat = (propId: number | string | undefined) => {
 export const useAgoraVenue = (propId: number | string | undefined, enabled = true) => {
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && propId !== undefined && propId !== null;
+    const demo = demoChainState(propId);
 
     const read = useContractRead({
         address,
@@ -293,10 +299,16 @@ export const useAgoraVenue = (propId: number | string | undefined, enabled = tru
         watch: true,
     } as any);
 
-    const venue = useMemo(
-        () => (active && !read.isError && read.data ? mapVenue(read.data) : null),
-        [active, read.data, read.isError]
-    );
+    const venue = useMemo(() => {
+        // See `useDiscourseFormat`: the fixture answers, the hook still runs.
+        if (demo) {
+            return {
+                kind: demo.venueKind,
+                refHash: demo.venueRefHash,
+            };
+        }
+        return active && !read.isError && read.data ? mapVenue(read.data) : null;
+    }, [demo, active, read.data, read.isError]);
 
     return { venue, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
 };
