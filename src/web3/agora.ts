@@ -120,6 +120,24 @@ export const mapAttestation = (raw: any): AgoraAttestation => {
 };
 
 /**
+ * `getVenue(uint256) -> (uint8 kind, bytes32 refHash)` — the venue consultation table's on-chain
+ * half (`docs/ux/04-live-shell.md` §1.3, §8.2). `kind` is a `VENUE_*` constant; `refHash` is
+ * `keccak256(normaliseVenueRef(ref))` and is deliberately NOT a reference string — the chain never
+ * holds the paste, so a surface that needs a player URL must take the string from the off-chain
+ * record (`docs/media/03` §7.3).
+ */
+export interface AgoraVenue {
+    kind: number;
+    refHash: string;
+}
+
+export const mapVenue = (raw: any): AgoraVenue => {
+    const kind = raw?.kind ?? raw?.[0] ?? 0;
+    const refHash = raw?.refHash ?? raw?.[1] ?? ZERO_HASH;
+    return { kind: Number(kind), refHash: String(refHash) };
+};
+
+/**
  * `AgoraMarketFacet.getAgoraPool(marketId) -> (uint96[] pools, uint256 totalStaked)`.
  * There is no on-chain odds view — the implied probability is a property of the pool, so it is
  * derived here rather than read.
@@ -255,6 +273,32 @@ export const useDiscourseFormat = (propId: number | string | undefined) => {
         isError: read.isError,
         refetch: read.refetch,
     };
+};
+
+/**
+ * The venue a campaign actually runs from. `venue` stays `null` until a read resolves, and stays
+ * `null` on error: a surface must treat that as "we do not know the venue" and render nothing
+ * rather than defaulting to a venue kind (`docs/ux/04` §3.12 — never a guess at a venue).
+ */
+export const useAgoraVenue = (propId: number | string | undefined, enabled = true) => {
+    const address = useAgoraAddress();
+    const active = Boolean(address) && enabled && propId !== undefined && propId !== null;
+
+    const read = useContractRead({
+        address,
+        abi: agoraAbi as any,
+        functionName: "getVenue",
+        args: [BigNumber.from(propId ?? 0)],
+        enabled: active,
+        watch: true,
+    } as any);
+
+    const venue = useMemo(
+        () => (active && !read.isError && read.data ? mapVenue(read.data) : null),
+        [active, read.data, read.isError]
+    );
+
+    return { venue, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
 };
 
 export const useAgoraParticipants = (

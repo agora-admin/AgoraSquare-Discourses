@@ -25,6 +25,7 @@ import { ChainIcon } from "../../components/utils/ChainTag";
 import DiscourseState from "../../components/discoursePage/DiscourseState";
 import RosterStrip from "../../components/campaign/RosterStrip";
 import MarketStrip from "../../components/market/MarketStrip";
+import LiveShell from "../../components/live/LiveShell";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -146,6 +147,21 @@ const DiscoursePage = () => {
                     {!loading && discourseData && !error &&
                     <div className={`flex flex-col gap-3 pb-20 ${checkNeedForPadding() && "!pb-72"} sm:pb-5`}>
                         <DiscourseState discourseData={discourseData} propId={discourseData?.getDiscourseById.propId} chainId={discourseData?.getDiscourseById.chainId} slotConfirmed={slotConfirmed} />
+
+                        {/* Additive: the live shell (docs/ux/04 §2.5). One element, between
+                            `DiscourseState` and `RosterStrip`, so a viewer who lands on a live
+                            session watches, reacts and funds without scrolling, and nothing below
+                            moves. It renders nothing at all for a legacy proposal, for a campaign
+                            with no scheduled session, or when the venue could not be read. */}
+                        <div className="sm:px-8">
+                            <LiveShell
+                                propId={discourseData?.getDiscourseById.propId}
+                                chainId={discourseData?.getDiscourseById.chainId}
+                                discourse={discourseData?.getDiscourseById}
+                                onFund={handleFund}
+                                onConnect={() => setOpenConnectWallet((prev) => !prev)}
+                            />
+                        </div>
 
                         {/* Additive: the roster strip for a multi-participant campaign. It renders
                             nothing unless `getDiscourseFormat(propId) == 1`, so a legacy proposal's

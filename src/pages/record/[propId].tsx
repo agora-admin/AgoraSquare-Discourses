@@ -17,21 +17,32 @@
  * The page renders with no wallet connection: reading a record never requires one (§8.5).
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
 import Layout from "../../components/layout/Layout";
 import TopBar from "../../components/topbar/TopBar";
 import ReactionTimeline from "../../components/record/ReactionTimeline";
+import VenueFrame, { useOnline } from "../../components/live/VenueFrame";
+import RecordingPane from "../../components/live/RecordingPane";
+import { playbackForTemporal, venuePlaybackSpec } from "../../components/live/venuePlayback";
 import { AnchorMismatchPanel, AiBlock, ProvenanceBadge, AnchorRecordView } from "../../components/utils/ProvenanceBadge";
 import { ChainIcon } from "../../components/utils/ChainTag";
 import { shortAddress } from "../../helper/StringHelper";
 import { ATTESTATIONS, shortHash } from "../../helper/AgoraHelper";
 import { getChainName } from "../../Constants";
 import { formatDate, getTime } from "../../helper/TimeHelper";
-import { useAgoraAttestation, useAgoraParticipants, useDiscourseFormat, useProposalEnvelope } from "../../web3/agora";
-import { REACTION_TIMELINE_FIXTURE } from "../../lib/agoraFixtures";
+import { GET_EVENT, GET_SESSIONS } from "../../lib/queries";
+import { toTimelineData, useReactionSummary } from "../../lib/reactions";
+import {
+    useAgoraAttestation,
+    useAgoraParticipants,
+    useAgoraVenue,
+    useDiscourseFormat,
+    useProposalEnvelope,
+} from "../../web3/agora";
 
 /** §8.1 — the section list, in document order. Real `<a href>` anchors, never tabs. */
 const SECTIONS = [
@@ -71,6 +82,51 @@ const RecordPage = () => {
     const [brushRange, setBrushRange] = useState<[number, number] | null>(null);
 
     const chainId = route.query.chainId ? Number(route.query.chainId) : 137;
+
+    /**
+     * The recording slot (`docs/ux/04` §3.5, `docs/ux/05` §2.6) and the reaction band's data.
+     *
+     * The sessions query is keyed on the discourse id, which this page does not carry — so the id
+     * comes from the campaign's own event record, and when either read is missing the slot states
+     * the absence instead of guessing a URL. The player is the existing `react-hls-player` path
+     * (`RecordingPane`) and its element is the single source of truth for the band's playhead.
+     */
+    const online = useOnline();
+    const event = useQuery(GET_EVENT, {
+        variables: { propId: Number(propId ?? 0), chainId },
+        skip: !propId,
+    });
+    const discourseId = event.data?.getEvent?.discourseId ?? null;
+    const sessions = useQuery(GET_SESSIONS, { variables: { id: discourseId }, skip: !discourseId });
+    const session = (sessions.data?.getSessions ?? [])[0] as
+        | { recordingUrl?: string; recordingStatus?: string }
+        | undefined;
+    const hasRecording = Boolean(session?.recordingUrl) && session?.recordingStatus !== "waiting";
+    const playerRef = useRef<HTMLVideoElement | null>(null);
+
+    const { venue } = useAgoraVenue(propId);
+    const recordingSpec = useMemo(
+        () => playbackForTemporal(venuePlaybackSpec(venue?.kind ?? -1, null), "ended"),
+        [venue]
+    );
+
+    const reactions = useReactionSummary(chainId, propId);
+
+    useEffect(() => {
+        if (!hasRecording) {
+            return;
+        }
+        // The video is the one source of truth for the playhead (§4.3): the band follows it, and a
+        // seek on the band writes back into it. A second is enough for a band; the moment line and
+        // the anchor of a tap are read from the same element when one is mounted.
+        const timer = setInterval(() => {
+            const position = playerRef.current?.currentTime;
+            if (typeof position === "number" && Number.isFinite(position)) {
+                setPlayheadMs(Math.round(position * 1000));
+            }
+        }, 750);
+        return () => clearInterval(timer);
+    }, [hasRecording]);
 
     const anchorView = useMemo<AnchorRecordView>(() => {
         const attestation = manifest.attestation;
@@ -201,38 +257,111 @@ const RecordPage = () => {
                             {/* §7.4: a mismatch is rendered ABOVE the artifact, never as a toast. */}
                             {anchorView.state === "ANCHOR_MISMATCH" ? <AnchorMismatchPanel anchor={anchorView} /> : null}
 
-                            <SectionStatus
-                                label="Recording"
-                                reason="No recording for this session."
-                            />
+                            {/* The recording slot. Our own bytes play here; without them the block
+                                states the absence, names the venue's reason and offers the existing
+                                "Check recordings" destination — it never draws an empty player. */}
+                            <section id="recording" className="bg-card rounded-xl p-5 flex flex-col gap-3">
+                                <h2 className="text-[#E5F7FFE5] font-Lexend font-semibold text-sm">Recording</h2>
+
+                                {hasRecording ? (
+                                    <>
+                                        <VenueFrame
+                                            spec={{ ...recordingSpec, mode: "native" }}
+                                            title={`Recording of ${title}`}
+                                            width={null}
+                                            temporal="ended"
+                                            online={online}
+                                            native={
+                                                <RecordingPane
+                                                    src={session?.recordingUrl as string}
+                                                    playerRef={playerRef}
+                                                />
+                                            }
+                                        />
+                                        <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                            {playheadMs === null
+                                                ? "Press play in the recording. The reaction band below follows its playhead, and seeking on the band seeks the recording."
+                                                : "The band below follows this recording's playhead; seeking on the band seeks the recording."}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                            No recording for this session.
+                                        </p>
+                                        {venue ? (
+                                            <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                                {recordingSpec.reason}
+                                            </p>
+                                        ) : null}
+                                        {discourseId ? (
+                                            <Link href={`/watch/${discourseId}`} legacyBehavior>
+                                                <a className="button-o w-max font-Lexend text-xs text-[#E5F7FF] focus-visible:ring-2 focus-visible:ring-[#84B9D1]">
+                                                    Check recordings
+                                                </a>
+                                            </Link>
+                                        ) : null}
+                                    </>
+                                )}
+                            </section>
 
                             <SectionStatus
                                 label="Transcript"
                                 reason="No transcript for this session. Without a transcript there is no synthesis and no reaction timeline."
                             />
 
-                            {/* Reactions — fed by the fixture module until the reaction service lands */}
-                            <ReactionTimeline
-                                data={REACTION_TIMELINE_FIXTURE}
-                                playheadMs={playheadMs}
-                                onSeek={(ms) => {
-                                    setPlayheadMs(ms);
-                                    route.replace(
-                                        {
-                                            pathname: route.pathname,
-                                            query: { ...route.query, t: (ms / 1000).toFixed(1) },
-                                        },
-                                        undefined,
-                                        { shallow: true }
-                                    );
-                                }}
-                                brushRange={brushRange}
-                                onBrushChange={(range) => setBrushRange(range)}
-                            />
-                            <p className="text-[#7D8B92] font-Lexend text-xs">
-                                The reaction band on this page is fed by the frontend&apos;s fixture module until the
-                                reaction service is connected. The anchoring states above and the roster below are read
-                                from the chain.
+                            {/* Reactions — read from the reaction service (or, with no service
+                                configured, computed in this browser from this device's own
+                                reactions; the line under the band says which, every time). */}
+                            {reactions.summary && reactions.summary.total > 0 ? (
+                                <ReactionTimeline
+                                    data={toTimelineData(reactions.summary, { title })}
+                                    playheadMs={playheadMs}
+                                    onSeek={(ms) => {
+                                        setPlayheadMs(ms);
+                                        if (playerRef.current) {
+                                            playerRef.current.currentTime = ms / 1000;
+                                        }
+                                        route.replace(
+                                            {
+                                                pathname: route.pathname,
+                                                query: { ...route.query, t: (ms / 1000).toFixed(1) },
+                                            },
+                                            undefined,
+                                            { shallow: true }
+                                        );
+                                    }}
+                                    brushRange={brushRange}
+                                    onBrushChange={(range) => setBrushRange(range)}
+                                />
+                            ) : (
+                                <section id="reactions" className="bg-card rounded-xl p-5 flex flex-col gap-2">
+                                    <h2 className="text-gradient font-Lexend font-semibold text-sm">
+                                        Reaction composition
+                                    </h2>
+                                    {reactions.summary ? (
+                                        <>
+                                            <p className="text-[#E5F7FFE5] font-Lexend text-xs">
+                                                No reactions yet.
+                                            </p>
+                                            <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                                Reactions can be added for 14 days after the session. Nothing here is
+                                                a judgement of the discussion.
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                            {reactions.isError
+                                                ? "The reaction service could not be reached. This is a read failure, not an empty timeline."
+                                                : "Reading the reactions…"}
+                                        </p>
+                                    )}
+                                </section>
+                            )}
+                            <p className="text-[#7D8B92] font-Lexend text-xs leading-5">
+                                {reactions.source === "local"
+                                    ? "No reaction service is connected on this deployment, so the band is computed in this browser from the reactions kept on this device. It shows only what this browser recorded, and nothing here is sent anywhere."
+                                    : "The band is read from the reaction service. Individual reactions are not on chain, and the service reports no wallet-verification share, so this page makes no claim about verification."}
                             </p>
 
                             <SectionStatus label="Evidence" reason="No evidence set was published for this discussion." />
