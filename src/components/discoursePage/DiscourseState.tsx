@@ -336,7 +336,11 @@ const DiscourseState = ({ discourseData, propId, chainId, slotConfirmed }: { dis
             {/* For Scheduling The Discourse */}
 
             {
-            slotConfirmed(discourseData.getDiscourseById) && discourseData.getSlotById.proposed &&
+            // `getSlotById` is null until a slot is proposed, so this must go through the guarded
+            // helper rather than reading `.proposed` off the payload directly — the direct read
+            // threw `Cannot read properties of null` and took the page down for every discussion
+            // that has not been scheduled yet.
+            slotConfirmed(discourseData.getDiscourseById) && slotProposed(discourseData.getSlotById) &&
                 <div className="bg-card rounded-xl flex flex-col p-4 mt-8 gap-2">
                     <div className="flex items-center gap-2">
                     <SlotCalendarIcon />

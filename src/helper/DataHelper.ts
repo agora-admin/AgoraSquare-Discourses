@@ -126,22 +126,28 @@ export const confirmationPeriodDone = (data: Discourse) => {
     return now.getTime() > confirmationDate.getTime();
 }
 
+/**
+ * A discourse with no slot yet returns `null` from `getSlotById`, and reading `.proposed` off that
+ * threw `Cannot read properties of null` and took the whole page down. A discussion that has not
+ * been scheduled is the ordinary case, not an edge case, so the guard belongs here rather than at
+ * every call site.
+ */
 export const slotProposed = (data : any) => {
-    if (data.proposed) {
+    if (data && data.proposed) {
         return true;
     }
     return false;
 }
 
 export const slotConfirmed = (data : any) => {
-    if (data.slots.find( (s :any) => s.accepted)) {
+    if (data && Array.isArray(data.slots) && data.slots.find( (s :any) => s.accepted)) {
         return true;
     }
     return false;
 }
 
 export const getSlotString = (data : any) => {
-    let slot = data.slots.find( (s :any) => s.accepted);
+    let slot = data && Array.isArray(data.slots) ? data.slots.find( (s :any) => s.accepted) : undefined;
     if (slot) {
         return slot.timestamp;
     }

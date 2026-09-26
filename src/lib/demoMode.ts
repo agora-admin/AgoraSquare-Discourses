@@ -35,6 +35,20 @@ const DEMO_VENUE_REF = "agoradiscourses";
 const nowSec = Math.floor(Date.now() / 1000);
 
 /**
+ * The host's "we are live" signal.
+ *
+ * For a venue we host (the 100ms room) liveness is a first-party fact. For Twitch, Kick or YouTube
+ * it is not — there is no webhook we can rely on — so `docs/ux/04` specifies this signal as the
+ * seam the host (or later, a platform webhook) reports through. Without it the shell correctly
+ * renders `live-unconfirmed`, which is what it did before this existed: an honest "the start has
+ * passed, we cannot confirm it is running" strip. Supplying it is what mounts the frame.
+ */
+export const DEMO_LIVE_SIGNAL = {
+    startedAt: (nowSec - 300) * 1000,
+    reportedBy: "demo",
+};
+
+/**
  * The GraphQL payload for `GetDiscourseById`. This is the shape the indexer returns — including
  * `venue_ref`, which is the one field the frame cannot derive: the chain stores only
  * `keccak256(ref)`, so the string itself has to arrive off chain.
@@ -96,14 +110,17 @@ export const DEMO_DISCOURSE = {
         {
             __typename: "Fund",
             address: "0x99A869CdD2cBF9Ab6BA25DB73BEfE3FeE9D1b2db",
-            amount: 1.5,
+            // Integer wei, not ethers. `FundHelper.getFundTotal` passes this straight to
+            // `ethers.utils.formatEther`, and `BigNumber.from(1.5)` throws NUMERIC_FAULT
+            // (underflow) — a fractional ETH value here crashes the whole page.
+            amount: "1500000000000000000",
             timestamp: String(nowSec - 86400 * 3),
             txnHash: "0x7466eb6d1e7a7b20fef6316f81ef3a9fd62c5050b0eaaa38a1312c3dddeb73f4",
         },
         {
             __typename: "Fund",
             address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-            amount: 0.5,
+            amount: "500000000000000000",
             timestamp: String(nowSec - 86400 * 2),
             txnHash: "0xc432980489d8d2c503d5e6c15f9e9178a1cf8b7f63ee5b252b83b7f9c732ae63",
         },
