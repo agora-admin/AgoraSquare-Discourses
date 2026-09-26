@@ -365,17 +365,23 @@ export const venuePlaybackSpec = (kind: number, venueRef: string | null): VenueP
 
 /**
  * The mount rule (§6.2, D4). A third-party frame is mounted only where the platform documents a
- * minimum we can meet: Twitch and Kick need ≥ 640 px, YouTube is the documented exception
- * because its minimum is 200×200 and its mobile-web playback is documented.
+ * minimum we can meet.
+ *
+ * **The measurement is the whole rule.** An earlier version also short-circuited on
+ * `COMPACT_MAX_WIDTH`: below that it allowed only YouTube, whatever the frame had actually
+ * measured. But `width` here is the frame column's real width, and a 400 px column satisfies
+ * Twitch's documented 400×300 minimum exactly. So the extra branch refused Twitch between 400 and
+ * 639 px — a laptop window, not a phone — and the reader got "this player cannot be shown on a
+ * screen this narrow" while holding a screen wide enough to show it. Phones are still refused,
+ * because at a 393 px viewport the column measures ~290 px, which genuinely is under 400.
  */
 export const frameWidthAllows = (spec: VenuePlaybackSpec, width: number): boolean => {
     if (!spec.embeddable || spec.mode !== "iframe") {
         return false;
     }
-    if (width > COMPACT_MAX_WIDTH) {
-        return width >= Math.max(TWITCH_MIN_WIDTH, spec.minWidth === 0 ? 0 : spec.minWidth);
-    }
-    return spec.kind === VENUE_YOUTUBE_LIVE && width >= YOUTUBE_MIN_WIDTH;
+    // A venue with no declared minimum takes YouTube's, which is the lowest of the three.
+    const required = spec.minWidth > 0 ? spec.minWidth : YOUTUBE_MIN_WIDTH;
+    return width >= Math.max(required, spec.kind === VENUE_YOUTUBE_LIVE ? YOUTUBE_MIN_WIDTH : TWITCH_MIN_WIDTH);
 };
 
 /**
