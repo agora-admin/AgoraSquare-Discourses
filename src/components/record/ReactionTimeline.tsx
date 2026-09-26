@@ -105,9 +105,13 @@ export const ReactionTimeline = ({
             data.lanes.map((lane) => ({
                 id: lane.id,
                 label: lane.label,
-                subLabel: `${lane.buckets.reduce((sum, bucket) => {
-                    return sum + drawnSeries.reduce((s, key) => s + Object.values(bucket.series[key]).reduce<number>((a, v) => a + (v ?? 0), 0), 0);
-                }, 0)} reactions`,
+                // No `subLabel` count. `docs/ux/02` §13.1 rule 1 is explicit: lane-level reaction
+                // totals are **not** rendered above the fold — "the only permitted visible number
+                // is the sample size in the caption" — and §13.1 rule 5 forbids anything that
+                // turns reaction volume into a spectator sport. The count still reaches assistive
+                // technology through the lane's `aria-label` in `LinearTimeline`, so the
+                // accessible equivalent is kept and only the visible tally is removed. Omitting
+                // the prop lets the primitive fall back to "composed in the band above".
                 buckets: lane.buckets.map((bucket) => {
                     const counts: Partial<Record<number, number>> = {};
                     let n = 0;
