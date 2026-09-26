@@ -58,6 +58,7 @@ import RecordingPane from "./RecordingPane";
 import { playbackForTemporal, venuePlaybackSpec } from "./venuePlayback";
 import type { Discourse } from "../../lib/Types";
 import { useVenuePresence } from "../../hooks/useVenuePresence";
+import { useDemoVenuePoint } from "../../hooks/useDemoVenuePoint";
 
 export interface LiveShellProps {
     propId: number | string | undefined;
@@ -174,8 +175,17 @@ const LiveShell = ({
         return () => observer.disconnect();
     }, []);
 
-    /** The off-chain reference, from the prop first and only then from the payload. */
+    /**
+     * The off-chain reference, from the prop first and only then from the payload.
+     *
+     * A demo link that named its own venue comes first: it is standing in for the indexer, which is
+     * the only source this string ever comes from, so it outranks both the prop and the fixture.
+     */
+    const demoPoint = useDemoVenuePoint();
     const ref = useMemo(() => {
+        if (demoPoint?.ref) {
+            return demoPoint.ref;
+        }
         if (typeof venueRef === "string" && venueRef.trim().length > 0) {
             return venueRef;
         }
@@ -183,7 +193,7 @@ const LiveShell = ({
         const candidates = [loose?.venue_ref, loose?.venueRef, loose?.venue_reference];
         const found = candidates.find((value) => typeof value === "string" && value.trim().length > 0);
         return typeof found === "string" ? found : null;
-    }, [venueRef, discourse]);
+    }, [demoPoint, venueRef, discourse]);
 
     /**
      * Observed liveness, from the platform.

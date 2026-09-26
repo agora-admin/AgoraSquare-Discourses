@@ -21,6 +21,7 @@ import {
     ROLE_SPEAKER,
     KIND_PANEL,
     VENUE_KICK,
+    getVenueSpec,
 } from "../helper/AgoraHelper";
 
 export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO === "1";
@@ -36,6 +37,38 @@ export const DEMO_CHAIN_ID = 11155111;
  * channel that is live when you look.
  */
 const DEMO_VENUE_REF = "xqc";
+
+/**
+ * `?venueKind=1&venueRef=hasanabi` — point the demo at a different venue, from the link alone.
+ *
+ * Which venue a campaign runs from is a *data* question, not a code one: the chain stores only
+ * `keccak256(normaliseVenueRef(ref))`, and the string itself arrives from the indexer, so pointing a
+ * campaign at another channel is an indexer write. The demo has no indexer, so it hardcodes one
+ * channel; this reads the other from the link and stands in for the answer the indexer would have
+ * given. That is why aiming the demo at a Twitch channel needs no rebuild.
+ *
+ * Both halves are required. A kind without a channel would put a name in the wrong platform's
+ * player and hand back a broken frame (`docs/ux/04` §3.12 — never a frame we cannot fill), so a
+ * half-specified link is ignored and the fixture keeps answering, exactly as an unreadable venue
+ * does in production.
+ *
+ * Pure, and only ever consulted under `DEMO_MODE`.
+ */
+export const parseDemoVenuePoint = (
+    query: Record<string, string | string[] | undefined>
+): { kind: number; ref: string } | null => {
+    const first = (value: string | string[] | undefined) =>
+        Array.isArray(value) ? value[0] : value;
+
+    const rawKind = first(query.venueKind);
+    const rawRef = first(query.venueRef)?.trim();
+    const kind = rawKind === undefined || rawKind === "" ? NaN : Number(rawKind);
+
+    if (!rawRef || !Number.isInteger(kind) || getVenueSpec(kind) === undefined) {
+        return null;
+    }
+    return { kind, ref: rawRef };
+};
 
 const nowSec = Math.floor(Date.now() / 1000);
 

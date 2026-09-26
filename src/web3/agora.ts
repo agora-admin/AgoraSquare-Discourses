@@ -35,6 +35,7 @@ import {
 import { revertToSentence } from "../helper/AgoraHelper";
 import { getContractAddressByChainId } from "../helper/ContractHelper";
 import { demoChainState } from "../lib/demoMode";
+import { useDemoVenuePoint } from "../hooks/useDemoVenuePoint";
 import legacyAbi from "./abi/DiscourseHub.json";
 import agoraAbi from "./abi/AgoraFacets.json";
 
@@ -289,6 +290,7 @@ export const useAgoraVenue = (propId: number | string | undefined, enabled = tru
     const address = useAgoraAddress();
     const active = Boolean(address) && enabled && propId !== undefined && propId !== null;
     const demo = demoChainState(propId);
+    const demoPoint = useDemoVenuePoint();
 
     const read = useContractRead({
         address,
@@ -300,15 +302,16 @@ export const useAgoraVenue = (propId: number | string | undefined, enabled = tru
     } as any);
 
     const venue = useMemo(() => {
-        // See `useDiscourseFormat`: the fixture answers, the hook still runs.
+        // See `useDiscourseFormat`: the fixture answers, the hook still runs. A demo link that named
+        // its own venue answers for the kind, since no fixture can know which one it meant.
         if (demo) {
             return {
-                kind: demo.venueKind,
+                kind: demoPoint?.kind ?? demo.venueKind,
                 refHash: demo.venueRefHash,
             };
         }
         return active && !read.isError && read.data ? mapVenue(read.data) : null;
-    }, [demo, active, read.data, read.isError]);
+    }, [demo, demoPoint, active, read.data, read.isError]);
 
     return { venue, isLoading: active && read.isLoading, isError: read.isError, refetch: read.refetch };
 };
