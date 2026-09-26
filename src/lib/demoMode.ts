@@ -20,7 +20,7 @@ import {
     ROLE_MODERATOR,
     ROLE_SPEAKER,
     KIND_PANEL,
-    VENUE_TWITCH,
+    VENUE_KICK,
 } from "../helper/AgoraHelper";
 
 export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO === "1";
@@ -29,24 +29,15 @@ export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO === "1";
 export const DEMO_PROP_ID = 42;
 export const DEMO_CHAIN_ID = 11155111;
 
-/** The channel the frame embeds. Any real Twitch channel works. */
-const DEMO_VENUE_REF = "agoradiscourses";
+/**
+ * The channel the frame embeds — a real, currently-live Kick channel, chosen so the demo exercises
+ * the whole loop rather than a placeholder: the API reports its liveness, the frame mounts its
+ * player, and the badge is driven by a real observation instead of a fixture. Swap this for any
+ * channel that is live when you look.
+ */
+const DEMO_VENUE_REF = "xqc";
 
 const nowSec = Math.floor(Date.now() / 1000);
-
-/**
- * The host's "we are live" signal.
- *
- * For a venue we host (the 100ms room) liveness is a first-party fact. For Twitch, Kick or YouTube
- * it is not — there is no webhook we can rely on — so `docs/ux/04` specifies this signal as the
- * seam the host (or later, a platform webhook) reports through. Without it the shell correctly
- * renders `live-unconfirmed`, which is what it did before this existed: an honest "the start has
- * passed, we cannot confirm it is running" strip. Supplying it is what mounts the frame.
- */
-export const DEMO_LIVE_SIGNAL = {
-    startedAt: (nowSec - 300) * 1000,
-    reportedBy: "demo",
-};
 
 /**
  * The GraphQL payload for `GetDiscourseById`. This is the shape the indexer returns — including
@@ -173,7 +164,7 @@ export const DEMO_CHAIN_STATE = {
     [DEMO_PROP_ID]: {
         format: 1,
         discussionKind: KIND_PANEL,
-        venueKind: VENUE_TWITCH,
+        venueKind: VENUE_KICK,
         venueRefHash: "0x0000000000000000000000000000000000000000000000000000000000000001",
         goal: "1500000000000000000",
         participants: [

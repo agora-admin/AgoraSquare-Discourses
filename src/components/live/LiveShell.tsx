@@ -57,6 +57,7 @@ import ReactionRail from "./ReactionRail";
 import RecordingPane from "./RecordingPane";
 import { playbackForTemporal, venuePlaybackSpec } from "./venuePlayback";
 import type { Discourse } from "../../lib/Types";
+import { useVenuePresence } from "../../hooks/useVenuePresence";
 
 export interface LiveShellProps {
     propId: number | string | undefined;
@@ -173,8 +174,6 @@ const LiveShell = ({
         return () => observer.disconnect();
     }, []);
 
-    const resolved = useMemo(() => resolveTemporal(discourse, liveSignal, now), [discourse, liveSignal, now]);
-
     /** The off-chain reference, from the prop first and only then from the payload. */
     const ref = useMemo(() => {
         if (typeof venueRef === "string" && venueRef.trim().length > 0) {
@@ -185,6 +184,28 @@ const LiveShell = ({
         const found = candidates.find((value) => typeof value === "string" && value.trim().length > 0);
         return typeof found === "string" ? found : null;
     }, [venueRef, discourse]);
+
+    /**
+     * Observed liveness, from the platform.
+     *
+     * The prop wins when it is supplied: a host tapping "we are live", or a webhook, is a
+     * first-hand report and should not be overruled by a poll that lags by up to a minute. The API
+     * is the default source, which is what makes an unattended Twitch or Kick session show a
+     * correct badge without anyone pressing anything.
+     */
+    const { presence } = useVenuePresence(venue?.kind ?? null, ref, Boolean(venue));
+    const observedSignal = useMemo(
+        () =>
+            presence?.state === "live" && presence.startedAt !== null
+                ? { startedAt: presence.startedAt, reportedBy: presence.source }
+                : null,
+        [presence]
+    );
+
+    const resolved = useMemo(
+        () => resolveTemporal(discourse, liveSignal ?? observedSignal, now),
+        [discourse, liveSignal, observedSignal, now]
+    );
 
     const spec = useMemo(
         () => (venue ? playbackForTemporal(venuePlaybackSpec(venue.kind, ref), resolved.temporal) : null),

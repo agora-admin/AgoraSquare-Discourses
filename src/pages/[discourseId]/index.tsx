@@ -26,7 +26,6 @@ import DiscourseState from "../../components/discoursePage/DiscourseState";
 import RosterStrip from "../../components/campaign/RosterStrip";
 import MarketStrip from "../../components/market/MarketStrip";
 import LiveShell from "../../components/live/LiveShell";
-import { DEMO_LIVE_SIGNAL, DEMO_MODE } from "../../lib/demoMode";
 
 const DiscoursePage = () => {
     const route = useRouter();
@@ -161,7 +160,6 @@ const DiscoursePage = () => {
                                 discourse={discourseData?.getDiscourseById}
                                 onFund={handleFund}
                                 onConnect={() => setOpenConnectWallet((prev) => !prev)}
-                                liveSignal={DEMO_MODE ? DEMO_LIVE_SIGNAL : null}
                             />
                         </div>
 
